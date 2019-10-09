@@ -29,12 +29,12 @@ and tries to be simple and effective at the same time.
 ## Features
 A few of the things you can do with TinyConfiguration:
 
-* Read, write and delete custom configuration file (even async)
-* Set listeners on properties changes, configuration saving and deleting
-* Apply description on every property
-* Set "strict" or "tolerant" reading mode
-* Easily search and retrieve values
-* Escape special characters by default
+* **Read**, **write** and **delete** custom configuration file (even async)
+* Set **listeners** on properties changes, configuration saving and deleting
+* Apply **description** on every property
+* Set **strict** or **tolerant** reading **mode**
+* Easily **search and retrieve** values
+* Escape **special characters** by default
 
 ## Example
 
@@ -150,7 +150,7 @@ public class Main {
 
 ## Build & Changelog
 
-##### Building the library
+#### Building the library
 TinyConfiguration requires Maven 3 and JDK 8.<br>
 The generated JARs is compatible only with Java 8 and higher.
 
@@ -163,7 +163,7 @@ mvn clean install -P release
 The " ***target*** " directory with javadoc documentation 
 and all JARs will be available at the root directory.
 
-##### Tracking changes
+#### Tracking changes
 
 The full changelog is available at [CHANGELOG.md](CHANGELOG.md),
 meanwhile the following table is a really short feature-list for each
@@ -187,6 +187,6 @@ Copyright 2019 Giuseppe Baittiner
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+<http://www.apache.org/licenses/LICENSE-2.0>
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
