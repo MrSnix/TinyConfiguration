@@ -5,8 +5,9 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
+- [Example](#example)
+- [Build](#build)
 - [Feedback](#feedback)
-- [Build Process](#build-process)
 - [Acknowledgments](#acknowledgments)
 
 ## Introduction
@@ -35,7 +36,7 @@ A few of the things you can do with TinyConfiguration:
 * Easily search and retrieve values
 * Escape special characters by default
 
-## How to start
+## Example
 
 This tutorial covers most of the methods available in the library, 
 for further information, check the javadoc.
@@ -146,6 +147,19 @@ public class Main {
     }
 }
 ```
+
+## Build
+TinyConfiguration requires Maven 3 and JDK 8.<br>
+The generated JARs is compatible only with Java 8 and higher.
+
+Build command:
+
+````
+mvn clean install -P release
+````
+
+The " ***target*** " directory with javadoc documentation 
+and all JARs will be available at the root directory.
 
 ## Feedback
 If there's anything you'd like to chat about or 
