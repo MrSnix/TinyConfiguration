@@ -6,7 +6,7 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Example](#example)
-- [Build & Changelog](#build-and-changelog)
+- [Build & Changelog](#build--changelog)
 - [Feedback](#feedback)
 - [Acknowledgments](#acknowledgments)
 
@@ -149,6 +149,8 @@ public class Main {
 ```
 
 ## Build & Changelog
+
+##### Building the library
 TinyConfiguration requires Maven 3 and JDK 8.<br>
 The generated JARs is compatible only with Java 8 and higher.
 
@@ -160,6 +162,19 @@ mvn clean install -P release
 
 The " ***target*** " directory with javadoc documentation 
 and all JARs will be available at the root directory.
+
+##### Tracking changes
+
+The full changelog is available at [CHANGELOG.md](CHANGELOG.md),
+meanwhile the following table is a really short feature-list for each
+release.
+
+<br>
+
+| Version |                        Description                        |
+|:-------:|:---------------------------------------------------------:|
+|   0.1   |                      Initial release                      |
+
 
 ## Feedback
 If there's anything you'd like to chat about or 
