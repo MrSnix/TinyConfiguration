@@ -40,9 +40,12 @@ A few of the things you can do with TinyConfiguration:
 This tutorial covers most of the methods available in the library, 
 for further information, check the javadoc.
 
-''''java
-
-        // Creating a new instance
+```java
+public class Main {
+    
+    public static void main(String[] args){
+        
+      // Creating a new instance
         Configuration cfg = new Configuration.Builder().
                 setFilename("setting.cfg"). // FILE-NAME + .EXT
                 setPathname("./"). // PATH-NAME ONLY, NO FILE-NAME
@@ -135,11 +138,11 @@ for further information, check the javadoc.
         }
 
 
-        // For further information, check the javadoc
+        // For further information check the javadoc
 
     }
- 
- '''
+}
+```
  
 ## Feedback
 If there's anything you'd like to chat about or 
