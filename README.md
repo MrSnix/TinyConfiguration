@@ -40,7 +40,7 @@ A few of the things you can do with TinyConfiguration:
 This tutorial covers most of the methods available in the library, 
 for further information, check the javadoc.
 
-''''java
+'''java
 
         // Creating a new instance
         Configuration cfg = new Configuration.Builder().
