@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * The {@link Configuration} class defines all properties included inside the configuration file
  *
- * <p></p>
+ * <p>
  *
  * <p>It's an important component because all the relationship [ key - value ] stored will be
  * expected to be read from the concrete file, especially if the configuration policy is
@@ -33,7 +33,7 @@ import java.util.*;
  * cfg.clear();
  *
  * // So, what's gonna happen now, after all properties have been removed?
- * ConfigurationIO.read(cfg); => Throws exception with ConfigurationPolicy.RESTRICTED}
+ * ConfigurationIO.read(cfg); -&gt; Throws exception with ConfigurationPolicy.RESTRICTED}
  * </pre>
  * <p>
  * To add properties to the object, you can use the following method which is overloaded as follow:
@@ -44,13 +44,10 @@ import java.util.*;
  * </ol>
  * <p>
  * While, the only way to remove properties is {@link Configuration#clear()}.<br>
- * Remember this will delete <u><b>all</b> the stored properties and their listeners</b></u>.
- * <p></p>
+ * Remember this will delete <u><b>all</b> the stored properties and their listeners</u>.
  * <p>As usual, it's possible to retrieve the current value for any key, using the following method:</p>
  * {@link Configuration#get(String)} which will retrieve the associated {@link Property} object from
- * the instance using a specific key</p>
- *
- * <p></p>
+ * the instance using a specific key.
  *
  * <p>You can parse then return the current value as described:</p>
  *
@@ -62,7 +59,7 @@ import java.util.*;
  *          <li>{@link Property#asFloat()}</li>
  *          <li>{@link Property#asDouble()}</li>
  *     </ul>
- * </p>
+ *
  * <p>
  * Through {@link Configuration#addListener(ConfigurationListener.Type, ConfigurationListener)} is possible
  * to detect read and write events in order to execute some custom code <b>before</b> loading and saving.
@@ -73,6 +70,7 @@ import java.util.*;
  *      // Custom function
  *  });}
  * </pre>
+ *
  * <p>
  * It's even possible to track down a single property change,
  * using {@link Configuration#addListener(PropertyListener.Type, String, PropertyListener)} )}
@@ -429,7 +427,7 @@ public final class Configuration {
 
     /**
      * The {@link Configuration.Builder} class allows to generate {@link Configuration} instances.
-     *
+     * <p></p>
      * <p>You can use {@link #build()} in order to retrieve a configuration instance,
      * then using {@link Configuration#put(String, String)} is possible to insert new properties;
      * The {@link Configuration.Builder} class will execute some checks on the given arguments
@@ -437,18 +435,21 @@ public final class Configuration {
      *
      * <p>In detail, {@link Configuration.Builder#setFilename(String)} is expecting a {@link String} value
      * formatted as follow:
-     * <li>"filename.ext" => "configuration.cfg" => <b>VALID</b></li>
-     * <li>"filename.ext" => "setting.prop" => <b>VALID</b></li>
-     * <li>"../dir/filename.ext" => "../cfg/configuration.cfg" => <b>NOT VALID</b></li>
-     * <li>"./filename.ext" => "./setting.prop" => <b>NOT VALID</b></li>
-     * <br>
+     * <ul>
+     *      <li>"filename.ext" -&gt; "configuration.cfg" -&gt; <b>VALID</b></li>
+     *      <li>"filename.ext" -&gt; "setting.prop" -&gt; <b>VALID</b></li>
+     *      <li>"../dir/filename.ext" -&gt; "../cfg/configuration.cfg" -&gt; <b>NOT VALID</b></li>
+     *      <li>"./filename.ext" -&gt; "./setting.prop" -&gt; <b>NOT VALID</b></li>
+     * </ul>
      * <p>while {@link Configuration.Builder#setPathname(String)} consider valid only the directory
      * into which the configuration file will be saved, for example:
      * <p>
-     * <li>"./" => <b>VALID</b></li>
-     * <li>"../cfg/" => <b>VALID</b></li>
-     * <li>"./configuration.cfg" => <b>NOT VALID</b>
-     * <li>"../cfg/setting.prop" => <b>NOT VALID</b></li>
+     * <ul>
+     *      <li>"./" -&gt; <b>VALID</b></li>
+     *      <li>"../cfg/" -&gt; <b>VALID</b></li>
+     *      <li>"./configuration.cfg" -&gt; <b>NOT VALID</b>
+     *      <li>"../cfg/setting.prop" -&gt; <b>NOT VALID</b></li>
+     * </ul>
      *
      * @author G. Baittiner
      * @since 0.1
@@ -471,13 +472,15 @@ public final class Configuration {
 
         /**
          * Sets the configuration filename.
+         * <p></p>
+         * <p>This method is expecting a {@link String} value formatted as follow:</p>
          *
-         * <p>This method is expecting a {@link String} value formatted as follow:
-         *
-         * <li>"filename.ext" => "configuration.cfg" => <b>VALID</b></li>
-         * <li>"filename.ext" => "setting.prop" => <b>VALID</b></li>
-         * <li>"../dir/filename.ext" => "../cfg/configuration.cfg" => <b>NOT VALID</b></li>
-         * <li>"./filename.ext" => "./setting.prop" => <b>NOT VALID</b></li></p>
+         * <ul>
+         *      <li>"filename.ext" -&gt; "configuration.cfg" -&gt; <b>VALID</b></li>
+         *      <li>"filename.ext" -&gt; "setting.prop" -&gt; <b>VALID</b></li>
+         *      <li>"../dir/filename.ext" -&gt; "../cfg/configuration.cfg" -&gt; <b>NOT VALID</b></li>
+         *      <li>"./filename.ext" -&gt; "./setting.prop" -&gt; <b>NOT VALID</b></li>
+         * </ul>
          *
          * @param filename The configuration filename formatted as "filename.ext"
          * @return The {@link Configuration.Builder} current instance
@@ -499,13 +502,15 @@ public final class Configuration {
 
         /**
          * Sets the configuration pathname.
+         * <p></p>
+         * <p>This method is expecting a {@link String} value formatted as follow:</p>
          *
-         * <p>This method is expecting a {@link String} value formatted as follow:
-         *
-         * <li>"./" => <b>VALID</b></li>
-         * <li>"../cfg/" => <b>VALID</b></li>
-         * <li>"./configuration.cfg" => <b>NOT VALID</b>
-         * <li>"../cfg/setting.prop" => <b>NOT VALID</b></li>
+         * <ul>
+         *      <li>"./" -&gt; <b>VALID</b></li>
+         *      <li>"../cfg/" -&gt; <b>VALID</b></li>
+         *      <li>"./configuration.cfg" -&gt; <b>NOT VALID</b>
+         *      <li>"../cfg/setting.prop" -&gt; <b>NOT VALID</b></li>
+         * </ul>
          *
          * @param pathname The configuration pathname formatted as "../dir/"
          * @return The {@link Configuration.Builder} current instance
@@ -526,17 +531,17 @@ public final class Configuration {
         }
 
         /**
-         * Sets the configuration policy
+         * Sets the configuration policy.
          * <p></p>
          * <p>The {@link ConfigurationPolicy} is a <b>really important</b> rule,<br>
          * which must be applied carefully and with some consideration
          * by the developer.</p>
          * <p>
          * This value affects the behaviours of the following methods:
-         * <p>
-         * <li>{@link ConfigurationIO#read(Configuration)}</li>
-         * <li>{@link ConfigurationIO#write(Configuration)}</li>
-         * </p>
+         * <ul>
+         *      <li>{@link ConfigurationIO#read(Configuration)}</li>
+         *      <li>{@link ConfigurationIO#write(Configuration)}</li>
+         * </ul>
          *
          * <br>
          * <p>

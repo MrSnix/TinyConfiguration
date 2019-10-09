@@ -157,7 +157,7 @@ The generated JARs is compatible only with Java 8 and higher.
 Build command:
 
 ````
-mvn clean install -P release
+mvn clean install
 ````
 
 The " ***target*** " directory with javadoc documentation 
