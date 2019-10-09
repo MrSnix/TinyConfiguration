@@ -65,10 +65,10 @@ public class Main {
 
         cfg.put("CFG_VERSION", "0.1", "This value is used internally, please do not touch it!");
         cfg.put("LANGUAGE", "EN");
-        cfg.put("FULLSCREEN", "False");
+        cfg.put("FULLSCREEN", "FALSE");
         cfg.put("MUSIC", "0.8");
         cfg.put("RENDERING_DISTANCE", "100");
-        cfg.put("V-SYNC", "False");
+        cfg.put("V-SYNC", "FALSE");
 
         // Checking existence "./setting.cfg" file
         if (ConfigurationIO.exist(cfg)) {
@@ -102,15 +102,18 @@ public class Main {
          * IMPORTANT:
          * cfg.get() will return a "Property" object and you can use it to return any kind of value */
 
-        cfg.get("CFG_VERSION").asString(); // cfg.get("").value().asLong();
+        // cfg.get("key").as[data-type];
+        
+        cfg.get("CFG_VERSION").asString();
         cfg.get("FULLSCREEN").asBoolean();
+        cfg.get("RENDERING_DISTANCE").asInt();
         cfg.get("MUSIC").asFloat();
 
         /* Now, you may want to modify the properties inside your program when something happen
          * (ex. User press "Apply Fullscreen" then "Save" button)
          * How do you do it ? Really simple, use cfg.put(key, value) again, it will replace the old data */
 
-        cfg.put("FULLSCREEN", "True");
+        cfg.put("FULLSCREEN", "TRUE");
 
         /* Then, after the user has confirmed, you may want to listen for the configuration change,
          *  so your software can run a custom method to make the window full-screen...
@@ -126,7 +129,7 @@ public class Main {
         });
 
         // This will now trigger the listener
-        cfg.put("FULLSCREEN", "False");
+        cfg.put("FULLSCREEN", "FALSE");
 
         /* In the end, it's time to save our new configuration instance, so next time
          * the user will be able to load his preferences... */
@@ -146,9 +149,15 @@ public class Main {
 
 ## Feedback
 If there's anything you'd like to chat about or 
-you want to send me feedback about the software library,
+you want to send me feedback about this project,
 <br>you can reach me on my [e-mail](baittiner.giuseppe.dev@gmail.com), 
 ***feature requests are always welcome***.
 
 ## Acknowledgments
+Copyright 2019 Giuseppe Baittiner
 
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
