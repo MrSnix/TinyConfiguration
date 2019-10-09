@@ -8,10 +8,10 @@ package org.tinyconfiguration.base;
  * by the developer.</p>
  * <p>
  * This value affects the behaviours of the following methods:
- * <p>
- * <li>{@link ConfigurationIO#read(Configuration)}</li>
- * <li>{@link ConfigurationIO#write(Configuration)}</li>
- * </p>
+ * <ul>
+ *      <li>{@link ConfigurationIO#read(Configuration)}</li>
+ *      <li>{@link ConfigurationIO#write(Configuration)}</li>
+ * </ul>
  *
  * <br>
  * <p>
