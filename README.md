@@ -6,7 +6,7 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Example](#example)
-- [Build & Changelog](#build--changelog)
+- [Build, download & changelog](#build-download--changelog)
 - [Feedback](#feedback)
 - [License](#license)
 
@@ -148,7 +148,7 @@ public class Main {
 }
 ```
 
-## Build & Changelog
+## Build, download & changelog
 
 #### Building the library
 TinyConfiguration requires Maven 3 and JDK 8.<br>
@@ -162,6 +162,12 @@ mvn clean install
 
 The " ***target*** " directory with javadoc documentation 
 and all JARs will be available at the root directory.
+
+#### Download
+
+You can get the latest precompiled .jar files 
+from [this page](https://github.com/MrSnix/TinyConfiguration/releases).
+
 
 #### Tracking changes
 
