@@ -32,8 +32,7 @@ public class How_to_start {
         cfg.put("LANGUAGE", "EN");
         cfg.put("FULLSCREEN", "False");
         cfg.put("MUSIC", "0.8");
-        cfg.put("LI=N;K", "\n\n\r\t\b"); // It will be escaped on write() but unescaped by the read() method
-        cfg.put("RENDERING_DISTANCE", "10", "This value should be set carefully");
+        cfg.put("RENDERING_DISTANCE", "100");
         cfg.put("V-SYNC", "False");
 
         // Checking existence "./setting.cfg" file
@@ -104,7 +103,7 @@ public class How_to_start {
         }
 
 
-        // For further information => "http://...."
+        // For further information check the javadoc
 
     }
 
