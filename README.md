@@ -6,7 +6,7 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Example](#example)
-- [Build](#build)
+- [Build & Changelog](#build-and-changelog)
 - [Feedback](#feedback)
 - [Acknowledgments](#acknowledgments)
 
@@ -148,7 +148,7 @@ public class Main {
 }
 ```
 
-## Build
+## Build & Changelog
 TinyConfiguration requires Maven 3 and JDK 8.<br>
 The generated JARs is compatible only with Java 8 and higher.
 
