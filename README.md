@@ -8,7 +8,7 @@
 - [Example](#example)
 - [Build & Changelog](#build--changelog)
 - [Feedback](#feedback)
-- [Acknowledgments](#acknowledgments)
+- [License](#license)
 
 ## Introduction
 Easily create and manage configuration files for your programs, 
@@ -39,7 +39,7 @@ A few of the things you can do with TinyConfiguration:
 ## Example
 
 This tutorial covers most of the methods available in the library, 
-for further information, check the javadoc.
+for further information check the javadoc.
 
 ```java
 public class Main {
@@ -179,10 +179,10 @@ release.
 ## Feedback
 If there's anything you'd like to chat about or 
 you want to send me feedback about this project,
-<br>you can reach me on my [e-mail](baittiner.giuseppe.dev@gmail.com), 
+<br>you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com), 
 ***feature requests are always welcome***.
 
-## Acknowledgments
+## License
 Copyright 2019 Giuseppe Baittiner
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
