@@ -16,6 +16,8 @@ check that all properties are present and formally valid.
 TinyConfiguration is a software library that takes charge of this work 
 and tries to be simple and effective at the same time.
 
+<br>
+
 <p align="center">
     <b>Screenshot</b>
 </p>
