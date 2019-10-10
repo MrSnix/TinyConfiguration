@@ -56,7 +56,7 @@ public class Main {
 
         /* The next step will be really important
          * because it defines which properties ConfigurationIO.read() can consider valid!
-         * Please check configuration.setPolicy() for further information */
+         * Please check Configuration.Builder().setPolicy() for further information */
 
         /* These properties are invented just as example,
          * you can put whatever your software needs */

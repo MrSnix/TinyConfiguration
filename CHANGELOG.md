@@ -6,7 +6,9 @@ All notable changes to TinyConfiguration will be documented in this file.
 **Release date:** [ *???* ]
 
 **New**
-- WIP
+- Configuration.put(key, value) - Add support for arrays and lists
+- Configuration.put(key, value) - Add support for custom data type
+- Configuration.put(key, value) - Add support for property groups
 
 **Changed**
 - WIP
