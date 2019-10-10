@@ -10,7 +10,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <groupId>org.tinyconfiguration</groupId>
+    <groupId>io.github.mrsnix</groupId>
     <artifactId>tiny-configuration</artifactId>
     <version>0.0.1</version>
 
