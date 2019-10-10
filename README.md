@@ -185,6 +185,7 @@ release.
 |   0.1   |                      Initial release                      |
 
 ## What's next?
+
 **Version:** 0.2
 
 **Release date:** [ *???* ]
@@ -194,7 +195,7 @@ release.
 - Insert and retrieve **arrays** and **lists**
 - Insert and retrieve **custom** data **type**
 
-
+The full changelog is available at [CHANGELOG.md](CHANGELOG.md)
 
 ## Feedback
 If there's anything you'd like to chat about or 
