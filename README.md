@@ -7,6 +7,7 @@
 - [Features](#features)
 - [Example](#example)
 - [Build, download & changelog](#build-download--changelog)
+- [What's next?](#whats-next)
 - [Feedback](#feedback)
 - [License](#license)
 
@@ -182,6 +183,17 @@ release.
 | Version |                        Description                        |
 |:-------:|:---------------------------------------------------------:|
 |   0.1   |                      Initial release                      |
+
+## What's next?
+**Version:** 0.2
+
+**Release date:** [ *???* ]
+
+**Features:**
+- Insert, edit and retrieve **property groups**
+- Insert and retrieve **arrays** and **lists**
+- Insert and retrieve **custom** data **type**
+
 
 
 ## Feedback
