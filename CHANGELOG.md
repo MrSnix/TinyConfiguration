@@ -9,6 +9,7 @@ All notable changes to TinyConfiguration will be documented in this file.
 
 - Features
   - Support for property groups
+  - Export configuration as JSON, YAML and XML
 
 - Methods
   - Configuration.put(key, value)
