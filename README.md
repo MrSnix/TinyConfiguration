@@ -168,6 +168,21 @@ and all JARs will be available at the root directory.
 
 #### Download
 
+##### Maven
+
+To use the package, you need to use following Maven dependency:
+
+```
+<dependency>
+  <groupId>io.github.mrsnix</groupId>
+  <artifactId>tiny-configuration</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
+Package has no external dependencies, except for testing (which uses JUnit).
+
+##### Non-Maven
+
 You can get the latest precompiled .jar files 
 from [this page](https://github.com/MrSnix/TinyConfiguration/releases).
 
