@@ -13,6 +13,11 @@
     <groupId>io.github.mrsnix</groupId>
     <artifactId>tiny-configuration</artifactId>
     <version>0.0.1</version>
+    <packaging>jar</packaging>
+
+    <name>TinyConfiguration</name>
+    <description>TinyConfiguration is a simple and lightweight library to manage configuration files</description>
+    <url>https://github.com/MrSnix/TinyConfiguration</url>
 
     <licenses>
         <license>
@@ -48,7 +53,7 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -74,6 +79,38 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+
+            <!-- Staging plugin -->
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <!-- Verify & sign plugin -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
     </build>
@@ -94,5 +131,29 @@
         </dependency>
 
     </dependencies>
+
+    <!-- Distribution setting -->
+
+    <distributionManagement>
+
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+
+    </distributionManagement>
+
+    <!-- SCM setting -->
+
+    <scm>
+        <connection>scm:git:git://github.com/MrSnix/TinyConfiguration.git</connection>
+        <developerConnection>scm:git:ssh:github.com:MrSnix/TinyConfiguration.git</developerConnection>
+        <url>https://github.com/MrSnix/TinyConfiguration</url>
+    </scm>
 
 </project>
