@@ -1,6 +1,6 @@
 package org.tinyconfiguration.events;
 
-import org.tinyconfiguration.base.Property;
+import org.tinyconfiguration.property.PropertyDefinition;
 
 import java.util.EventListener;
 
@@ -17,7 +17,7 @@ public interface PropertyListener extends EventListener {
      *
      * @param property The property instance associated to the event
      */
-    void onChange(Property property);
+    void onChange(PropertyDefinition property);
 
     /**
      * All the events available

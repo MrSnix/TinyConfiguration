@@ -1,6 +1,7 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
+import org.tinyconfiguration.property.PropertyDefinition;
 import org.tinyconfiguration.utils.Delimiters;
 import org.tinyconfiguration.utils.SpecialCharacters;
 
@@ -256,7 +257,7 @@ public final class ConfigurationIO {
              BufferedWriter writer = new BufferedWriter(fw)) {
 
             // Iterating each property and writing the file
-            for (Property tmp : instance.getProperties()) {
+            for (PropertyDefinition tmp : instance.getProperties()) {
 
                 // Writing description
                 if (tmp.description() != null) {

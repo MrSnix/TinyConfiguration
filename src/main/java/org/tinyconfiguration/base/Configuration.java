@@ -2,6 +2,8 @@ package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
 import org.tinyconfiguration.events.PropertyListener;
+import org.tinyconfiguration.property.PropertyDefinition;
+import org.tinyconfiguration.property.PropertyValue;
 
 import java.util.*;
 
@@ -40,24 +42,27 @@ import java.util.*;
  * <ol>
  *     <li>{@link Configuration#put(String, String)} <small>[ RECOMMENDED ]</small></li>
  *     <li>{@link Configuration#put(String, String, String)} <small>[ RECOMMENDED ]</small></li>
- *     <li>{@link Configuration#put(Property)} <small>[ NOT RECOMMENDED ]</small></li>
+ *     <li>{@link Configuration#put(PropertyDefinition)} <small>[ NOT RECOMMENDED ]</small></li>
  * </ol>
  * <p>
  * While, the only way to remove properties is {@link Configuration#clear()}.<br>
  * Remember this will delete <u><b>all</b> the stored properties and their listeners</u>.
  * <p>As usual, it's possible to retrieve the current value for any key, using the following method:</p>
- * {@link Configuration#get(String)} which will retrieve the associated {@link Property} object from
+ * {@link Configuration#get(String)} which will retrieve the associated {@link PropertyDefinition} object from
  * the instance using a specific key.
  *
- * <p>You can parse then return the current value as described:</p>
+ * <p>You can parse then return the current value as described using PropertyDefinition#getValue(): </p>
  *
  * <p>
  *     <ul>
- *          <li>{@link Property#asString()}</li>
- *          <li>{@link Property#asBoolean()}</li>
- *          <li>{@link Property#asInt()}</li>
- *          <li>{@link Property#asFloat()}</li>
- *          <li>{@link Property#asDouble()}</li>
+ *          <li>{@link PropertyValue#asString()}</li>
+ *          <li>{@link PropertyValue#asBoolean()}</li>
+ *          <li>{@link PropertyValue#asByte()}</li>
+ *          <li>{@link PropertyValue#asShort()}</li>
+ *          <li>{@link PropertyValue#asInt()}</li>
+ *          <li>{@link PropertyValue#asLong()}</li>
+ *          <li>{@link PropertyValue#asFloat()}</li>
+ *          <li>{@link PropertyValue#asDouble()}</li>
  *     </ul>
  *
  * <p>
@@ -89,7 +94,7 @@ public final class Configuration {
 
     private String filename;
     private String pathname;
-    private LinkedHashMap<String, Property> properties;
+    private LinkedHashMap<String, PropertyDefinition> properties;
     private ConfigurationPolicy policy;
 
     private ArrayList<ConfigurationListener> onSave;
@@ -141,12 +146,12 @@ public final class Configuration {
      * Gets a specific property using the provided key
      *
      * @param key The key used to identify the value
-     * @return An immutable {@link Property} object used to retrieve any known information
+     * @return An immutable {@link PropertyDefinition} object used to retrieve any known information
      * @throws NullPointerException     If the key is null
      * @throws IllegalArgumentException If the key is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
-    public Property get(String key) {
+    public PropertyDefinition get(String key) {
 
         if (key == null)
             throw new NullPointerException("The key cannot be null");
@@ -157,7 +162,7 @@ public final class Configuration {
         if (this.properties.get(key) == null)
             throw new NoSuchElementException("The following key does not exists: " + key);
 
-        return Property.copy(this.properties.get(key));
+        return PropertyDefinition.copy(this.properties.get(key));
     }
 
     /**
@@ -185,21 +190,21 @@ public final class Configuration {
      *
      * @return All properties related to this configuration object as {@link List}
      */
-    public List<Property> getProperties() {
-        return Property.copy(this.properties.values());
+    public List<PropertyDefinition> getProperties() {
+        return PropertyDefinition.copy(this.properties.values());
     }
 
     /**
-     * Insert a new {@link Property} object, if it already exists the old value will be replaced.
+     * Insert a new {@link PropertyDefinition} object, if it already exists the old value will be replaced.
      *
-     * @param property The new {@link Property} to store inside the configuration
+     * @param property The new {@link PropertyDefinition} to store inside the configuration
      * @throws NullPointerException     If the property reference is null
-     * @throws NullPointerException     If {@link Property#key()} is null
-     * @throws NullPointerException     If {@link Property#asString()} is null
-     * @throws IllegalArgumentException If {@link Property#key()} is empty
-     * @throws IllegalArgumentException If {@link Property#asString()} is empty
+     * @throws NullPointerException     If {@link PropertyDefinition#key()} is null
+     * @throws NullPointerException     If {@link PropertyDefinition#asString()} is null
+     * @throws IllegalArgumentException If {@link PropertyDefinition#key()} is empty
+     * @throws IllegalArgumentException If {@link PropertyDefinition#asString()} is empty
      */
-    public void put(Property property) {
+    public void put(PropertyDefinition property) {
 
         if (property == null)
             throw new NullPointerException("The property cannot be null");
@@ -225,7 +230,7 @@ public final class Configuration {
     }
 
     /**
-     * Insert a new {@link Property} object, if it already exists the old value will be replaced.
+     * Insert a new {@link PropertyDefinition} object, if it already exists the old value will be replaced.
      *
      * @param key   The property key
      * @param value The property value
@@ -248,7 +253,7 @@ public final class Configuration {
         if (value.isEmpty())
             throw new IllegalArgumentException("The value cannot be empty");
 
-        this.properties.put(key, new Property(key, value));
+        this.properties.put(key, new PropertyDefinition(key, value));
 
         if (this.onPropertyChange.get(key) != null) {
             this.onPropertyChange.get(key).forEach(listener -> listener.onChange(this.get(key)));
@@ -257,7 +262,7 @@ public final class Configuration {
     }
 
     /**
-     * Insert a new {@link Property} object, if it already exists the old value will be replaced.
+     * Insert a new {@link PropertyDefinition} object, if it already exists the old value will be replaced.
      *
      * @param key         The property key
      * @param value       The property value
@@ -285,7 +290,7 @@ public final class Configuration {
         if (description != null && description.isEmpty())
             throw new IllegalArgumentException("The description cannot be empty");
 
-        this.properties.put(key, new Property(key, value, description));
+        this.properties.put(key, new PropertyDefinition(key, value, description));
 
         if (this.onPropertyChange.get(key) != null) {
             this.onPropertyChange.get(key).forEach(listener -> listener.onChange(this.get(key)));
