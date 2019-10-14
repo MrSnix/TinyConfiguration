@@ -2,7 +2,7 @@ package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
 import org.tinyconfiguration.events.PropertyListener;
-import org.tinyconfiguration.property.PropertyDefinition;
+import org.tinyconfiguration.property.Property;
 import org.tinyconfiguration.property.PropertyValue;
 
 import java.util.*;
@@ -11,44 +11,15 @@ import java.util.*;
  * The {@link Configuration} class defines all properties included inside the configuration file
  *
  * <p>
- *
- * <p>It's an important component because all the relationship [ key - value ] stored will be
- * expected to be read from the concrete file, especially if the configuration policy is
- * set to {@link ConfigurationPolicy#STRICT_MODE}</p>
- *
- * <p>Let's explain better this concept using an example:</p>
- *
- * <pre>
- * {@code
- * // We add this property inside our configuration instance
- * cfg.put("LANGUAGE", "EN");
- * // Now, we save on disk
- * ConfigurationIO.write(cfg);
- *
- * //Let's look what we have generated as file
- * __________<< somewhere/on/disk/configuration.cfg >> ___________
- *
- * LANGUAGE="EN";
- * _______________________________________________________________
- *
- * // Now, we want to load it again, but first we reset our configuration instance
- * cfg.clear();
- *
- * // So, what's gonna happen now, after all properties have been removed?
- * ConfigurationIO.read(cfg); -&gt; Throws exception with ConfigurationPolicy.RESTRICTED}
- * </pre>
- * <p>
- * To add properties to the object, you can use the following method which is overloaded as follow:
+ * To modify properties, you can do as the following example:
  * <ol>
- *     <li>{@link Configuration#put(String, String)} <small>[ RECOMMENDED ]</small></li>
- *     <li>{@link Configuration#put(String, String, String)} <small>[ RECOMMENDED ]</small></li>
- *     <li>{@link Configuration#put(PropertyDefinition)} <small>[ NOT RECOMMENDED ]</small></li>
+ *     // TODO Scrivere come modificare valori
  * </ol>
  * <p>
  * While, the only way to remove properties is {@link Configuration#clear()}.<br>
  * Remember this will delete <u><b>all</b> the stored properties and their listeners</u>.
  * <p>As usual, it's possible to retrieve the current value for any key, using the following method:</p>
- * {@link Configuration#get(String)} which will retrieve the associated {@link PropertyDefinition} object from
+ * {@link Configuration#get(String)} which will retrieve the associated {@link Property} object from
  * the instance using a specific key.
  *
  * <p>You can parse then return the current value as described using PropertyDefinition#getValue(): </p>
@@ -94,8 +65,7 @@ public final class Configuration {
 
     private String filename;
     private String pathname;
-    private LinkedHashMap<String, PropertyDefinition> properties;
-    private ConfigurationPolicy policy;
+    private LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
 
     private ArrayList<ConfigurationListener> onSave;
     private ArrayList<ConfigurationListener> onDelete;
@@ -112,13 +82,12 @@ public final class Configuration {
      *
      * @param filename The configuration filename
      * @param pathname The configuration pathname
-     * @param policy   The policy used by this configuration
+     * @param properties The configuration properties
      */
-    private Configuration(String filename, String pathname, ConfigurationPolicy policy) {
+    private Configuration(String filename, String pathname, LinkedHashMap<String, LinkedHashMap<String, Property>> properties) {
         this.filename = filename;
         this.pathname = pathname;
-        this.properties = new LinkedHashMap<>();
-        this.policy = policy;
+        this.properties = properties;
         this.onSave = new ArrayList<>();
         this.onDelete = new ArrayList<>();
         this.onPropertyChange = new HashMap<>();
@@ -143,26 +112,33 @@ public final class Configuration {
     }
 
     /**
-     * Gets a specific property using the provided key
+     * Gets a specific property using the provided key and group
      *
+     * @param group The group related to the key, it may be null if no group were associated with the key
      * @param key The key used to identify the value
-     * @return An immutable {@link PropertyDefinition} object used to retrieve any known information
+     * @return An immutable {@link Property} object used to retrieve any known information
      * @throws NullPointerException     If the key is null
      * @throws IllegalArgumentException If the key is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
-    public PropertyDefinition get(String key) {
+    public Property get(String group, String key) {
 
         if (key == null)
             throw new NullPointerException("The key cannot be null");
 
-        if (key.isEmpty())
+        if (key.trim().isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        if (this.properties.get(key) == null)
+        if (group != null && group.trim().isEmpty())
+            throw new NullPointerException("The group cannot be empty");
+
+        if (group != null && this.properties.get(group) == null)
+            throw new NoSuchElementException("The following group does not exists: " + group);
+
+        if (this.properties.get(group).get(key) == null)
             throw new NoSuchElementException("The following key does not exists: " + key);
 
-        return PropertyDefinition.copy(this.properties.get(key));
+        return Property.copy(this.properties.get(group).get(key));
     }
 
     /**
@@ -182,120 +158,6 @@ public final class Configuration {
             throw new IllegalArgumentException("The key cannot be empty");
 
         return this.properties.containsKey(key);
-    }
-
-
-    /**
-     * Retrieves an immutable {@link List} containing all the properties stored
-     *
-     * @return All properties related to this configuration object as {@link List}
-     */
-    public List<PropertyDefinition> getProperties() {
-        return PropertyDefinition.copy(this.properties.values());
-    }
-
-    /**
-     * Insert a new {@link PropertyDefinition} object, if it already exists the old value will be replaced.
-     *
-     * @param property The new {@link PropertyDefinition} to store inside the configuration
-     * @throws NullPointerException     If the property reference is null
-     * @throws NullPointerException     If {@link PropertyDefinition#key()} is null
-     * @throws NullPointerException     If {@link PropertyDefinition#asString()} is null
-     * @throws IllegalArgumentException If {@link PropertyDefinition#key()} is empty
-     * @throws IllegalArgumentException If {@link PropertyDefinition#asString()} is empty
-     */
-    public void put(PropertyDefinition property) {
-
-        if (property == null)
-            throw new NullPointerException("The property cannot be null");
-
-        if (property.key() == null)
-            throw new NullPointerException("The key cannot be null");
-
-        if (property.key().isEmpty())
-            throw new IllegalArgumentException("The key cannot be empty");
-
-        if (property.asString() == null)
-            throw new NullPointerException("The value cannot be null");
-
-        if (property.asString().isEmpty())
-            throw new IllegalArgumentException("The value cannot be empty");
-
-        this.properties.put(property.key(), property);
-
-        if (this.onPropertyChange.get(property.key()) != null) {
-            this.onPropertyChange.get(property.key()).forEach(listener -> listener.onChange(this.get(property.key())));
-        }
-
-    }
-
-    /**
-     * Insert a new {@link PropertyDefinition} object, if it already exists the old value will be replaced.
-     *
-     * @param key   The property key
-     * @param value The property value
-     * @throws NullPointerException     If key is null
-     * @throws NullPointerException     If value is null
-     * @throws IllegalArgumentException If key is empty
-     * @throws IllegalArgumentException If value is empty
-     */
-    public void put(String key, String value) {
-
-        if (key == null)
-            throw new NullPointerException("The key cannot be null");
-
-        if (key.isEmpty())
-            throw new IllegalArgumentException("The key cannot be empty");
-
-        if (value == null)
-            throw new NullPointerException("The value cannot be null");
-
-        if (value.isEmpty())
-            throw new IllegalArgumentException("The value cannot be empty");
-
-        this.properties.put(key, new PropertyDefinition(key, value));
-
-        if (this.onPropertyChange.get(key) != null) {
-            this.onPropertyChange.get(key).forEach(listener -> listener.onChange(this.get(key)));
-        }
-
-    }
-
-    /**
-     * Insert a new {@link PropertyDefinition} object, if it already exists the old value will be replaced.
-     *
-     * @param key         The property key
-     * @param value       The property value
-     * @param description The property description
-     * @throws NullPointerException     If key is null
-     * @throws NullPointerException     If value is null
-     * @throws IllegalArgumentException If key is empty
-     * @throws IllegalArgumentException If value is empty
-     * @throws IllegalArgumentException If description is empty
-     */
-    public void put(String key, String value, String description) {
-
-        if (key == null)
-            throw new NullPointerException("The key cannot be null");
-
-        if (key.isEmpty())
-            throw new IllegalArgumentException("The key cannot be empty");
-
-        if (value == null)
-            throw new NullPointerException("The value cannot be null");
-
-        if (value.isEmpty())
-            throw new IllegalArgumentException("The value cannot be empty");
-
-        if (description != null && description.isEmpty())
-            throw new IllegalArgumentException("The description cannot be empty");
-
-        this.properties.put(key, new PropertyDefinition(key, value, description));
-
-        if (this.onPropertyChange.get(key) != null) {
-            this.onPropertyChange.get(key).forEach(listener -> listener.onChange(this.get(key)));
-        }
-
     }
 
     /**
@@ -422,19 +284,9 @@ public final class Configuration {
     }
 
     /**
-     * Gets the {@link ConfigurationPolicy} associated to this configuration instance.
-     *
-     * @return The current policy set on this configuration object
-     */
-    ConfigurationPolicy getPolicy() {
-        return policy;
-    }
-
-    /**
      * The {@link Configuration.Builder} class allows to generate {@link Configuration} instances.
      * <p></p>
-     * <p>You can use {@link #build()} in order to retrieve a configuration instance,
-     * then using {@link Configuration#put(String, String)} is possible to insert new properties;
+     * <p>You can use {@link #build()} in order to retrieve a configuration instance.
      * The {@link Configuration.Builder} class will execute some checks on the given arguments
      * in order to prevent misleading values.</p>
      *
@@ -463,15 +315,14 @@ public final class Configuration {
 
         private String filename;
         private String pathname;
-        private ConfigurationPolicy policy;
+        private LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
 
         /**
          * The {@link Configuration.Builder} constructor
          *
-         * <p>By default, the configuration policy is set to {@link ConfigurationPolicy#STRICT_MODE}</p>
          */
         public Builder() {
-            this.policy = ConfigurationPolicy.STRICT_MODE;
+            this.properties = new LinkedHashMap<>();
         }
 
 
@@ -535,55 +386,26 @@ public final class Configuration {
             return this;
         }
 
-        /**
-         * Sets the configuration policy.
-         * <p></p>
-         * <p>The {@link ConfigurationPolicy} is a <b>really important</b> rule,<br>
-         * which must be applied carefully and with some consideration
-         * by the developer.</p>
-         * <p>
-         * This value affects the behaviours of the following methods:
-         * <ul>
-         *      <li>{@link ConfigurationIO#read(Configuration)}</li>
-         *      <li>{@link ConfigurationIO#write(Configuration)}</li>
-         * </ul>
-         *
-         * <br>
-         * <p>
-         * On {@link ConfigurationPolicy#STRICT_MODE}:
-         * <ol>
-         *     <li>Unknown properties read from the configuration file will cause an exception</li>
-         *     <li>Any missing property from the configuration file will cause an exception</li>
-         *     <li>Any invalid syntax from the configuration file will cause an exception</li>
-         * </ol>
-         * It is recommended when:
-         * <ul>
-         *     <li>You <b>do not want</b> allow the user to externally modify the configuration file</li>
-         *     <li>You <b>do not want</b> missing property from the configuration file</li>
-         * </ul>
-         * <p>
-         * On {@link ConfigurationPolicy#TOLERANT_MODE}:
-         * <ol>
-         *     <li>Unknown properties read from the configuration file will be loaded</li>
-         *     <li>Any missing property from the configuration file will be ignored</li>
-         *     <li>Any invalid syntax from the configuration file will cause an exception</li>
-         * </ol>
-         * It is recommended when:
-         * <ul>
-         *     <li>You <b>want</b> allow the user to externally modify the configuration file</li>
-         *     <li>You <b>want</b> to ignore missing property from the configuration file</li>
-         * </ul>
-         * <p>
-         * By default, the configuration policy is set to {@link ConfigurationPolicy#STRICT_MODE}
-         *
-         * @return The {@link Configuration.Builder} current instance
-         */
-        public Configuration.Builder setPolicy(ConfigurationPolicy policy) {
+        public Configuration.Builder put(Property property) {
 
-            if (policy == null)
-                throw new NullPointerException("The policy cannot be null");
+            if (property == null)
+                throw new NullPointerException("The property object cannot be null");
 
-            this.policy = policy;
+            // Just in case, it has not been created yet
+            LinkedHashMap<String, Property> property_group = new LinkedHashMap<>();
+            property_group.put(property.getKey(), property);
+
+            // If the group already exists
+            if (properties.get(property.getGroup()) != null) {
+                // Get group by group-key, then we add it
+                properties.get(property.getGroup()).put(property.getKey(), property);
+            }
+            // else we create it now
+            else {
+                // Let's add our newly created group
+                this.properties.put(property.getGroup(), property_group);
+            }
+
             return this;
         }
 
@@ -597,9 +419,8 @@ public final class Configuration {
 
             Objects.requireNonNull(filename, "The filename must be set!");
             Objects.requireNonNull(pathname, "The pathname must be set!");
-            Objects.requireNonNull(policy, "The policy cannot be null");
 
-            return new Configuration(filename, pathname, policy);
+            return new Configuration(filename, pathname, properties);
         }
 
     }
