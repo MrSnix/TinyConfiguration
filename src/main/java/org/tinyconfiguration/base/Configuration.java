@@ -112,13 +112,36 @@ public final class Configuration {
     }
 
     /**
-     * Gets a specific property using the provided key and group
+     * Gets a specific property using the provided key
      *
-     * @param group The group related to the key, it may be null if no group were associated with the key
      * @param key The key used to identify the value
      * @return An immutable {@link Property} object used to retrieve any known information
      * @throws NullPointerException     If the key is null
      * @throws IllegalArgumentException If the key is empty
+     * @throws NoSuchElementException   If the key does not match any property
+     */
+    public Property get(String key) {
+
+        if (key == null)
+            throw new NullPointerException("The key cannot be null");
+
+        if (key.trim().isEmpty())
+            throw new IllegalArgumentException("The key cannot be empty");
+
+        if (this.properties.get(null).get(key) == null)
+            throw new NoSuchElementException("The following key does not exists: " + key);
+
+        return Property.copy(this.properties.get(null).get(key));
+    }
+
+    /**
+     * Gets a specific property using the provided key and group
+     *
+     * @param group The group related to the key
+     * @param key   The key used to identify the value
+     * @return An immutable {@link Property} object used to retrieve any known information
+     * @throws NullPointerException     If the key or group is null
+     * @throws IllegalArgumentException If the key is empty or the group is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
     public Property get(String group, String key) {
@@ -129,10 +152,13 @@ public final class Configuration {
         if (key.trim().isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        if (group != null && group.trim().isEmpty())
-            throw new NullPointerException("The group cannot be empty");
+        if (group == null)
+            throw new NullPointerException("The group cannot be null");
 
-        if (group != null && this.properties.get(group) == null)
+        if (group.trim().isEmpty())
+            throw new IllegalArgumentException("The group cannot be empty");
+
+        if (this.properties.get(group) == null)
             throw new NoSuchElementException("The following group does not exists: " + group);
 
         if (this.properties.get(group).get(key) == null)
@@ -157,7 +183,37 @@ public final class Configuration {
         if (key.isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        return this.properties.containsKey(key);
+        return this.properties.get(null).containsKey(key);
+    }
+
+    /**
+     * Check if a specific key is stored by the given group
+     *
+     * @param group The group related to the key
+     * @param key   The key used to identify the value
+     * @return True or false
+     * @throws NullPointerException     If the key or group is null
+     * @throws IllegalArgumentException If the key or group is empty
+     * @throws NoSuchElementException   If the group does not exists
+     */
+    public boolean contains(String group, String key) {
+
+        if (key == null)
+            throw new NullPointerException("The key cannot be null");
+
+        if (key.isEmpty())
+            throw new IllegalArgumentException("The key cannot be empty");
+
+        if (group == null)
+            throw new NullPointerException("The group cannot be null");
+
+        if (group.trim().isEmpty())
+            throw new IllegalArgumentException("The group cannot be empty");
+
+        if (this.properties.get(group) == null)
+            throw new NoSuchElementException("The following group does not exists: " + group);
+
+        return this.properties.get(group).containsKey(key);
     }
 
     /**

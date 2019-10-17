@@ -119,8 +119,6 @@ class ConfigurationTest {
 
             cfg = cfg_builder.build();
 
-
-
         });
     }
 
