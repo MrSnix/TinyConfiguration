@@ -270,5 +270,10 @@ class ConfigurationTest {
         assertEquals(0, cfg.getSaveListeners().size());
         assertEquals(1, cfg.getDeleteListeners().size());
 
+        cfg.resetListeners();
+
+        assertTrue(cfg.getSaveListeners().isEmpty());
+        assertTrue(cfg.getDeleteListeners().isEmpty());
+
     }
 }
