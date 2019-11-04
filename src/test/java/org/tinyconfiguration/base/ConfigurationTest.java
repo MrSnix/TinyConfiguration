@@ -1,14 +1,18 @@
 package org.tinyconfiguration.base;
 
 import org.junit.jupiter.api.Test;
+import org.tinyconfiguration.events.ConfigurationListener;
 import org.tinyconfiguration.property.Property;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.tinyconfiguration.events.ConfigurationListener.Type;
 
 class ConfigurationTest {
 
     @Test
-    public void constructor__basic() {
+    void constructor() {
 
         assertDoesNotThrow(() -> {
             Configuration cfg = new Configuration.Builder().
@@ -57,69 +61,214 @@ class ConfigurationTest {
     }
 
     @Test
-    public void constructor__full() {
+    void get() {
+        // Creating new configuration file
+        Configuration.Builder cfg_builder = new Configuration.Builder().
+                setPathname("./").
+                setFilename("tiny-configuration.cfg");
 
-        assertDoesNotThrow(() -> {
+        Configuration cfg;
 
-            // Creating new configuration file
-            Configuration.Builder cfg_builder = new Configuration.Builder().
-                    setPathname("./").
-                    setFilename("tiny-configuration.cfg");
+        // Inserting new property
+        Property p = new Property.Builder().
+                setKey("language").
+                setValue("en").
+                setDescription("This is the application language").
+                setPlaceholder("en").
+                setOptional(false).
+                setValidator(property ->
+                        property.getValue().asString().equalsIgnoreCase("EN") ||
+                                property.getValue().asString().equalsIgnoreCase("IT")).
+                build();
 
-            Configuration cfg;
+        cfg_builder.put(p);
 
-            // Inserting new property
-            Property p = new Property.Builder().
-                    setKey("language").
-                    setValue("en").
-                    setDescription("This is the application language").
-                    setPlaceholder("en").
-                    setOptional(false).
-                    setValidator(property -> property.getValue().asString().equalsIgnoreCase("EN") || property.getValue().asString().equalsIgnoreCase("IT")).
-                    build();
-
-            cfg_builder.put(p);
-
-            cfg = cfg_builder.build();
+        cfg = cfg_builder.build();
 
 
-            // Asserting equality
-            assertEquals(p, cfg.get(null, "language"));
+        // Asserting equality
+        assertEquals(p, cfg.get(null, "language"));
 
-            // Inserting new property
-            p = new Property.Builder().
-                    setKey("username").
-                    setValue("root").
-                    setGroup("database").
-                    setDescription("This is the database username").
-                    setPlaceholder("root").
-                    setOptional(false).
-                    setValidator(property -> property.getValue().asString().length() >= 3).
-                    build();
+        // Inserting new property
+        p = new Property.Builder().
+                setKey("username").
+                setValue("root").
+                setGroup("database").
+                setDescription("This is the database username").
+                setPlaceholder("root").
+                setOptional(false).
+                setValidator(property -> property.getValue().asString().length() >= 3).
+                build();
 
-            cfg_builder.put(p);
+        cfg_builder.put(p);
 
-            cfg = cfg_builder.build();
+        cfg = cfg_builder.build();
 
-            // Asserting equality
-            assertEquals(p, cfg.get("database", "username"));
+        // Asserting equality
+        assertEquals(p, cfg.get("database", "username"));
 
-            // Inserting new property
-            p = new Property.Builder().
-                    setKey("password").
-                    setValue("1234567890").
-                    setGroup("database").
-                    setDescription("This is the database password").
-                    setPlaceholder("1234567890").
-                    setOptional(false).
-                    setValidator(property -> property.getValue().asString().length() >= 3).
-                    build();
+        // Inserting new property
+        p = new Property.Builder().
+                setKey("password").
+                setValue("1234567890").
+                setGroup("database").
+                setDescription("This is the database password").
+                setPlaceholder("1234567890").
+                setOptional(false).
+                setValidator(property -> property.getValue().asString().length() >= 3).
+                build();
 
-            cfg_builder.put(p);
+        cfg_builder.put(p);
 
-            cfg = cfg_builder.build();
+        cfg = cfg_builder.build();
 
-        });
+        // Asserting equality
+        assertEquals(p, cfg.get("database", "password"));
+
     }
 
+
+    @Test
+    void contains() {
+
+        // Creating new configuration file
+        Configuration.Builder cfg_builder = new Configuration.Builder().
+                setPathname("./").
+                setFilename("tiny-configuration.cfg");
+
+        // Inserting new property
+        Property p = new Property.Builder().
+                setKey("language").
+                setValue("en").
+                setDescription("This is the application language").
+                setPlaceholder("en").
+                setOptional(false).
+                setValidator(property ->
+                        property.getValue().asString().equalsIgnoreCase("EN") ||
+                                property.getValue().asString().equalsIgnoreCase("IT")).
+                build();
+
+        cfg_builder.put(p);
+
+        // Inserting new property
+        p = new Property.Builder().
+                setKey("password").
+                setValue("1234567890").
+                setGroup("database").
+                setDescription("This is the database password").
+                setPlaceholder("1234567890").
+                setOptional(false).
+                setValidator(property -> property.getValue().asString().length() >= 3).
+                build();
+
+        cfg_builder.put(p);
+
+        Configuration e = cfg_builder.build();
+
+        assertTrue(e.contains(null, "language"));
+        assertTrue(e.contains("database", "password"));
+
+        assertThrows(NullPointerException.class, () -> e.contains(null, null));
+
+        assertThrows(NullPointerException.class, () -> e.contains("", null));
+
+        assertThrows(NoSuchElementException.class, () -> e.contains("not-exists", "property"));
+
+    }
+
+    @Test
+    void isEmpty() {
+
+        // Creating new configuration file
+        Configuration cfg = new Configuration.Builder().
+                setPathname("./").
+                setFilename("tiny-configuration.cfg").build();
+
+        // Checking emptiness
+        assertTrue(cfg.isEmpty());
+
+        // Adding property
+        Configuration.Builder cfg_builder = new Configuration.Builder().
+                setPathname("./").
+                setFilename("tiny-configuration.cfg");
+
+        cfg_builder.put(new Property.Builder().
+                setKey("password").
+                setValue("1234567890").
+                setGroup(null).
+                setDescription("This is the database password").
+                setPlaceholder("1234567890").
+                setOptional(false).
+                setValidator(property -> property.getValue().asString().length() >= 3).
+                build());
+
+        cfg = cfg_builder.build();
+
+        // Now, checking again
+        assertFalse(cfg.isEmpty());
+
+    }
+
+    @Test
+    void addListener() {
+
+        ConfigurationListener listener = configuration -> {
+
+        };
+
+        Configuration.Builder cfg_builder = new Configuration.Builder().
+                setPathname("./").
+                setFilename("tiny-configuration.cfg");
+
+        cfg_builder.put(new Property.Builder().
+                setKey("password").
+                setValue("1234567890").
+                setGroup(null).
+                setDescription("This is the database password").
+                setPlaceholder("1234567890").
+                setOptional(false).
+                setValidator(property -> property.getValue().asString().length() >= 3).
+                build());
+
+        Configuration cfg = cfg_builder.build();
+
+        cfg.addListener(Type.ON_CONFIG_DELETE, listener);
+        cfg.addListener(Type.ON_CONFIG_SAVE, listener);
+
+        assertEquals(1, cfg.getSaveListeners().size());
+        assertEquals(1, cfg.getDeleteListeners().size());
+    }
+
+    @Test
+    void removeListener() {
+
+        ConfigurationListener listener0 = configuration -> {
+
+        };
+
+        ConfigurationListener listener1 = configuration -> {
+
+        };
+
+        ConfigurationListener listener2 = configuration -> {
+
+        };
+
+        Configuration cfg = new Configuration.Builder().
+                setPathname("./").
+                setFilename("tiny-configuration.cfg").
+                build();
+
+        cfg.addListener(Type.ON_CONFIG_DELETE, listener0);
+        cfg.addListener(Type.ON_CONFIG_DELETE, listener1);
+
+        cfg.addListener(Type.ON_CONFIG_SAVE, listener2);
+        cfg.removeListener(Type.ON_CONFIG_SAVE, listener2);
+
+        cfg.removeListener(Type.ON_CONFIG_DELETE, listener0);
+
+        assertEquals(0, cfg.getSaveListeners().size());
+        assertEquals(1, cfg.getDeleteListeners().size());
+
+    }
 }

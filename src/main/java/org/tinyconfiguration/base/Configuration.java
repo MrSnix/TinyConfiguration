@@ -1,7 +1,6 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
-import org.tinyconfiguration.events.PropertyListener;
 import org.tinyconfiguration.property.Property;
 import org.tinyconfiguration.property.PropertyValue;
 
@@ -16,10 +15,10 @@ import java.util.*;
  *     // TODO Scrivere come modificare valori
  * </ol>
  * <p>
- * While, the only way to remove properties is {@link Configuration#clear()}.<br>
+ * While, the only way to remove properties is {@link Configuration#resetListeners()} ()}.<br>
  * Remember this will delete <u><b>all</b> the stored properties and their listeners</u>.
  * <p>As usual, it's possible to retrieve the current value for any key, using the following method:</p>
- * {@link Configuration#get(String)} which will retrieve the associated {@link Property} object from
+ * {@link Configuration#get(String, String)}} which will retrieve the associated {@link Property} object from
  * the instance using a specific key.
  *
  * <p>You can parse then return the current value as described using PropertyDefinition#getValue(): </p>
@@ -49,7 +48,7 @@ import java.util.*;
  *
  * <p>
  * It's even possible to track down a single property change,
- * using {@link Configuration#addListener(PropertyListener.Type, String, PropertyListener)} )}
+ * using // TODO Fix this
  * in order to execute some custom code replacing the tracked value.
  * <pre>
  * {@code
@@ -69,7 +68,6 @@ public final class Configuration {
 
     private ArrayList<ConfigurationListener> onSave;
     private ArrayList<ConfigurationListener> onDelete;
-    private HashMap<String, ArrayList<PropertyListener>> onPropertyChange;
 
     /**
      * Private empty constructor
@@ -90,7 +88,6 @@ public final class Configuration {
         this.properties = properties;
         this.onSave = new ArrayList<>();
         this.onDelete = new ArrayList<>();
-        this.onPropertyChange = new HashMap<>();
     }
 
     /**
@@ -112,29 +109,6 @@ public final class Configuration {
     }
 
     /**
-     * Gets a specific property using the provided key
-     *
-     * @param key The key used to identify the value
-     * @return An immutable {@link Property} object used to retrieve any known information
-     * @throws NullPointerException     If the key is null
-     * @throws IllegalArgumentException If the key is empty
-     * @throws NoSuchElementException   If the key does not match any property
-     */
-    public Property get(String key) {
-
-        if (key == null)
-            throw new NullPointerException("The key cannot be null");
-
-        if (key.trim().isEmpty())
-            throw new IllegalArgumentException("The key cannot be empty");
-
-        if (this.properties.get(null).get(key) == null)
-            throw new NoSuchElementException("The following key does not exists: " + key);
-
-        return Property.copy(this.properties.get(null).get(key));
-    }
-
-    /**
      * Gets a specific property using the provided key and group
      *
      * @param group The group related to the key
@@ -152,10 +126,7 @@ public final class Configuration {
         if (key.trim().isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        if (group == null)
-            throw new NullPointerException("The group cannot be null");
-
-        if (group.trim().isEmpty())
+        if (group != null && group.trim().isEmpty())
             throw new IllegalArgumentException("The group cannot be empty");
 
         if (this.properties.get(group) == null)
@@ -165,25 +136,6 @@ public final class Configuration {
             throw new NoSuchElementException("The following key does not exists: " + key);
 
         return Property.copy(this.properties.get(group).get(key));
-    }
-
-    /**
-     * Check if a specific key is stored by the configuration object
-     *
-     * @param key The key used to identify the value
-     * @return True or false
-     * @throws NullPointerException     If the key is null
-     * @throws IllegalArgumentException If the key is empty
-     */
-    public boolean contains(String key) {
-
-        if (key == null)
-            throw new NullPointerException("The key cannot be null");
-
-        if (key.isEmpty())
-            throw new IllegalArgumentException("The key cannot be empty");
-
-        return this.properties.get(null).containsKey(key);
     }
 
     /**
@@ -204,10 +156,7 @@ public final class Configuration {
         if (key.isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        if (group == null)
-            throw new NullPointerException("The group cannot be null");
-
-        if (group.trim().isEmpty())
+        if (group != null && group.trim().isEmpty())
             throw new IllegalArgumentException("The group cannot be empty");
 
         if (this.properties.get(group) == null)
@@ -226,18 +175,6 @@ public final class Configuration {
     }
 
     /**
-     * Removes all the properties and listeners associated to the current configuration object
-     */
-    public void clear() {
-
-        this.onSave.clear();
-        this.onDelete.clear();
-        this.onPropertyChange.clear();
-
-        this.properties.clear();
-    }
-
-    /**
      * Sets a new listener for any {@link ConfigurationListener.Type} value.
      *
      * @param type     The event type
@@ -250,30 +187,6 @@ public final class Configuration {
                 break;
             case ON_CONFIG_DELETE:
                 this.onDelete.add(listener);
-                break;
-        }
-    }
-
-    /**
-     * Sets a new listener for any {@link PropertyListener.Type} value.
-     *
-     * @param type     The event type
-     * @param key      The key associated with the requested property
-     * @param listener The custom function to execute when the event will be fired
-     */
-    public void addListener(PropertyListener.Type type, String key, PropertyListener listener) {
-        switch (type) {
-            case ON_PROPERTY_UPDATE:
-                if (this.properties.get(key) == null) {
-                    throw new NoSuchElementException("The following key does not exists: " + key);
-                }
-
-                if (this.onPropertyChange.get(key) != null) {
-                    this.onPropertyChange.get(key).add(listener);
-                } else {
-                    this.onPropertyChange.put(key, new ArrayList<>());
-                    this.onPropertyChange.get(key).add(listener);
-                }
                 break;
         }
     }
@@ -296,21 +209,12 @@ public final class Configuration {
     }
 
     /**
-     * Remove listener for any {@link PropertyListener.Type} value.
-     *
-     * @param type     The event type
-     * @param key      The key associated with the requested property
-     * @param listener The custom function reference which was associated to the event
+     * Removes all listeners associated to the current configuration object
      */
-    public void removeListener(PropertyListener.Type type, String key, PropertyListener listener) {
-        switch (type) {
-            case ON_PROPERTY_UPDATE:
-                if (this.onPropertyChange.get(key) != null)
-                    this.onPropertyChange.get(key).remove(listener);
-                break;
-        }
+    public void resetListeners() {
+        this.onSave.clear();
+        this.onDelete.clear();
     }
-
 
     /**
      * Returns a {@link TreeSet} containing all the keys stored inside this configuration instance
