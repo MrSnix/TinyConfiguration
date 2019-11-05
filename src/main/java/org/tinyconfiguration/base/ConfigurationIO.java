@@ -1,10 +1,17 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
+import org.tinyconfiguration.utils.ExportType;
 
+import javax.json.*;
+import javax.json.stream.JsonGenerator;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -18,7 +25,7 @@ import java.util.concurrent.Future;
  * <ul>
  *     <li>{@link ConfigurationIO#read(Configuration)} - Blocking method to load configuration files</li>
  *     <li>{@link ConfigurationIO#readAsync(Configuration)} - Non-blocking method to load configuration files</li>
- *     <li>{@link ConfigurationIO#write(Configuration)} - Blocking method to save configuration files</li>
+ *     <li>{@link ConfigurationIO#write(ExportType, Configuration)} - Blocking method to save configuration files</li>
  *     <li>{@link ConfigurationIO#writeAsync(Configuration)} - Non-blocking method to save configuration files</li>
  * </ul>
  *
@@ -36,8 +43,6 @@ import java.util.concurrent.Future;
  * @version 0.1
  */
 public final class ConfigurationIO {
-
-    private static final String PROPERTY_CHECKER = "(?<property>\\s*(?>#(?<description>.*?)#)?\\n*\\s*(?<key>.*?)=(?<value>.*\\\\?);)";
 
     /**
      * Private empty constructor
@@ -72,10 +77,23 @@ public final class ConfigurationIO {
     /**
      * Write the configuration file
      *
+     * @param type The export type which translate the configuration instance
      * @param instance The configuration instance to write
      * @throws IOException If anything goes wrong while processing the file
      */
-    public static void write(Configuration instance) throws IOException {
+    public static void write(ExportType type, Configuration instance) throws IOException {
+
+        switch (type) {
+
+            case JSON:
+                Writer._exportToJSON(instance);
+                break;
+            case XML:
+                Writer._exportToXML(instance);
+                break;
+            default:
+                throw new IllegalArgumentException("The following format is unknown: " + type);
+        }
 
     }
 
@@ -123,7 +141,78 @@ public final class ConfigurationIO {
      * @return True or false
      */
     public static boolean exist(Configuration instance) {
-        return Paths.get(instance.getPathname(), instance.getFilename()).toFile().exists();
+        return instance.getFile().exists();
+    }
+
+    static class Writer {
+
+        static void _exportToJSON(Configuration instance) throws IOException {
+
+            Map<String, Object> options = new HashMap<>(1);
+            options.put(JsonGenerator.PRETTY_PRINTING, true);
+
+            JsonWriterFactory writerFactory = Json.createWriterFactory(options);
+            JsonObject obj = ObjectWriter._writeAsJsonObject(instance);
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()));
+                 JsonWriter writer = writerFactory.createWriter(bw)) {
+
+                writer.writeObject(obj);
+
+            }
+
+        }
+
+        static void _exportToXML(Configuration instance) {
+
+        }
+
+    }
+
+    static class ObjectWriter {
+
+        static JsonObject _writeAsJsonObject(Configuration instance) {
+
+            JsonObjectBuilder root = Json.createObjectBuilder();
+            JsonArrayBuilder nodes = Json.createArrayBuilder();
+
+            root.add("name", instance.getName());
+            root.add("version", instance.getVersion());
+
+            instance.getGroups().forEach(group -> {
+
+                JsonObjectBuilder node = Json.createObjectBuilder();
+
+                JsonArrayBuilder properties = Json.createArrayBuilder();
+                JsonObjectBuilder property = Json.createObjectBuilder();
+
+                node.add("group", group);
+
+                instance.get(group).forEach(p -> {
+
+                    property.add("key", p.getKey());
+                    property.add("value", p.getValue().asString());
+
+                    if (p.getDescription() == null)
+                        property.addNull("description");
+                    else
+                        property.add("description", p.getDescription());
+
+                    properties.add(property);
+
+                });
+
+                node.add("properties", properties);
+
+                nodes.add(node);
+
+            });
+
+            root.add("groups", nodes);
+
+            return root.build();
+        }
+
     }
 
 }

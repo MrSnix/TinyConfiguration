@@ -8,7 +8,8 @@ package org.tinyconfiguration.utils;
  */
 public enum Delimiters {
 
-    ASSIGNMENT("="), DESCRIPTION("#"), ESCAPE("\\"), PROPERTY(";");
+    ASSIGNMENT("="), DESCRIPTION("#"), ESCAPE("\\"), PROPERTY(";"),
+    GROUP_OPEN("["), GROUP_CLOSE("]"), GROUP_NAME_SEPARATOR(".");
 
     private final String value;
 

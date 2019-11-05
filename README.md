@@ -153,6 +153,10 @@ public class Main {
 
 ## Build, download & changelog
 
+>This library **should not** be used in a production environment.  
+>TinyConfiguration is currently in an alpha state and any new update could break backward compatibility
+
+
 #### Building the library
 TinyConfiguration requires Maven 3 and JDK 8.<br>
 The generated JARs is compatible only with Java 8 and higher.

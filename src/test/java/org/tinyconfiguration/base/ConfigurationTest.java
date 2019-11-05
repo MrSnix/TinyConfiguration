@@ -16,6 +16,8 @@ class ConfigurationTest {
 
         assertDoesNotThrow(() -> {
             Configuration cfg = new Configuration.Builder().
+                    setName("ConfigurationTest").
+                    setVersion("1.0.0").
                     setPathname("./").
                     setFilename("tiny-configuration.cfg").
                     build();
@@ -55,6 +57,34 @@ class ConfigurationTest {
         });
 
         assertThrows(NullPointerException.class, () -> {
+            Configuration cfg = new Configuration.Builder().
+                    setName(null).
+                    setVersion("1.0.0").
+                    setPathname("./").
+                    setFilename("tiny-configuration.cfg").
+                    build();
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            Configuration cfg = new Configuration.Builder().
+                    setName("ConfigurationTest").
+                    setVersion(null).
+                    setPathname("./").
+                    setFilename("tiny-configuration.cfg").
+                    build();
+        });
+
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            Configuration cfg = new Configuration.Builder().
+                    setName("ConfigurationTest").
+                    setVersion("").
+                    setPathname("./").
+                    setFilename("tiny-configuration.cfg").
+                    build();
+        });
+
+        assertThrows(NullPointerException.class, () -> {
             Configuration cfg = new Configuration.Builder().build();
         });
 
@@ -64,6 +94,8 @@ class ConfigurationTest {
     void get() {
         // Creating new configuration file
         Configuration.Builder cfg_builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg");
 
@@ -73,8 +105,8 @@ class ConfigurationTest {
         Property p = new Property.Builder().
                 setKey("language").
                 setValue("en").
+                setGroup("general").
                 setDescription("This is the application language").
-                setPlaceholder("en").
                 setOptional(false).
                 setValidator(property ->
                         property.getValue().asString().equalsIgnoreCase("EN") ||
@@ -87,7 +119,7 @@ class ConfigurationTest {
 
 
         // Asserting equality
-        assertEquals(p, cfg.get(null, "language"));
+        assertEquals(p, cfg.get("general", "language"));
 
         // Inserting new property
         p = new Property.Builder().
@@ -95,7 +127,6 @@ class ConfigurationTest {
                 setValue("root").
                 setGroup("database").
                 setDescription("This is the database username").
-                setPlaceholder("root").
                 setOptional(false).
                 setValidator(property -> property.getValue().asString().length() >= 3).
                 build();
@@ -113,7 +144,6 @@ class ConfigurationTest {
                 setValue("1234567890").
                 setGroup("database").
                 setDescription("This is the database password").
-                setPlaceholder("1234567890").
                 setOptional(false).
                 setValidator(property -> property.getValue().asString().length() >= 3).
                 build();
@@ -133,30 +163,31 @@ class ConfigurationTest {
 
         // Creating new configuration file
         Configuration.Builder cfg_builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg");
 
+
+        assertThrows(NullPointerException.class, () -> {
+            // Inserting new property
+            Property p = new Property.Builder().
+                    setKey("language").
+                    setValue("en").
+                    setDescription("This is the application language").
+                    setOptional(false).
+                    setValidator(property ->
+                            property.getValue().asString().equalsIgnoreCase("EN") ||
+                                    property.getValue().asString().equalsIgnoreCase("IT")).
+                    build();
+        });
+
         // Inserting new property
         Property p = new Property.Builder().
-                setKey("language").
-                setValue("en").
-                setDescription("This is the application language").
-                setPlaceholder("en").
-                setOptional(false).
-                setValidator(property ->
-                        property.getValue().asString().equalsIgnoreCase("EN") ||
-                                property.getValue().asString().equalsIgnoreCase("IT")).
-                build();
-
-        cfg_builder.put(p);
-
-        // Inserting new property
-        p = new Property.Builder().
                 setKey("password").
                 setValue("1234567890").
                 setGroup("database").
                 setDescription("This is the database password").
-                setPlaceholder("1234567890").
                 setOptional(false).
                 setValidator(property -> property.getValue().asString().length() >= 3).
                 build();
@@ -165,8 +196,11 @@ class ConfigurationTest {
 
         Configuration e = cfg_builder.build();
 
-        assertTrue(e.contains(null, "language"));
         assertTrue(e.contains("database", "password"));
+
+        assertThrows(NullPointerException.class, () -> {
+            e.contains(null, "language");
+        });
 
         assertThrows(NullPointerException.class, () -> e.contains(null, null));
 
@@ -181,6 +215,8 @@ class ConfigurationTest {
 
         // Creating new configuration file
         Configuration cfg = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg").build();
 
@@ -189,15 +225,16 @@ class ConfigurationTest {
 
         // Adding property
         Configuration.Builder cfg_builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg");
 
         cfg_builder.put(new Property.Builder().
                 setKey("password").
                 setValue("1234567890").
-                setGroup(null).
+                setGroup("account").
                 setDescription("This is the database password").
-                setPlaceholder("1234567890").
                 setOptional(false).
                 setValidator(property -> property.getValue().asString().length() >= 3).
                 build());
@@ -217,15 +254,16 @@ class ConfigurationTest {
         };
 
         Configuration.Builder cfg_builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg");
 
         cfg_builder.put(new Property.Builder().
                 setKey("password").
                 setValue("1234567890").
-                setGroup(null).
+                setGroup("account").
                 setDescription("This is the database password").
-                setPlaceholder("1234567890").
                 setOptional(false).
                 setValidator(property -> property.getValue().asString().length() >= 3).
                 build());
@@ -255,6 +293,8 @@ class ConfigurationTest {
         };
 
         Configuration cfg = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg").
                 build();

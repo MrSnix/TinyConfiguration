@@ -11,7 +11,6 @@ public enum SpecialCharacters {
 
     ;
 
-
     /**
      * Replace all the special characters inside a given string
      *

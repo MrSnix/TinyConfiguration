@@ -15,19 +15,17 @@ public final class Property {
     private PropertyValue value;
     private String description;
     private String group;
-    private String placeholder;
     private boolean isOptional;
     private Predicate<Property> isValid;
 
     private Property() {
     }
 
-    private Property(String key, PropertyValue value, String description, String group, String placeholder, boolean isOptional, Predicate<Property> isValid) {
+    private Property(String key, PropertyValue value, String description, String group, boolean isOptional, Predicate<Property> isValid) {
         this.key = key;
         this.value = value;
         this.description = description;
         this.group = group;
-        this.placeholder = placeholder;
         this.isOptional = isOptional;
         this.isValid = isValid;
     }
@@ -48,10 +46,6 @@ public final class Property {
         return group;
     }
 
-    public String getPlaceholder() {
-        return placeholder;
-    }
-
     public boolean isOptional() {
         return isOptional;
     }
@@ -68,7 +62,6 @@ public final class Property {
         p.value = PropertyValue.copy(o.value);
         p.description = o.description;
         p.group = o.group;
-        p.placeholder = o.placeholder;
         p.isOptional = o.isOptional;
         p.isValid = o.isValid;
 
@@ -85,13 +78,12 @@ public final class Property {
                 Objects.equals(value, property.value) &&
                 Objects.equals(description, property.description) &&
                 Objects.equals(group, property.group) &&
-                Objects.equals(placeholder, property.placeholder) &&
                 Objects.equals(isValid, property.isValid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, value, description, group, placeholder, isOptional, isValid);
+        return Objects.hash(key, value, description, group, isOptional, isValid);
     }
 
     public static class Builder {
@@ -100,7 +92,6 @@ public final class Property {
         private PropertyValue value;
         private String description;
         private String group;
-        private String placeholder;
         private boolean isOptional;
         private Predicate<Property> isValid;
 
@@ -149,26 +140,13 @@ public final class Property {
 
         public Builder setGroup(String group) {
 
-            if (group != null && group.trim().isEmpty()) {
+            if (group == null)
+                throw new NullPointerException("The group name cannot be null");
+
+            if (group.trim().isEmpty())
                 throw new IllegalArgumentException("The group name cannot be empty");
-            }
 
             this.group = group;
-
-            return this;
-        }
-
-        public Builder setPlaceholder(String placeholder) {
-
-            if (placeholder == null) {
-                throw new NullPointerException("The placeholder value cannot be null");
-            }
-
-            if (placeholder.trim().isEmpty()) {
-                throw new IllegalArgumentException("The placeholder value cannot be empty");
-            }
-
-            this.placeholder = placeholder;
 
             return this;
         }
@@ -185,6 +163,7 @@ public final class Property {
             }
 
             this.isValid = validator;
+
             return this;
         }
 
@@ -192,9 +171,9 @@ public final class Property {
 
             Objects.requireNonNull(key, "The key must be set!");
             Objects.requireNonNull(value, "The value must be set!");
-            Objects.requireNonNull(placeholder, "The placeholder must be set!");
+            Objects.requireNonNull(group, "The group must be set!");
 
-            return new Property(key, value, description, group, placeholder, isOptional, isValid);
+            return new Property(key, value, description, group, isOptional, isValid);
         }
 
     }

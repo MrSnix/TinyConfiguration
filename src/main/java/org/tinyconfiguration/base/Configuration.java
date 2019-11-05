@@ -4,6 +4,8 @@ import org.tinyconfiguration.events.ConfigurationListener;
 import org.tinyconfiguration.property.Property;
 import org.tinyconfiguration.property.PropertyValue;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -62,8 +64,11 @@ import java.util.*;
  */
 public final class Configuration {
 
+    private String name;
     private String filename;
     private String pathname;
+    private File file;
+    private String version;
     private LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
 
     private ArrayList<ConfigurationListener> onSave;
@@ -82,12 +87,33 @@ public final class Configuration {
      * @param pathname The configuration pathname
      * @param properties The configuration properties
      */
-    private Configuration(String filename, String pathname, LinkedHashMap<String, LinkedHashMap<String, Property>> properties) {
+    private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, LinkedHashMap<String, Property>> properties) {
+        this.name = name;
+        this.version = version;
         this.filename = filename;
         this.pathname = pathname;
+        this.file = Paths.get(pathname, filename).toFile();
         this.properties = properties;
         this.onSave = new ArrayList<>();
         this.onDelete = new ArrayList<>();
+    }
+
+    /**
+     * Gets the name.
+     *
+     * @return The name ({@link String}) associated to the configuration object.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the version.
+     *
+     * @return The version ({@link String}) associated to the configuration object.
+     */
+    public String getVersion() {
+        return version;
     }
 
     /**
@@ -109,6 +135,15 @@ public final class Configuration {
     }
 
     /**
+     * Gets the file.
+     *
+     * @return The {@link File} associated to the configuration object.
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
      * Gets a specific property using the provided key and group
      *
      * @param group The group related to the key
@@ -126,7 +161,10 @@ public final class Configuration {
         if (key.trim().isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        if (group != null && group.trim().isEmpty())
+        if (group == null)
+            throw new NullPointerException("The group cannot be null");
+
+        if (group.trim().isEmpty())
             throw new IllegalArgumentException("The group cannot be empty");
 
         if (this.properties.get(group) == null)
@@ -136,6 +174,36 @@ public final class Configuration {
             throw new NoSuchElementException("The following key does not exists: " + key);
 
         return Property.copy(this.properties.get(group).get(key));
+    }
+
+    /**
+     * Gets a set of property using the provided group
+     *
+     * @param group The group identifier
+     * @return All the {@link Property} matching the group identifier
+     * @throws IllegalArgumentException If the the group is empty
+     * @throws NoSuchElementException   If the key does not match any property
+     */
+    public List<Property> get(String group) {
+
+        ArrayList<Property> propertiesList = new ArrayList<>();
+
+        if (group == null)
+            throw new NullPointerException("The group cannot be null");
+
+        if (group.trim().isEmpty())
+            throw new IllegalArgumentException("The group cannot be empty");
+
+        if (this.properties.get(group) == null)
+            throw new NoSuchElementException("The following group does not exists: " + group);
+
+        this.properties.get(group).forEach((s, property) -> {
+
+            propertiesList.add(Property.copy(property));
+
+        });
+
+        return propertiesList;
     }
 
     /**
@@ -156,7 +224,10 @@ public final class Configuration {
         if (key.isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
-        if (group != null && group.trim().isEmpty())
+        if (group == null)
+            throw new NullPointerException("The group cannot be null");
+
+        if (group.trim().isEmpty())
             throw new IllegalArgumentException("The group cannot be empty");
 
         if (this.properties.get(group) == null)
@@ -217,12 +288,35 @@ public final class Configuration {
     }
 
     /**
-     * Returns a {@link TreeSet} containing all the keys stored inside this configuration instance
+     * Returns a {@link Set} containing all groups stored inside this configuration instance
      *
-     * @return The keys stored in the configuration instance
+     * @return The group names stored inside the configuration instance
      */
-    TreeSet<String> getKeys() {
-        return new TreeSet<>(this.properties.keySet());
+    public Set<String> getGroups() {
+        return this.properties.keySet();
+    }
+
+    /**
+     * Returns an {@link ArrayList} containing all the properties stored inside this configuration instance
+     *
+     * @return The properties stored in the configuration instance
+     */
+    public List<Property> getProperties() {
+
+        ArrayList<Property> propertiesList = new ArrayList<>();
+
+        // Iterate on each group
+        this.properties.forEach((s, properties) -> {
+
+            // Iterate on each property
+            properties.forEach((s1, property) -> {
+
+                // Adding on list
+                propertiesList.add(Property.copy(property));
+            });
+        });
+
+        return propertiesList;
     }
 
     /**
@@ -273,6 +367,8 @@ public final class Configuration {
      */
     public static final class Builder {
 
+        private String name;
+        private String version;
         private String filename;
         private String pathname;
         private LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
@@ -285,6 +381,47 @@ public final class Configuration {
             this.properties = new LinkedHashMap<>();
         }
 
+        /**
+         * Sets the configuration name.
+         *
+         * @param name The configuration name
+         * @return The {@link Configuration.Builder} current instance
+         * @throws NullPointerException     If the given {@link String} is null
+         * @throws IllegalArgumentException If the given {@link String} is empty
+         */
+        public Builder setName(String name) {
+
+            if (name == null)
+                throw new NullPointerException("The name cannot be null");
+
+            if (name.isEmpty())
+                throw new IllegalArgumentException("The name cannot be empty");
+
+            this.name = name;
+
+            return this;
+        }
+
+        /**
+         * Sets the configuration version.
+         *
+         * @param version The configuration version value
+         * @return The {@link Configuration.Builder} current instance
+         * @throws NullPointerException     If the given {@link String} is null
+         * @throws IllegalArgumentException If the given {@link String} is empty
+         */
+        public Builder setVersion(String version) {
+
+            if (version == null)
+                throw new NullPointerException("The version cannot be null");
+
+            if (version.isEmpty())
+                throw new IllegalArgumentException("The version cannot be empty");
+
+            this.version = version;
+
+            return this;
+        }
 
         /**
          * Sets the configuration filename.
@@ -377,10 +514,12 @@ public final class Configuration {
          */
         public Configuration build() {
 
+            Objects.requireNonNull(name, "The name must be set!");
+            Objects.requireNonNull(version, "The version must be set!");
             Objects.requireNonNull(filename, "The filename must be set!");
             Objects.requireNonNull(pathname, "The pathname must be set!");
 
-            return new Configuration(filename, pathname, properties);
+            return new Configuration(name, version, filename, pathname, properties);
         }
 
     }

@@ -22,7 +22,7 @@ public class PropertyValue {
     }
 
     public byte asByte() {
-        return (byte) Integer.parseInt(value);
+        return Byte.parseByte(value);
     }
 
     public short asShort() {
