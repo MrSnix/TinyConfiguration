@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class ConfigurationIOTest {
 
     @Test
-    void write() {
+    void writeToJson() {
 
         Configuration.Builder builder = new Configuration.Builder().
                 setName("ConfigurationTest").
@@ -35,13 +35,18 @@ class ConfigurationIOTest {
                 setGroup("user").
                 build());
 
-        final Configuration cfg = builder.build();
+        final Configuration cfg0 = builder.build();
 
         assertDoesNotThrow(() -> {
-            ConfigurationIO.write(ExportType.JSON, cfg);
+            ConfigurationIO.write(ExportType.JSON, cfg0);
         });
 
-        builder = new Configuration.Builder().
+    }
+
+    @Test
+    void writeToXML() {
+
+        Configuration.Builder builder = new Configuration.Builder().
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
@@ -70,6 +75,40 @@ class ConfigurationIOTest {
         assertDoesNotThrow(() -> {
             ConfigurationIO.write(ExportType.XML, cfg0);
         });
-
     }
+
+    @Test
+    void writeToCsv() {
+
+        Configuration.Builder builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
+                setPathname("./").
+                setFilename("tiny-configuration.csv");
+
+        builder.put(new Property.Builder().
+                setKey("language").
+                setValue("en").
+                setGroup("general").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("username").
+                setValue("root").
+                setGroup("user").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("password").
+                setValue("toor").
+                setGroup("user").
+                build());
+
+        final Configuration cfg0 = builder.build();
+
+        assertDoesNotThrow(() -> {
+            ConfigurationIO.write(ExportType.CSV, cfg0);
+        });
+    }
+
 }

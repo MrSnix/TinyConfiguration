@@ -93,7 +93,6 @@ public final class ConfigurationIO {
     public static void write(ExportType type, Configuration instance) throws IOException {
 
         switch (type) {
-
             case JSON:
                 Writer._exportToJSON(instance);
                 break;
@@ -103,6 +102,9 @@ public final class ConfigurationIO {
                 } catch (ParserConfigurationException e) {
                     throw new IOException(e);
                 }
+                break;
+            case CSV:
+                Writer._exportToCSV(instance);
                 break;
             default:
                 throw new IllegalArgumentException("The following format is unknown: " + type);
@@ -157,6 +159,13 @@ public final class ConfigurationIO {
         return instance.getFile().exists();
     }
 
+    /**
+     * The {@link Writer} class provides methods to exports configurations data as common formats
+     *
+     * @author G. Baittiner
+     * @version 0.1
+     */
+
     static class Writer {
 
         static void _exportToJSON(Configuration instance) throws IOException {
@@ -191,6 +200,22 @@ public final class ConfigurationIO {
 
             srx.serialize(obj);
 
+        }
+
+        static void _exportToCSV(Configuration instance) throws IOException {
+
+            String[] csv = ObjectWriter._writeAsCsvObject(instance);
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()))) {
+
+                for (String line : csv) {
+                    bw.write(line);
+                    bw.newLine();
+                }
+
+                bw.flush();
+
+            }
         }
 
     }
@@ -294,6 +319,33 @@ public final class ConfigurationIO {
 
             return xml;
         }
+
+        static String[] _writeAsCsvObject(Configuration instance) {
+
+            StringBuilder sbx = new StringBuilder();
+
+            sbx.append("NAME").append(";").append("VERSION").append(System.lineSeparator());
+            sbx.append(instance.getName()).append(";").append(instance.getVersion()).
+                    append(System.lineSeparator());
+
+            sbx.append("GROUP").append(";").
+                    append("KEY").append(";").
+                    append("VALUE").append(";").
+                    append("DESCRIPTION").
+                    append(System.lineSeparator());
+
+            instance.getProperties().forEach(p -> {
+                sbx.append(p.getGroup()).append(";").
+                        append(p.getKey()).append(";").
+                        append(p.getValue().asString()).append(";").
+                        append(p.getDescription()).
+                        append(System.lineSeparator());
+            });
+
+            return sbx.toString().split(System.lineSeparator());
+
+        }
+
     }
 
 }

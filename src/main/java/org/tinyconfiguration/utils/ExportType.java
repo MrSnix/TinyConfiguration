@@ -1,5 +1,5 @@
 package org.tinyconfiguration.utils;
 
 public enum ExportType {
-    JSON, XML
+    JSON, XML, CSV
 }
