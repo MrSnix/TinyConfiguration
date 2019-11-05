@@ -1,14 +1,22 @@
 package org.tinyconfiguration.base;
 
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import org.tinyconfiguration.events.ConfigurationListener;
 import org.tinyconfiguration.utils.ExportType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +88,7 @@ public final class ConfigurationIO {
      * @param type The export type which translate the configuration instance
      * @param instance The configuration instance to write
      * @throws IOException If anything goes wrong while processing the file
+     * @throws IllegalArgumentException If the export format type is unknown
      */
     public static void write(ExportType type, Configuration instance) throws IOException {
 
@@ -89,7 +98,11 @@ public final class ConfigurationIO {
                 Writer._exportToJSON(instance);
                 break;
             case XML:
-                Writer._exportToXML(instance);
+                try {
+                    Writer._exportToXML(instance);
+                } catch (ParserConfigurationException e) {
+                    throw new IOException(e);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("The following format is unknown: " + type);
@@ -163,12 +176,31 @@ public final class ConfigurationIO {
 
         }
 
-        static void _exportToXML(Configuration instance) {
+        static void _exportToXML(Configuration instance) throws ParserConfigurationException, IOException {
+
+            Document obj = ObjectWriter._writeAsXMLObject(instance);
+
+            OutputFormat format = new OutputFormat();
+
+            format.setLineWidth(120);
+            format.setIndenting(true);
+            format.setIndent(4);
+            format.setEncoding(StandardCharsets.UTF_8.name());
+
+            XMLSerializer srx = new XMLSerializer(new FileWriter(instance.getFile()), format);
+
+            srx.serialize(obj);
 
         }
 
     }
 
+    /**
+     * The {@link ObjectWriter} class provides methods to convert the underlying data representation as common formats
+     *
+     * @author G. Baittiner
+     * @version 0.1
+     */
     static class ObjectWriter {
 
         static JsonObject _writeAsJsonObject(Configuration instance) {
@@ -213,6 +245,55 @@ public final class ConfigurationIO {
             return root.build();
         }
 
+        static Document _writeAsXMLObject(Configuration instance) throws ParserConfigurationException {
+
+            DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
+            // Using factory to get an instance of document builder
+            DocumentBuilder db = builder.newDocumentBuilder();
+            // Creating the doc representation
+            Document xml = db.newDocument();
+
+            // The root element
+            Element root = xml.createElement("configuration");
+
+            root.setAttribute("name", instance.getName());
+            root.setAttribute("version", instance.getVersion());
+
+            // This will contain all elements to attach to the root
+            Element groups = xml.createElement("groups");
+
+            instance.getGroups().forEach(name -> {
+
+                Element group = xml.createElement("group");
+
+                group.setAttribute("name", name);
+
+                Element properties = xml.createElement("properties");
+
+                instance.get(name).forEach(p -> {
+
+                    Element property = xml.createElement("property");
+
+                    property.setAttribute("key", p.getKey());
+                    property.setAttribute("value", p.getValue().asString());
+                    property.setAttribute("description", p.getDescription());
+
+                    properties.appendChild(property);
+
+                });
+
+                group.appendChild(properties);
+
+                groups.appendChild(group);
+
+            });
+
+            root.appendChild(groups);
+
+            xml.appendChild(root);
+
+            return xml;
+        }
     }
 
 }

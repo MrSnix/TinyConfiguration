@@ -15,7 +15,7 @@ class ConfigurationIOTest {
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
-                setFilename("tiny-configuration.cfg");
+                setFilename("tiny-configuration.json");
 
         builder.put(new Property.Builder().
                 setKey("language").
@@ -35,10 +35,41 @@ class ConfigurationIOTest {
                 setGroup("user").
                 build());
 
-        Configuration cfg = builder.build();
+        final Configuration cfg = builder.build();
 
         assertDoesNotThrow(() -> {
             ConfigurationIO.write(ExportType.JSON, cfg);
         });
+
+        builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
+                setPathname("./").
+                setFilename("tiny-configuration.xml");
+
+        builder.put(new Property.Builder().
+                setKey("language").
+                setValue("en").
+                setGroup("general").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("username").
+                setValue("root").
+                setGroup("user").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("password").
+                setValue("toor").
+                setGroup("user").
+                build());
+
+        final Configuration cfg0 = builder.build();
+
+        assertDoesNotThrow(() -> {
+            ConfigurationIO.write(ExportType.XML, cfg0);
+        });
+
     }
 }
