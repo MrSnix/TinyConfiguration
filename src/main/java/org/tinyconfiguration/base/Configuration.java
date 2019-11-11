@@ -62,6 +62,7 @@ import java.util.*;
  * @author G. Baittiner
  * @version 0.1
  */
+@SuppressWarnings("WeakerAccess")
 public final class Configuration {
 
     private String name;
@@ -197,11 +198,7 @@ public final class Configuration {
         if (this.properties.get(group) == null)
             throw new NoSuchElementException("The following group does not exists: " + group);
 
-        this.properties.get(group).forEach((s, property) -> {
-
-            propertiesList.add(Property.copy(property));
-
-        });
+        this.properties.get(group).forEach((s, property) -> propertiesList.add(Property.copy(property)));
 
         return propertiesList;
     }
@@ -371,7 +368,7 @@ public final class Configuration {
         private String version;
         private String filename;
         private String pathname;
-        private LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
+        private final LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
 
         /**
          * The {@link Configuration.Builder} constructor
@@ -483,6 +480,14 @@ public final class Configuration {
             return this;
         }
 
+        /**
+         * Insert a specific property inside the configuration instance
+         *
+         * @param property The property instance to insert
+         * @return The {@link Configuration.Builder} current instance
+         * @throws NullPointerException If the property is null
+         */
+        @SuppressWarnings("UnusedReturnValue")
         public Configuration.Builder put(Property property) {
 
             if (property == null)

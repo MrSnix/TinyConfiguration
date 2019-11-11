@@ -2,6 +2,7 @@ package org.tinyconfiguration.data.base;
 
 import java.util.Arrays;
 
+@SuppressWarnings("WeakerAccess")
 public final class Array extends Datatype {
 
     Array(Object value) {

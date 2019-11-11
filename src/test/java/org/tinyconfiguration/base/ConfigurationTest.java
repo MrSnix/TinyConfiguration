@@ -195,9 +195,7 @@ class ConfigurationTest {
 
         assertTrue(e.contains("database", "password"));
 
-        assertThrows(NullPointerException.class, () -> {
-            e.contains(null, "language");
-        });
+        assertThrows(NullPointerException.class, () -> e.contains(null, "language"));
 
         assertThrows(NullPointerException.class, () -> e.contains(null, null));
 

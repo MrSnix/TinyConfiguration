@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./img/TinyConfiguration.png">
+    <img alt="Logo" src="./img/TinyConfiguration.png">
 </p>
 
 ## Table of Contents

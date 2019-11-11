@@ -1,5 +1,6 @@
 package org.tinyconfiguration.data.base;
 
+@SuppressWarnings("WeakerAccess")
 public final class Value extends Datatype {
 
     Value(Object value) {

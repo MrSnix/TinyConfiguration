@@ -18,10 +18,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
 /**
@@ -35,7 +37,7 @@ import java.util.concurrent.Future;
  *     <li>{@link ConfigurationIO#read(Configuration)} - Blocking method to load configuration files</li>
  *     <li>{@link ConfigurationIO#readAsync(Configuration)} - Non-blocking method to load configuration files</li>
  *     <li>{@link ConfigurationIO#write(ExportType, Configuration)} - Blocking method to save configuration files</li>
- *     <li>{@link ConfigurationIO#writeAsync(Configuration)} - Non-blocking method to save configuration files</li>
+ *     <li>{@link ConfigurationIO#writeAsync(ExportType, Configuration)} - Non-blocking method to save configuration files</li>
  * </ul>
  *
  *
@@ -51,6 +53,7 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
+@SuppressWarnings("WeakerAccess")
 public final class ConfigurationIO {
 
     /**
@@ -67,6 +70,7 @@ public final class ConfigurationIO {
      * @param instance The configuration instance to read and update
      * @throws IOException If anything goes wrong while processing the file
      */
+    @SuppressWarnings("EmptyMethod")
     public static void read(Configuration instance) throws IOException {
 
     }
@@ -113,20 +117,28 @@ public final class ConfigurationIO {
     /**
      * Write the configuration file asynchronously
      *
+     * @param type The export type which translate the configuration instance
      * @param instance The configuration instance to write
-     * @throws IOException If anything goes wrong while processing the file
+     * @return Future object representing the writing task
      */
-    public static Future<Void> writeAsync(Configuration instance) throws IOException {
-        return null;
+    public static Future writeAsync(ExportType type, Configuration instance) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                write(type, instance);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
     }
 
     /**
      * Delete the configuration file
      *
      * @param instance The configuration instance to delete
-     * @return True or false
+     * @throws IOException If the configuration file cannot be deleted
      */
-    public static boolean delete(Configuration instance) {
+    public static void delete(Configuration instance) throws IOException {
 
         File cfg = Paths.get(instance.getPathname(), instance.getFilename()).toFile();
 
@@ -134,17 +146,24 @@ public final class ConfigurationIO {
             listener.execute(instance);
         }
 
-        return cfg.delete();
+        Files.delete(cfg.toPath());
     }
 
     /**
      * Delete the configuration file asynchronously
      *
      * @param instance The configuration instance to delete
-     * @return The result of the asynchronous deleting computation
+     * @return Future object representing the deleting task
      */
-    public static Future<Boolean> deleteAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> delete(instance));
+    public static Future deleteAsync(Configuration instance) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                delete(instance);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
     }
 
     /**
@@ -163,9 +182,15 @@ public final class ConfigurationIO {
      * @author G. Baittiner
      * @version 0.1
      */
-
     static class Writer {
 
+        /**
+         * This package-private method writes a JSON file on the system representing the configuration instance
+         *
+         * @param instance The configuration instance
+         * @throws IOException If something goes wrong on the writing process
+         * @see ObjectWriter#_writeAsJsonObject(Configuration)
+         */
         static void _exportToJSON(Configuration instance) throws IOException {
 
             Map<String, Object> options = new HashMap<>(1);
@@ -183,6 +208,14 @@ public final class ConfigurationIO {
 
         }
 
+        /**
+         * This package-private method writes an XML file on the system representing the configuration instance
+         *
+         * @param instance The configuration instance
+         * @throws IOException                  If something goes wrong on the writing process
+         * @throws ParserConfigurationException If something goes wrong on the parsing process
+         * @see ObjectWriter#_writeAsXMLObject(Configuration)
+         */
         static void _exportToXML(Configuration instance) throws ParserConfigurationException, IOException {
 
             Document obj = ObjectWriter._writeAsXMLObject(instance);
@@ -194,9 +227,13 @@ public final class ConfigurationIO {
             format.setIndent(4);
             format.setEncoding(StandardCharsets.UTF_8.name());
 
-            XMLSerializer srx = new XMLSerializer(new FileWriter(instance.getFile()), format);
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()))) {
 
-            srx.serialize(obj);
+                XMLSerializer srx = new XMLSerializer(bw, format);
+
+                srx.serialize(obj);
+
+            }
 
         }
 
@@ -210,6 +247,12 @@ public final class ConfigurationIO {
      */
     static class ObjectWriter {
 
+        /**
+         * This package-private method allow to generate a JSON object from the configuration instance
+         *
+         * @param instance The configuration instance
+         * @return The JsonObject representation of the following instance
+         */
         static JsonObject _writeAsJsonObject(Configuration instance) {
 
             JsonObjectBuilder root = Json.createObjectBuilder();
@@ -268,6 +311,13 @@ public final class ConfigurationIO {
             return root.build();
         }
 
+        /**
+         * This package-private method allow to generate an XML object from the configuration instance
+         *
+         * @param instance The configuration instance
+         * @return The XML document representation of the following instance
+         * @throws ParserConfigurationException If something goes wrong on the parsing process
+         */
         static Document _writeAsXMLObject(Configuration instance) throws ParserConfigurationException {
 
             DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
@@ -299,7 +349,7 @@ public final class ConfigurationIO {
 
                     Element key = xml.createElement("key");
                     Element desc = xml.createElement("description");
-                    Element values = null;
+                    Element values;
 
                     key.setTextContent(p.getKey());
                     desc.setTextContent(p.getDescription());
