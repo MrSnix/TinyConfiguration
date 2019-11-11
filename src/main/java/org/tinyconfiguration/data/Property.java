@@ -1,4 +1,6 @@
-package org.tinyconfiguration.property;
+package org.tinyconfiguration.data;
+
+import org.tinyconfiguration.data.base.Datatype;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -12,16 +14,16 @@ import java.util.function.Predicate;
 public final class Property {
 
     private String key;
-    private PropertyValue value;
+    private Datatype value;
     private String description;
     private String group;
     private boolean isOptional;
-    private Predicate<Property> isValid;
+    private Predicate<Datatype> isValid;
 
     private Property() {
     }
 
-    private Property(String key, PropertyValue value, String description, String group, boolean isOptional, Predicate<Property> isValid) {
+    private Property(String key, Datatype value, String description, String group, boolean isOptional, Predicate<Datatype> isValid) {
         this.key = key;
         this.value = value;
         this.description = description;
@@ -34,7 +36,7 @@ public final class Property {
         return key;
     }
 
-    public PropertyValue getValue() {
+    public Datatype getValue() {
         return value;
     }
 
@@ -51,7 +53,7 @@ public final class Property {
     }
 
     public boolean isValid() {
-        return this.isValid.test(this);
+        return this.isValid.test(this.value);
     }
 
     public static Property copy(Property o) {
@@ -59,26 +61,13 @@ public final class Property {
         Property p = new Property();
 
         p.key = o.key;
-        p.value = PropertyValue.copy(o.value);
+        p.value = Datatype.Utils.copy(o.value);
         p.description = o.description;
         p.group = o.group;
         p.isOptional = o.isOptional;
         p.isValid = o.isValid;
 
         return p;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Property property = (Property) o;
-        return isOptional == property.isOptional &&
-                Objects.equals(key, property.key) &&
-                Objects.equals(value, property.value) &&
-                Objects.equals(description, property.description) &&
-                Objects.equals(group, property.group) &&
-                Objects.equals(isValid, property.isValid);
     }
 
     @Override
@@ -89,11 +78,11 @@ public final class Property {
     public static class Builder {
 
         private String key;
-        private PropertyValue value;
+        private Datatype value;
         private String description;
         private String group;
         private boolean isOptional;
-        private Predicate<Property> isValid;
+        private Predicate<Datatype> isValid;
 
         public Builder() {
         }
@@ -113,17 +102,13 @@ public final class Property {
             return this;
         }
 
-        public Builder setValue(String value) {
+        public Builder setValue(Object value) {
 
             if (value == null) {
                 throw new NullPointerException("The value cannot be null");
             }
 
-            if (value.isEmpty()) {
-                throw new NullPointerException("The value cannot be empty");
-            }
-
-            this.value = new PropertyValue(value);
+            this.value = Datatype.Utils.generate(value);
 
             return this;
         }
@@ -156,7 +141,7 @@ public final class Property {
             return this;
         }
 
-        public Builder setValidator(Predicate<Property> validator) {
+        public Builder setValidator(Predicate<Datatype> validator) {
 
             if (validator == null) {
                 throw new NullPointerException("The validator function cannot be null");

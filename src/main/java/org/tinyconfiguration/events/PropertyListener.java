@@ -1,6 +1,6 @@
 package org.tinyconfiguration.events;
 
-import org.tinyconfiguration.property.Property;
+import org.tinyconfiguration.data.Property;
 
 import java.util.EventListener;
 

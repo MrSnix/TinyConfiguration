@@ -2,6 +2,7 @@ package org.tinyconfiguration.base;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import org.tinyconfiguration.data.base.Datatype;
 import org.tinyconfiguration.events.ConfigurationListener;
 import org.tinyconfiguration.utils.ExportType;
 import org.w3c.dom.Document;
@@ -103,9 +104,6 @@ public final class ConfigurationIO {
                     throw new IOException(e);
                 }
                 break;
-            case CSV:
-                Writer._exportToCSV(instance);
-                break;
             default:
                 throw new IllegalArgumentException("The following format is unknown: " + type);
         }
@@ -202,22 +200,6 @@ public final class ConfigurationIO {
 
         }
 
-        static void _exportToCSV(Configuration instance) throws IOException {
-
-            String[] csv = ObjectWriter._writeAsCsvObject(instance);
-
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()))) {
-
-                for (String line : csv) {
-                    bw.write(line);
-                    bw.newLine();
-                }
-
-                bw.flush();
-
-            }
-        }
-
     }
 
     /**
@@ -248,7 +230,23 @@ public final class ConfigurationIO {
                 instance.get(group).forEach(p -> {
 
                     property.add("key", p.getKey());
-                    property.add("value", p.getValue().asString());
+
+                    Datatype dt = p.getValue();
+
+                    if (dt.isArray()) {
+
+                        JsonArrayBuilder values = Json.createArrayBuilder();
+                        String[] tmp = dt.asArray().asStringArray();
+
+                        for (String s : tmp) {
+                            values.add(s);
+                        }
+
+                        property.add("values", values);
+
+                    } else {
+                        property.add("value", dt.asValue().asString());
+                    }
 
                     if (p.getDescription() == null)
                         property.addNull("description");
@@ -299,9 +297,45 @@ public final class ConfigurationIO {
 
                     Element property = xml.createElement("property");
 
-                    property.setAttribute("key", p.getKey());
-                    property.setAttribute("value", p.getValue().asString());
-                    property.setAttribute("description", p.getDescription());
+                    Element key = xml.createElement("key");
+                    Element desc = xml.createElement("description");
+                    Element values = null;
+
+                    key.setTextContent(p.getKey());
+                    desc.setTextContent(p.getDescription());
+
+                    Datatype dt = p.getValue();
+
+                    if (dt.isArray()) {
+
+                        String[] tmp = dt.asArray().asStringArray();
+
+                        values = xml.createElement("values");
+
+                        for (String s : tmp) {
+                            // Create single node
+                            Element e = xml.createElement("value");
+                            // Setting text
+                            e.setTextContent(s);
+                            // Appending
+                            values.appendChild(e);
+                        }
+
+                    } else {
+                        // Create single node
+                        values = xml.createElement("value");
+                        // Setting text
+                        values.setTextContent(dt.asValue().asString());
+                    }
+
+                    if (p.getDescription() == null)
+                        desc.setTextContent("null");
+                    else
+                        desc.setTextContent(p.getDescription());
+
+                    property.appendChild(key);
+                    property.appendChild(desc);
+                    property.appendChild(values);
 
                     properties.appendChild(property);
 
@@ -318,32 +352,6 @@ public final class ConfigurationIO {
             xml.appendChild(root);
 
             return xml;
-        }
-
-        static String[] _writeAsCsvObject(Configuration instance) {
-
-            StringBuilder sbx = new StringBuilder();
-
-            sbx.append("NAME").append(";").append("VERSION").append(System.lineSeparator());
-            sbx.append(instance.getName()).append(";").append(instance.getVersion()).
-                    append(System.lineSeparator());
-
-            sbx.append("GROUP").append(";").
-                    append("KEY").append(";").
-                    append("VALUE").append(";").
-                    append("DESCRIPTION").
-                    append(System.lineSeparator());
-
-            instance.getProperties().forEach(p -> {
-                sbx.append(p.getGroup()).append(";").
-                        append(p.getKey()).append(";").
-                        append(p.getValue().asString()).append(";").
-                        append(p.getDescription()).
-                        append(System.lineSeparator());
-            });
-
-            return sbx.toString().split(System.lineSeparator());
-
         }
 
     }

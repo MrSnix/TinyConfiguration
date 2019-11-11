@@ -1,8 +1,8 @@
 package org.tinyconfiguration.base;
 
+import org.tinyconfiguration.data.Property;
+import org.tinyconfiguration.data.base.Value;
 import org.tinyconfiguration.events.ConfigurationListener;
-import org.tinyconfiguration.property.Property;
-import org.tinyconfiguration.property.PropertyValue;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -27,14 +27,14 @@ import java.util.*;
  *
  * <p>
  *     <ul>
- *          <li>{@link PropertyValue#asString()}</li>
- *          <li>{@link PropertyValue#asBoolean()}</li>
- *          <li>{@link PropertyValue#asByte()}</li>
- *          <li>{@link PropertyValue#asShort()}</li>
- *          <li>{@link PropertyValue#asInt()}</li>
- *          <li>{@link PropertyValue#asLong()}</li>
- *          <li>{@link PropertyValue#asFloat()}</li>
- *          <li>{@link PropertyValue#asDouble()}</li>
+ *          <li>{@link Value#asString()}</li>
+ *          <li>{@link Value#asBoolean()}</li>
+ *          <li>{@link Value#asByte()}</li>
+ *          <li>{@link Value#asShort()}</li>
+ *          <li>{@link Value#asInt()}</li>
+ *          <li>{@link Value#asLong()}</li>
+ *          <li>{@link Value#asFloat()}</li>
+ *          <li>{@link Value#asDouble()}</li>
  *     </ul>
  *
  * <p>

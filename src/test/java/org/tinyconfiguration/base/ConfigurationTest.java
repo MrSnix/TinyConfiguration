@@ -1,9 +1,10 @@
 package org.tinyconfiguration.base;
 
 import org.junit.jupiter.api.Test;
+import org.tinyconfiguration.data.Property;
 import org.tinyconfiguration.events.ConfigurationListener;
-import org.tinyconfiguration.property.Property;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,9 +109,7 @@ class ConfigurationTest {
                 setGroup("general").
                 setDescription("This is the application language").
                 setOptional(false).
-                setValidator(property ->
-                        property.getValue().asString().equalsIgnoreCase("EN") ||
-                                property.getValue().asString().equalsIgnoreCase("IT")).
+                setValidator(datatype -> Arrays.asList("EN", "IT").contains(datatype.asValue().asString())).
                 build();
 
         cfg_builder.put(p);
@@ -128,7 +127,7 @@ class ConfigurationTest {
                 setGroup("database").
                 setDescription("This is the database username").
                 setOptional(false).
-                setValidator(property -> property.getValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
                 build();
 
         cfg_builder.put(p);
@@ -145,7 +144,7 @@ class ConfigurationTest {
                 setGroup("database").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(property -> property.getValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
                 build();
 
         cfg_builder.put(p);
@@ -176,9 +175,7 @@ class ConfigurationTest {
                     setValue("en").
                     setDescription("This is the application language").
                     setOptional(false).
-                    setValidator(property ->
-                            property.getValue().asString().equalsIgnoreCase("EN") ||
-                                    property.getValue().asString().equalsIgnoreCase("IT")).
+                    setValidator(datatype -> Arrays.asList("EN", "IT").contains(datatype.asValue().asString())).
                     build();
         });
 
@@ -189,7 +186,7 @@ class ConfigurationTest {
                 setGroup("database").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(property -> property.getValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
                 build();
 
         cfg_builder.put(p);
@@ -236,7 +233,7 @@ class ConfigurationTest {
                 setGroup("account").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(property -> property.getValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
                 build());
 
         cfg = cfg_builder.build();
@@ -265,7 +262,7 @@ class ConfigurationTest {
                 setGroup("account").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(property -> property.getValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
                 build());
 
         Configuration cfg = cfg_builder.build();

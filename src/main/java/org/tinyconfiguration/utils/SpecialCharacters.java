@@ -21,15 +21,12 @@ public enum SpecialCharacters {
     public static String substitute(Type type, String value) {
 
         switch (type) {
-            case UNESCAPED:
+            case UNESCAPE:
                 value = value.
                         replace("\\n", "\n").
                         replace("\\r", "\r").
                         replace("\\t", "\t").
                         replace("\\b", "\b").
-                        replace("\\;", ";").
-                        replace("\\=", "=").
-                        replace("\\#", "#").
                         replace("\\\\\\", "\\\\");
 
                 value = value.
@@ -41,16 +38,13 @@ public enum SpecialCharacters {
                 value = value.replace("\\\\", "\\");
                 break;
 
-            case ESCAPED:
+            case ESCAPE:
                 value = value.
                         replace("\\", "\\\\").
                         replace("\n", "\\n").
                         replace("\r", "\\r").
                         replace("\t", "\\t").
-                        replace("\b", "\\b").
-                        replace(";", "\\;").
-                        replace("=", "\\=").
-                        replace("#", "\\#");
+                        replace("\b", "\\b");
                 break;
         }
 
@@ -61,7 +55,7 @@ public enum SpecialCharacters {
      * All the processing operations available
      */
     public enum Type {
-        UNESCAPED, ESCAPED
+        UNESCAPE, ESCAPE
     }
 
 }
