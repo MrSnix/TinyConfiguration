@@ -1,6 +1,6 @@
 package org.tinyconfiguration.events;
 
-import org.tinyconfiguration.data.Property;
+import org.tinyconfiguration.data.base.Datatype;
 
 import java.util.EventListener;
 
@@ -15,9 +15,9 @@ public interface PropertyListener extends EventListener {
     /**
      * Executes a custom function when a specific event fires
      *
-     * @param property The property instance associated to the event
+     * @param datatype The datatype instance associated to the event
      */
-    void onChange(Property property);
+    void onChange(Datatype datatype);
 
     /**
      * All the events available

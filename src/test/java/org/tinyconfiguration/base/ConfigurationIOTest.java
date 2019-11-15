@@ -128,9 +128,26 @@ class ConfigurationIOTest {
 
     }
 
-
     @Test
     @Order(3)
+    void isEmpty() {
+
+        Configuration.Builder builder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
+                setPathname("./").
+                setFilename("tiny-configuration.xml");
+
+        final Configuration cfg0 = builder.build();
+
+        // This configuration is empty
+        assertTrue(cfg0::isEmpty);
+
+    }
+
+
+    @Test
+    @Order(4)
     void delete() {
         Configuration.Builder builder = new Configuration.Builder().
                 setName("ConfigurationTest").
@@ -140,15 +157,22 @@ class ConfigurationIOTest {
 
         final Configuration cfg0 = builder.build();
 
-        // Exists as XML
+        // Delete XML
         assertDoesNotThrow(() -> ConfigurationIO.delete(cfg0));
 
         // Changing .ext
         builder.setFilename("tiny-configuration.json");
         final Configuration cfg1 = builder.build();
 
-        // Exists as JSON
+        // Delete JSON
         assertDoesNotThrow(() -> ConfigurationIO.delete(cfg1));
+
+        // Rewrite to test next async method
+        write();
+
+        // Delete async XML & JSON
+        assertDoesNotThrow(() -> ConfigurationIO.deleteAsync(cfg0).get());
+        assertDoesNotThrow(() -> ConfigurationIO.deleteAsync(cfg1).get());
 
     }
 }

@@ -1,37 +1,14 @@
 package org.tinyconfiguration.data.base;
 
-import java.util.Arrays;
-
 @SuppressWarnings("WeakerAccess")
 public final class Array extends Datatype {
 
-    Array(Object value) {
-        super(value);
+    private Array() {
+        super("");
     }
 
-    public String asString() {
-
-        String s = null;
-
-        if (type == String[].class) {
-            s = Arrays.toString(asStringArray());
-        } else if (type == boolean[].class) {
-            s = Arrays.toString(asBooleanArray());
-        } else if (type == byte[].class) {
-            s = Arrays.toString(asByteArray());
-        } else if (type == short[].class) {
-            s = Arrays.toString(asShortArray());
-        } else if (type == int[].class) {
-            s = Arrays.toString(asIntArray());
-        } else if (type == long[].class) {
-            s = Arrays.toString(asLongArray());
-        } else if (type == float[].class) {
-            s = Arrays.toString(asFloatArray());
-        } else if (type == double[].class) {
-            s = Arrays.toString(asDoubleArray());
-        }
-
-        return s;
+    Array(Object value) {
+        super(value);
     }
 
     public String[] asStringArray() {

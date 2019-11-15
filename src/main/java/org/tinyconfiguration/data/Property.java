@@ -1,7 +1,10 @@
 package org.tinyconfiguration.data;
 
 import org.tinyconfiguration.data.base.Datatype;
+import org.tinyconfiguration.events.PropertyListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -13,23 +16,33 @@ import java.util.function.Predicate;
  */
 public final class Property {
 
-    private String key;
-    private Datatype value;
-    private String description;
-    private String group;
-    private boolean isOptional;
-    private Predicate<Datatype> isValid;
+    private final String key;
+    private final Datatype value;
+    private final String description;
+    private final String group;
+    private final boolean isOptional;
+    private final Predicate<Datatype> isValid;
+    private final List<PropertyListener> listeners;
 
     private Property() {
+        this.key = null;
+        this.value = null;
+        this.description = null;
+        this.group = null;
+        this.isOptional = false;
+        this.isValid = null;
+        this.listeners = null;
     }
 
-    private Property(String key, Datatype value, String description, String group, boolean isOptional, Predicate<Datatype> isValid) {
+    private Property(String key, Datatype value, String description, String group, boolean isOptional,
+                     Predicate<Datatype> isValid, List<PropertyListener> listeners) {
         this.key = key;
         this.value = value;
         this.description = description;
         this.group = group;
         this.isOptional = isOptional;
         this.isValid = isValid;
+        this.listeners = new ArrayList<>(listeners);
     }
 
     public String getKey() {
@@ -48,26 +61,16 @@ public final class Property {
         return group;
     }
 
+    public List<PropertyListener> getListeners() {
+        return new ArrayList<>(Objects.requireNonNull(listeners));
+    }
+
     public boolean isOptional() {
         return isOptional;
     }
 
     public boolean isValid() {
-        return this.isValid.test(this.value);
-    }
-
-    public static Property copy(Property o) {
-
-        Property p = new Property();
-
-        p.key = o.key;
-        p.value = Datatype.Utils.copy(o.value);
-        p.description = o.description;
-        p.group = o.group;
-        p.isOptional = o.isOptional;
-        p.isValid = o.isValid;
-
-        return p;
+        return Objects.requireNonNull(this.isValid).test(this.value);
     }
 
     @Override
@@ -83,8 +86,10 @@ public final class Property {
         private String group;
         private boolean isOptional;
         private Predicate<Datatype> isValid;
+        private List<PropertyListener> listeners;
 
         public Builder() {
+            this.listeners = new ArrayList<>();
         }
 
         public Builder setKey(String key) {
@@ -152,13 +157,34 @@ public final class Property {
             return this;
         }
 
+        public Builder addListener(PropertyListener.Type type, PropertyListener l) {
+
+            if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+                this.listeners.add(l);
+
+            return this;
+        }
+
+        public Builder copy(Property o) {
+
+            this.key = o.key;
+            this.value = Datatype.Utils.copy(Objects.requireNonNull(o.value));
+            this.description = o.description;
+            this.group = o.group;
+            this.isOptional = o.isOptional;
+            this.isValid = o.isValid;
+            this.listeners = new ArrayList<>(Objects.requireNonNull(o.listeners));
+
+            return this;
+        }
+
         public Property build() {
 
             Objects.requireNonNull(key, "The key must be set!");
             Objects.requireNonNull(value, "The value must be set!");
             Objects.requireNonNull(group, "The group must be set!");
 
-            return new Property(key, value, description, group, isOptional, isValid);
+            return new Property(key, value, description, group, isOptional, isValid, listeners);
         }
 
     }

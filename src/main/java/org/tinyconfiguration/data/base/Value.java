@@ -1,7 +1,10 @@
 package org.tinyconfiguration.data.base;
 
-@SuppressWarnings("WeakerAccess")
 public final class Value extends Datatype {
+
+    private Value() {
+        super("");
+    }
 
     Value(Object value) {
         super(value);

@@ -65,27 +65,36 @@ import java.util.*;
 @SuppressWarnings("WeakerAccess")
 public final class Configuration {
 
-    private String name;
-    private String filename;
-    private String pathname;
-    private File file;
-    private String version;
-    private LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
+    private final String name;
+    private final String filename;
+    private final String pathname;
+    private final File file;
+    private final String version;
+    private final LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
 
-    private ArrayList<ConfigurationListener> onSave;
-    private ArrayList<ConfigurationListener> onDelete;
+    private final ArrayList<ConfigurationListener> onSave;
+    private final ArrayList<ConfigurationListener> onDelete;
 
     /**
      * Private empty constructor
      */
     private Configuration() {
+        this.name = null;
+        this.filename = null;
+        this.pathname = null;
+        this.file = null;
+        this.version = null;
+        this.properties = null;
+
+        this.onSave = null;
+        this.onDelete = null;
     }
 
     /**
      * Private configuration constructor with parameters
      *
-     * @param filename The configuration filename
-     * @param pathname The configuration pathname
+     * @param filename   The configuration filename
+     * @param pathname   The configuration pathname
      * @param properties The configuration properties
      */
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, LinkedHashMap<String, Property>> properties) {
@@ -174,7 +183,7 @@ public final class Configuration {
         if (this.properties.get(group).get(key) == null)
             throw new NoSuchElementException("The following key does not exists: " + key);
 
-        return Property.copy(this.properties.get(group).get(key));
+        return new Property.Builder().copy(this.properties.get(group).get(key)).build();
     }
 
     /**
@@ -198,7 +207,7 @@ public final class Configuration {
         if (this.properties.get(group) == null)
             throw new NoSuchElementException("The following group does not exists: " + group);
 
-        this.properties.get(group).forEach((s, property) -> propertiesList.add(Property.copy(property)));
+        this.properties.get(group).forEach((s, property) -> propertiesList.add(new Property.Builder().copy(property).build()));
 
         return propertiesList;
     }
@@ -309,7 +318,7 @@ public final class Configuration {
             properties.forEach((s1, property) -> {
 
                 // Adding on list
-                propertiesList.add(Property.copy(property));
+                propertiesList.add(new Property.Builder().copy(property).build());
             });
         });
 
@@ -364,15 +373,14 @@ public final class Configuration {
      */
     public static final class Builder {
 
+        private final LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
         private String name;
         private String version;
         private String filename;
         private String pathname;
-        private final LinkedHashMap<String, LinkedHashMap<String, Property>> properties;
 
         /**
          * The {@link Configuration.Builder} constructor
-         *
          */
         public Builder() {
             this.properties = new LinkedHashMap<>();
