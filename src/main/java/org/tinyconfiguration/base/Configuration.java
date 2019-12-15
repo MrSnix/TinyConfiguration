@@ -6,6 +6,7 @@ import org.tinyconfiguration.events.ConfigurationListener;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The {@link Configuration} class defines all properties included inside the configuration file
@@ -160,6 +161,28 @@ public final class Configuration {
     }
 
     /**
+     * Gets all the property without group
+     *
+     * @return All the {@link Property} matching "group == null"
+     */
+    public List<Property> getUngrouped() {
+
+        ArrayList<Property> propertiesList = new ArrayList<>();
+
+        if (this.properties.get(null) != null) {
+
+            for (Map.Entry<String, Property> entry : this.properties.get(null).entrySet()) {
+
+                Property property = entry.getValue();
+
+                propertiesList.add(property);
+            }
+        }
+
+        return propertiesList;
+    }
+
+    /**
      * Gets a set of property using the provided group
      *
      * @param group The group identifier
@@ -287,7 +310,10 @@ public final class Configuration {
      * @return The group names stored inside the configuration instance
      */
     public Set<String> getGroups() {
-        return this.properties.keySet();
+
+        Set<String> names = this.properties.keySet();
+
+        return names.stream().filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
     /**

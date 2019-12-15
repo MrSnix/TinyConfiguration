@@ -1,6 +1,7 @@
 package org.tinyconfiguration.io.writers;
 
 import org.tinyconfiguration.base.Configuration;
+import org.tinyconfiguration.data.Property;
 import org.tinyconfiguration.data.PropertyValue;
 import org.tinyconfiguration.io.writers.base.Writer;
 
@@ -23,6 +24,24 @@ public final class JsonWriter implements Writer<JsonObject> {
         root.add("name", instance.getName());
         root.add("version", instance.getVersion());
 
+        if (instance.getUngrouped().size() != 0) {
+
+            JsonArrayBuilder properties = Json.createArrayBuilder();
+
+            for (Property p : instance.getUngrouped()) {
+
+                JsonObjectBuilder property = Json.createObjectBuilder();
+
+                __addProperty(p, property);
+
+                properties.add(property);
+
+            }
+
+            root.add("properties", properties);
+
+        }
+
         instance.getGroups().forEach(group -> {
 
             JsonObjectBuilder node = Json.createObjectBuilder();
@@ -32,127 +51,9 @@ public final class JsonWriter implements Writer<JsonObject> {
 
             node.add("group", group);
 
-            instance.get(group).forEach(p -> {
+            instance.getGroup(group).forEach(p -> {
 
-                property.add("key", p.getKey());
-
-                PropertyValue dt = p.getValue();
-
-                if (dt.isArray()) {
-
-                    JsonArrayBuilder values = Json.createArrayBuilder();
-
-                    if (dt.isNumeric()) {
-
-                        if (dt.isByte()) {
-
-                            byte[] tmp = dt.asByteArray();
-
-                            for (byte e : tmp) {
-                                values.add(e);
-                            }
-
-                        } else if (dt.isShort()) {
-
-                            short[] tmp = dt.asShortArray();
-
-                            for (short e : tmp) {
-                                values.add(e);
-                            }
-
-                        } else if (dt.isInteger()) {
-
-                            int[] tmp = dt.asIntArray();
-
-                            for (int e : tmp) {
-                                values.add(e);
-                            }
-
-                        } else if (dt.isLong()) {
-
-                            long[] tmp = dt.asLongArray();
-
-                            for (long e : tmp) {
-                                values.add(e);
-                            }
-
-                        } else if (dt.isFloat()) {
-
-                            float[] tmp = dt.asFloatArray();
-
-                            for (float e : tmp) {
-                                values.add(e);
-                            }
-
-                        } else if (dt.isDouble()) {
-
-                            double[] tmp = dt.asDoubleArray();
-
-                            for (double e : tmp) {
-                                values.add(e);
-                            }
-
-                        }
-
-                    } else if (dt.isText()) {
-
-                        String[] tmp = dt.asStringArray();
-
-                        for (String e : tmp) {
-                            values.add(e);
-                        }
-
-                    } else if (dt.isBoolean()) {
-
-                        boolean[] tmp = dt.asBooleanArray();
-
-                        for (Boolean e : tmp) {
-                            values.add(e);
-                        }
-
-                    } else {
-                        values.add("Unknown");
-                        values.add("array");
-                        values.add("type");
-                    }
-
-                    property.add("values", values);
-
-                } else {
-
-                    if (dt.isText()) {
-
-                        property.add("value", dt.asString());
-
-                    } else if (dt.isNumeric()) {
-
-                        if (dt.isByte()) {
-                            property.add("value", dt.asByte());
-                        } else if (dt.isShort()) {
-                            property.add("value", dt.asShort());
-                        } else if (dt.isInteger()) {
-                            property.add("value", dt.asInt());
-                        } else if (dt.isLong()) {
-                            property.add("value", dt.asLong());
-                        } else if (dt.isFloat()) {
-                            property.add("value", dt.asFloat());
-                        } else if (dt.isDouble()) {
-                            property.add("value", dt.asDouble());
-                        } else {
-                            property.add("value", 0.0);
-                        }
-
-                    } else if (dt.isBoolean()) {
-                        property.add("value", dt.asBoolean());
-                    } else {
-                        property.add("value", "unknown datatype");
-                    }
-                }
-
-                if (p.getDescription() == null)
-                    property.addNull("description");
-                else
-                    property.add("description", p.getDescription());
+                __addProperty(p, property);
 
                 properties.add(property);
 
@@ -167,6 +68,130 @@ public final class JsonWriter implements Writer<JsonObject> {
         root.add("groups", nodes);
 
         return root.build();
+    }
+
+    private void __addProperty(Property p, JsonObjectBuilder property) {
+
+        property.add("key", p.getKey());
+
+        PropertyValue dt = p.getValue();
+
+        if (dt.isArray()) {
+
+            JsonArrayBuilder values = Json.createArrayBuilder();
+
+            if (dt.isNumeric()) {
+
+                if (dt.isByte()) {
+
+                    byte[] tmp = dt.asByteArray();
+
+                    for (byte e : tmp) {
+                        values.add(e);
+                    }
+
+                } else if (dt.isShort()) {
+
+                    short[] tmp = dt.asShortArray();
+
+                    for (short e : tmp) {
+                        values.add(e);
+                    }
+
+                } else if (dt.isInteger()) {
+
+                    int[] tmp = dt.asIntArray();
+
+                    for (int e : tmp) {
+                        values.add(e);
+                    }
+
+                } else if (dt.isLong()) {
+
+                    long[] tmp = dt.asLongArray();
+
+                    for (long e : tmp) {
+                        values.add(e);
+                    }
+
+                } else if (dt.isFloat()) {
+
+                    float[] tmp = dt.asFloatArray();
+
+                    for (float e : tmp) {
+                        values.add(e);
+                    }
+
+                } else if (dt.isDouble()) {
+
+                    double[] tmp = dt.asDoubleArray();
+
+                    for (double e : tmp) {
+                        values.add(e);
+                    }
+
+                }
+
+            } else if (dt.isText()) {
+
+                String[] tmp = dt.asStringArray();
+
+                for (String e : tmp) {
+                    values.add(e);
+                }
+
+            } else if (dt.isBoolean()) {
+
+                boolean[] tmp = dt.asBooleanArray();
+
+                for (Boolean e : tmp) {
+                    values.add(e);
+                }
+
+            } else {
+                values.add("Unknown");
+                values.add("array");
+                values.add("type");
+            }
+
+            property.add("values", values);
+
+        } else {
+
+            if (dt.isText()) {
+
+                property.add("value", dt.asString());
+
+            } else if (dt.isNumeric()) {
+
+                if (dt.isByte()) {
+                    property.add("value", dt.asByte());
+                } else if (dt.isShort()) {
+                    property.add("value", dt.asShort());
+                } else if (dt.isInteger()) {
+                    property.add("value", dt.asInt());
+                } else if (dt.isLong()) {
+                    property.add("value", dt.asLong());
+                } else if (dt.isFloat()) {
+                    property.add("value", dt.asFloat());
+                } else if (dt.isDouble()) {
+                    property.add("value", dt.asDouble());
+                } else {
+                    property.add("value", 0.0);
+                }
+
+            } else if (dt.isBoolean()) {
+                property.add("value", dt.asBoolean());
+            } else {
+                property.add("value", "unknown datatype");
+            }
+        }
+
+        if (p.getDescription() == null)
+            property.addNull("description");
+        else
+            property.add("description", p.getDescription());
+
     }
 
     @Override

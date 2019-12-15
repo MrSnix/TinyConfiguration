@@ -1,6 +1,5 @@
 package org.tinyconfiguration.base;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,24 @@ class ConfigurationIOTest {
                 setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.xml");
+
+        builder.put(new Property.Builder().
+                setKey("ungrouped-0").
+                setValue(10).
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("ungrouped-1").
+                setValue("Hello").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("ungrouped-2").
+                setValue(10d).
+                setDescription("This is a truly useless description").
+                build());
 
         builder.put(new Property.Builder().
                 setKey("value-int").
@@ -169,7 +186,6 @@ class ConfigurationIOTest {
 
 
     @Test
-    @Disabled
     @Order(5)
     void delete() {
         Configuration.Builder builder = new Configuration.Builder().
