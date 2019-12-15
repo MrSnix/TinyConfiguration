@@ -35,16 +35,6 @@ public final class PropertyValue {
     }
 
     /**
-     * Creates a new datatype instance.
-     *
-     * @param instance The datatype instance to copy
-     */
-    PropertyValue(PropertyValue instance) {
-        this.value = instance.value;
-        this.type = instance.type;
-    }
-
-    /**
      * Check if the datatype object is an array value
      *
      * @return true if it's an array otherwise false
@@ -52,7 +42,6 @@ public final class PropertyValue {
     public final boolean isArray() {
         return this.type.isArray();
     }
-
     public boolean isShort() {
         return
                 short.class.isAssignableFrom(this.type) ||
@@ -60,7 +49,6 @@ public final class PropertyValue {
                         Short.class.isAssignableFrom(this.type) ||
                         Short[].class.isAssignableFrom(this.type);
     }
-
     public boolean isByte() {
         return
                 byte.class.isAssignableFrom(this.type) ||
@@ -68,7 +56,6 @@ public final class PropertyValue {
                         Byte.class.isAssignableFrom(this.type) ||
                         Byte[].class.isAssignableFrom(this.type);
     }
-
     public boolean isInteger() {
         return
                 int.class.isAssignableFrom(this.type) ||
@@ -76,7 +63,6 @@ public final class PropertyValue {
                         Integer.class.isAssignableFrom(this.type) ||
                         Integer[].class.isAssignableFrom(this.type);
     }
-
     public boolean isLong() {
         return
                 long.class.isAssignableFrom(this.type) ||
@@ -84,7 +70,6 @@ public final class PropertyValue {
                         Long.class.isAssignableFrom(this.type) ||
                         Long[].class.isAssignableFrom(this.type);
     }
-
     public boolean isFloat() {
         return
                 float.class.isAssignableFrom(this.type) ||
@@ -92,7 +77,6 @@ public final class PropertyValue {
                         Float.class.isAssignableFrom(this.type) ||
                         Float[].class.isAssignableFrom(this.type);
     }
-
     public boolean isDouble() {
         return
                 double.class.isAssignableFrom(this.type) ||
@@ -100,18 +84,15 @@ public final class PropertyValue {
                         Double.class.isAssignableFrom(this.type) ||
                         Double[].class.isAssignableFrom(this.type);
     }
-
     public boolean isNumeric() {
         return isByte() || isShort() || isInteger() || isLong() || isFloat() || isDouble();
     }
-
     public boolean isText() {
         return
                 String.class.isAssignableFrom(this.type) || String[].class.isAssignableFrom(this.type) ||
                         char.class.isAssignableFrom(this.type) || char[].class.isAssignableFrom(this.type) ||
                         this.value instanceof CharSequence || this.value instanceof CharSequence[];
     }
-
     public boolean isBoolean() {
         return
                 boolean.class.isAssignableFrom(this.type) ||
@@ -140,27 +121,21 @@ public final class PropertyValue {
     public boolean asBoolean() {
         return (boolean) value;
     }
-
     public byte asByte() {
         return (byte) value;
     }
-
     public short asShort() {
         return (short) value;
     }
-
     public int asInt() {
         return (int) value;
     }
-
     public long asLong() {
         return (long) value;
     }
-
     public float asFloat() {
         return (float) value;
     }
-
     public double asDouble() {
         return (double) value;
     }
@@ -249,31 +224,24 @@ public final class PropertyValue {
         return s;
 
     }
-
     public boolean[] asBooleanArray() {
         return (boolean[]) value;
     }
-
     public byte[] asByteArray() {
         return (byte[]) value;
     }
-
     public short[] asShortArray() {
         return (short[]) value;
     }
-
     public int[] asIntArray() {
         return (int[]) value;
     }
-
     public long[] asLongArray() {
         return (long[]) value;
     }
-
     public float[] asFloatArray() {
         return (float[]) value;
     }
-
     public double[] asDoubleArray() {
         return (double[]) value;
     }
@@ -282,7 +250,6 @@ public final class PropertyValue {
     public Class<?> getType() {
         return type;
     }
-
     public Object getValue() {
         return value;
     }
@@ -294,7 +261,6 @@ public final class PropertyValue {
         PropertyValue that = (PropertyValue) o;
         return Objects.equals(value, that.value) && Objects.equals(type, that.type);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(value, type);

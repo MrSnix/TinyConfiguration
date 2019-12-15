@@ -47,12 +47,98 @@ public final class Property {
     public String getKey() {
         return key;
     }
-
     public PropertyValue getValue() {
         return value;
     }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setValue(Object value) {
+    public String getGroup() {
+        return group;
+    }
+
+    public boolean isOptional() {
+        return isOptional;
+    }
+
+    public boolean isValid() {
+        return Objects.requireNonNull(this.isValid).test(this.value);
+    }
+
+    public void setValue(String s) {
+        __setValue(s);
+    }
+
+    public void setValue(boolean b) {
+        __setValue(b);
+    }
+
+    public void setValue(char c) {
+        __setValue(c);
+    }
+
+    public void setValue(byte b) {
+        __setValue(b);
+    }
+
+    public void setValue(short s) {
+        __setValue(s);
+    }
+
+    public void setValue(int i) {
+        __setValue(i);
+    }
+
+    public void setValue(long l) {
+        __setValue(l);
+    }
+
+    public void setValue(float f) {
+        __setValue(f);
+    }
+
+    public void setValue(double d) {
+        __setValue(d);
+    }
+
+    public void setValue(String[] s) {
+        __setValue(s);
+    }
+
+    public void setValue(boolean[] b) {
+        __setValue(b);
+    }
+
+    public void setValue(char[] c) {
+        __setValue(c);
+    }
+
+    public void setValue(byte[] b) {
+        __setValue(b);
+    }
+
+    public void setValue(short[] s) {
+        __setValue(s);
+    }
+
+    public void setValue(int[] i) {
+        __setValue(i);
+    }
+
+    public void setValue(long[] l) {
+        __setValue(l);
+    }
+
+    public void setValue(float[] f) {
+        __setValue(f);
+    }
+
+    public void setValue(double[] d) {
+        __setValue(d);
+    }
+
+    private void __setValue(Object value) {
 
         if (value == null) {
             throw new NullPointerException("The value cannot be null");
@@ -70,22 +156,6 @@ public final class Property {
 
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public boolean isOptional() {
-        return isOptional;
-    }
-
-    public boolean isValid() {
-        return Objects.requireNonNull(this.isValid).test(this.value);
-    }
-
     public List<PropertyListener> getListeners() {
         return new ArrayList<>(listeners);
     }
@@ -99,7 +169,6 @@ public final class Property {
 
         return result;
     }
-
     public boolean removeListener(PropertyListener.Type type, PropertyListener l) {
 
         boolean result = false;
@@ -109,7 +178,6 @@ public final class Property {
 
         return result;
     }
-
     /**
      * Removes all listeners associated to the current property object
      */
@@ -121,7 +189,6 @@ public final class Property {
     public int hashCode() {
         return Objects.hash(key, value, description, group, isOptional, isValid);
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,7 +203,6 @@ public final class Property {
                 Objects.equals(listeners, property.listeners);
     }
 
-
     public static class Builder {
 
         private String key;
@@ -149,6 +215,17 @@ public final class Property {
 
         public Builder() {
             this.listeners = new ArrayList<>();
+        }
+
+        private Builder __setValue(Object value) {
+
+            if (value == null) {
+                throw new NullPointerException("The value cannot be null");
+            }
+
+            this.value = new PropertyValue(value);
+
+            return this;
         }
 
         public Builder setKey(String key) {
@@ -166,15 +243,76 @@ public final class Property {
             return this;
         }
 
-        public Builder setValue(Object value) {
+        public Builder setValue(String s) {
+            return __setValue(s);
+        }
 
-            if (value == null) {
-                throw new NullPointerException("The value cannot be null");
-            }
+        public Builder setValue(boolean b) {
+            return __setValue(b);
+        }
 
-            this.value = new PropertyValue(value);
+        public Builder setValue(char c) {
+            return __setValue(c);
+        }
 
-            return this;
+        public Builder setValue(byte b) {
+            return __setValue(b);
+        }
+
+        public Builder setValue(short s) {
+            return __setValue(s);
+        }
+
+        public Builder setValue(int i) {
+            return __setValue(i);
+        }
+
+        public Builder setValue(long l) {
+            return __setValue(l);
+        }
+
+        public Builder setValue(float f) {
+            return __setValue(f);
+        }
+
+        public Builder setValue(double d) {
+            return __setValue(d);
+        }
+
+        public Builder setValue(String[] s) {
+            return __setValue(s);
+        }
+
+        public Builder setValue(boolean[] b) {
+            return __setValue(b);
+        }
+
+        public Builder setValue(char[] c) {
+            return __setValue(c);
+        }
+
+        public Builder setValue(byte[] b) {
+            return __setValue(b);
+        }
+
+        public Builder setValue(short[] s) {
+            return __setValue(s);
+        }
+
+        public Builder setValue(int[] i) {
+            return __setValue(i);
+        }
+
+        public Builder setValue(long[] l) {
+            return __setValue(l);
+        }
+
+        public Builder setValue(float[] f) {
+            return __setValue(f);
+        }
+
+        public Builder setValue(double[] d) {
+            return __setValue(d);
         }
 
         public Builder setDescription(String description) {
@@ -186,25 +324,19 @@ public final class Property {
             this.description = description;
             return this;
         }
-
         public Builder setGroup(String group) {
 
-            if (group == null)
-                throw new NullPointerException("The group name cannot be null");
-
-            if (group.trim().isEmpty())
+            if (group != null && group.trim().isEmpty())
                 throw new IllegalArgumentException("The group name cannot be empty");
 
             this.group = group;
 
             return this;
         }
-
         public Builder setOptional(boolean optional) {
             isOptional = optional;
             return this;
         }
-
         public Builder setValidator(Predicate<PropertyValue> validator) {
 
             if (validator == null) {
@@ -220,7 +352,6 @@ public final class Property {
 
             Objects.requireNonNull(key, "The key must be set!");
             Objects.requireNonNull(value, "The value must be set!");
-            Objects.requireNonNull(group, "The group must be set!");
 
             return new Property(key, value, description, group, isOptional, isValid, listeners);
         }

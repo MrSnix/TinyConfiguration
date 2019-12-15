@@ -303,25 +303,23 @@ class ConfigurationTest {
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
-                setFilename("tiny-configuration.cfg");
-
-        cfgBuilder.put(new Property.Builder().
-                setKey("example").
-                setValue("000").
-                setGroup("account").
-                setDescription("This is the database password").
-                setOptional(false).
-                setValidator(datatype -> datatype.asString().length() >= 3).
-                build());
-
-        cfgBuilder.put(new Property.Builder().
-                setKey("password").
-                setValue("1234567890").
-                setGroup("account").
-                setDescription("This is the database password").
-                setOptional(false).
-                setValidator(datatype -> datatype.asString().length() >= 3).
-                build());
+                setFilename("tiny-configuration.cfg").
+                put(new Property.Builder().
+                        setKey("example").
+                        setValue("000").
+                        setGroup("account").
+                        setDescription("This is the database password").
+                        setOptional(false).
+                        setValidator(datatype -> datatype.asString().length() >= 3).
+                        build()).
+                put(new Property.Builder().
+                        setKey("password").
+                        setValue("1234567890").
+                        setGroup("account").
+                        setDescription("This is the database password").
+                        setOptional(false).
+                        setValidator(datatype -> datatype.asString().length() >= 3).
+                        build());
 
         Configuration cfg = cfgBuilder.build();
 

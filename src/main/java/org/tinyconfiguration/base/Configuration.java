@@ -1,7 +1,6 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.data.Property;
-import org.tinyconfiguration.data.PropertyValue;
 import org.tinyconfiguration.events.ConfigurationListener;
 
 import java.io.File;
@@ -10,54 +9,6 @@ import java.util.*;
 
 /**
  * The {@link Configuration} class defines all properties included inside the configuration file
- *
- * <p>
- * To modify properties, you can do as the following example:
- * <ol>
- *     // TODO Scrivere come modificare valori
- * </ol>
- * <p>
- * While, the only way to remove properties is {@link Configuration#resetListeners()} ()}.<br>
- * Remember this will delete <u><b>all</b> the stored properties and their listeners</u>.
- * <p>As usual, it's possible to retrieve the current value for any key, using the following method:</p>
- * {@link Configuration#get(String, String)}} which will retrieve the associated {@link Property} object from
- * the instance using a specific key.
- *
- * <p>You can parse then return the current value as described using {@link PropertyValue}#getValue(): </p>
- *
- * <p>
- *     <ul>
- *          <li>{@link PropertyValue#asString()}</li>
- *          <li>{@link PropertyValue#asBoolean()}</li>
- *          <li>{@link PropertyValue#asByte()}</li>
- *          <li>{@link PropertyValue#asShort()}</li>
- *          <li>{@link PropertyValue#asInt()}</li>
- *          <li>{@link PropertyValue#asLong()}</li>
- *          <li>{@link PropertyValue#asFloat()}</li>
- *          <li>{@link PropertyValue#asDouble()}</li>
- *     </ul>
- *
- * <p>
- * Through {@link Configuration#addListener(ConfigurationListener.Type, ConfigurationListener)} is possible
- * to detect read and write events in order to execute some custom code <b>before</b> loading and saving.
- *
- * <pre>
- * {@code
- *  cfg.addListener(ConfigurationLister.Type.ON_SAVE, instance, () -> {
- *      // Custom function
- *  });}
- * </pre>
- *
- * <p>
- * It's even possible to track down a single property change,
- * using // TODO Fix this
- * in order to execute some custom code replacing the tracked value.
- * <pre>
- * {@code
- *  cfg.addListener(PropertyListener.Type.ON_PROPERTY_UPDATE, "key", property -> {
- *      // Custom function to handle a specific property change
- *  });}
- * </pre>
  *
  * @author G. Baittiner
  * @version 0.1
@@ -186,6 +137,29 @@ public final class Configuration {
     }
 
     /**
+     * Gets a specific property using the provided key, <b>assuming it's not inserted in any group</b>
+     *
+     * @param key The key used to identify the value
+     * @return The {@link Property} object used to retrieve any known information
+     * @throws NullPointerException     If the key is null
+     * @throws IllegalArgumentException If the key is empty
+     * @throws NoSuchElementException   If the key does not match any property
+     */
+    public Property get(String key) {
+
+        if (key == null)
+            throw new NullPointerException("The key cannot be null");
+
+        if (key.trim().isEmpty())
+            throw new IllegalArgumentException("The key cannot be empty");
+
+        if (this.properties.get(null) == null || this.properties.get(null).get(key) == null)
+            throw new NoSuchElementException("The following key does not exists: " + key);
+
+        return this.properties.get(null).get(key);
+    }
+
+    /**
      * Gets a set of property using the provided group
      *
      * @param group The group identifier
@@ -193,7 +167,7 @@ public final class Configuration {
      * @throws IllegalArgumentException If the the group is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
-    public List<Property> get(String group) {
+    public List<Property> getGroup(String group) {
 
         ArrayList<Property> propertiesList = new ArrayList<>();
 
@@ -509,15 +483,14 @@ public final class Configuration {
          * @return The {@link Configuration.Builder} current instance
          * @throws NullPointerException If the property is null
          */
-        @SuppressWarnings("UnusedReturnValue")
         public Configuration.Builder put(Property property) {
 
             if (property == null)
                 throw new NullPointerException("The property object cannot be null");
 
             // Just in case, it has not been created yet
-            LinkedHashMap<String, Property> property_group = new LinkedHashMap<>();
-            property_group.put(property.getKey(), property);
+            LinkedHashMap<String, Property> map = new LinkedHashMap<>();
+            map.put(property.getKey(), property);
 
             // If the group already exists
             if (properties.get(property.getGroup()) != null) {
@@ -525,9 +498,14 @@ public final class Configuration {
                 properties.get(property.getGroup()).put(property.getKey(), property);
             }
             // else we create it now
-            else {
+            else if (property.getGroup() != null) {
                 // Let's add our newly created group
-                this.properties.put(property.getGroup(), property_group);
+                this.properties.put(property.getGroup(), map);
+            }
+            // No group needed
+            else {
+                // Inserting now on null key
+                this.properties.put(null, map);
             }
 
             return this;
