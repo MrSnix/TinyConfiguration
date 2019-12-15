@@ -94,7 +94,7 @@ class ConfigurationTest {
     @Test
     void get() {
         // Creating new configuration file
-        Configuration.Builder cfg_builder = new Configuration.Builder().
+        Configuration.Builder cfgBuilder = new Configuration.Builder().
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
@@ -109,12 +109,12 @@ class ConfigurationTest {
                 setGroup("general").
                 setDescription("This is the application language").
                 setOptional(false).
-                setValidator(datatype -> Arrays.asList("EN", "IT").contains(datatype.asValue().asString())).
+                setValidator(datatype -> Arrays.asList("EN", "IT").contains(datatype.asString())).
                 build();
 
-        cfg_builder.put(p);
+        cfgBuilder.put(p);
 
-        cfg = cfg_builder.build();
+        cfg = cfgBuilder.build();
 
 
         // Asserting equality
@@ -127,12 +127,12 @@ class ConfigurationTest {
                 setGroup("database").
                 setDescription("This is the database username").
                 setOptional(false).
-                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asString().length() >= 3).
                 build();
 
-        cfg_builder.put(p);
+        cfgBuilder.put(p);
 
-        cfg = cfg_builder.build();
+        cfg = cfgBuilder.build();
 
         // Asserting equality
         assertEquals(p, cfg.get("database", "username"));
@@ -144,12 +144,12 @@ class ConfigurationTest {
                 setGroup("database").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asString().length() >= 3).
                 build();
 
-        cfg_builder.put(p);
+        cfgBuilder.put(p);
 
-        cfg = cfg_builder.build();
+        cfg = cfgBuilder.build();
 
         // Asserting equality
         assertEquals(p, cfg.get("database", "password"));
@@ -161,7 +161,7 @@ class ConfigurationTest {
     void contains() {
 
         // Creating new configuration file
-        Configuration.Builder cfg_builder = new Configuration.Builder().
+        Configuration.Builder cfgBuilder = new Configuration.Builder().
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
@@ -175,8 +175,10 @@ class ConfigurationTest {
                     setValue("en").
                     setDescription("This is the application language").
                     setOptional(false).
-                    setValidator(datatype -> Arrays.asList("EN", "IT").contains(datatype.asValue().asString())).
+                    setValidator(datatype -> Arrays.asList("EN", "IT").contains(datatype.asString())).
                     build();
+
+            assertNotNull(p);
         });
 
         // Inserting new property
@@ -186,12 +188,12 @@ class ConfigurationTest {
                 setGroup("database").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asString().length() >= 3).
                 build();
 
-        cfg_builder.put(p);
+        cfgBuilder.put(p);
 
-        Configuration e = cfg_builder.build();
+        Configuration e = cfgBuilder.build();
 
         assertTrue(e.contains("database", "password"));
 
@@ -219,22 +221,22 @@ class ConfigurationTest {
         assertTrue(cfg.isEmpty());
 
         // Adding property
-        Configuration.Builder cfg_builder = new Configuration.Builder().
+        Configuration.Builder cfgBuilder = new Configuration.Builder().
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg");
 
-        cfg_builder.put(new Property.Builder().
+        cfgBuilder.put(new Property.Builder().
                 setKey("password").
                 setValue("1234567890").
                 setGroup("account").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asString().length() >= 3).
                 build());
 
-        cfg = cfg_builder.build();
+        cfg = cfgBuilder.build();
 
         // Now, checking again
         assertFalse(cfg.isEmpty());
@@ -242,28 +244,65 @@ class ConfigurationTest {
     }
 
     @Test
-    void addListener() {
+    void isValid() {
 
-        ConfigurationListener listener = configuration -> {
-
-        };
-
-        Configuration.Builder cfg_builder = new Configuration.Builder().
+        Configuration.Builder cfgBuilder = new Configuration.Builder().
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
                 setFilename("tiny-configuration.cfg");
 
-        cfg_builder.put(new Property.Builder().
+        cfgBuilder.put(new Property.Builder().
                 setKey("password").
                 setValue("1234567890").
                 setGroup("account").
                 setDescription("This is the database password").
                 setOptional(false).
-                setValidator(datatype -> datatype.asValue().asString().length() >= 3).
+                setValidator(datatype -> datatype.asString().length() >= 3).
                 build());
 
-        Configuration cfg = cfg_builder.build();
+        cfgBuilder.put(new Property.Builder().
+                setKey("invalid_password").
+                setValue("12").
+                setGroup("account").
+                setDescription("This is the database password").
+                setOptional(true).
+                setValidator(datatype -> datatype.asString().length() >= 3).
+                build());
+
+        Configuration cfg = cfgBuilder.build();
+
+        assertTrue(cfg.get("account", "password").isValid());
+        assertFalse(cfg.get("account", "invalid_password").isValid());
+
+        assertTrue(cfg.get("account", "invalid_password").isOptional());
+
+
+    }
+
+    @Test
+    void addListener() {
+
+        ConfigurationListener listener = configuration -> {
+            // Do something
+        };
+
+        Configuration.Builder cfgBuilder = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
+                setPathname("./").
+                setFilename("tiny-configuration.cfg");
+
+        cfgBuilder.put(new Property.Builder().
+                setKey("password").
+                setValue("1234567890").
+                setGroup("account").
+                setDescription("This is the database password").
+                setOptional(false).
+                setValidator(datatype -> datatype.asString().length() >= 3).
+                build());
+
+        Configuration cfg = cfgBuilder.build();
 
         cfg.addListener(Type.ON_CONFIG_DELETE, listener);
         cfg.addListener(Type.ON_CONFIG_SAVE, listener);

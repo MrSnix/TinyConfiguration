@@ -1,7 +1,7 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.data.Property;
-import org.tinyconfiguration.data.base.Value;
+import org.tinyconfiguration.data.PropertyValue;
 import org.tinyconfiguration.events.ConfigurationListener;
 
 import java.io.File;
@@ -23,18 +23,18 @@ import java.util.*;
  * {@link Configuration#get(String, String)}} which will retrieve the associated {@link Property} object from
  * the instance using a specific key.
  *
- * <p>You can parse then return the current value as described using PropertyDefinition#getValue(): </p>
+ * <p>You can parse then return the current value as described using {@link PropertyValue}#getValue(): </p>
  *
  * <p>
  *     <ul>
- *          <li>{@link Value#asString()}</li>
- *          <li>{@link Value#asBoolean()}</li>
- *          <li>{@link Value#asByte()}</li>
- *          <li>{@link Value#asShort()}</li>
- *          <li>{@link Value#asInt()}</li>
- *          <li>{@link Value#asLong()}</li>
- *          <li>{@link Value#asFloat()}</li>
- *          <li>{@link Value#asDouble()}</li>
+ *          <li>{@link PropertyValue#asString()}</li>
+ *          <li>{@link PropertyValue#asBoolean()}</li>
+ *          <li>{@link PropertyValue#asByte()}</li>
+ *          <li>{@link PropertyValue#asShort()}</li>
+ *          <li>{@link PropertyValue#asInt()}</li>
+ *          <li>{@link PropertyValue#asLong()}</li>
+ *          <li>{@link PropertyValue#asFloat()}</li>
+ *          <li>{@link PropertyValue#asDouble()}</li>
  *     </ul>
  *
  * <p>
@@ -85,7 +85,6 @@ public final class Configuration {
         this.file = null;
         this.version = null;
         this.properties = null;
-
         this.onSave = null;
         this.onDelete = null;
     }
@@ -207,7 +206,11 @@ public final class Configuration {
         if (this.properties.get(group) == null)
             throw new NoSuchElementException("The following group does not exists: " + group);
 
-        this.properties.get(group).forEach((s, property) -> propertiesList.add(new Property.Builder().copy(property).build()));
+        for (Map.Entry<String, Property> entry : this.properties.get(group).entrySet()) {
+            String s = entry.getKey();
+            Property property = entry.getValue();
+            propertiesList.add(new Property.Builder().copy(property).build());
+        }
 
         return propertiesList;
     }

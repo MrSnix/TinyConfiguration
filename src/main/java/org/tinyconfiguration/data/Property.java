@@ -1,6 +1,5 @@
 package org.tinyconfiguration.data;
 
-import org.tinyconfiguration.data.base.Datatype;
 import org.tinyconfiguration.events.PropertyListener;
 
 import java.util.ArrayList;
@@ -17,11 +16,11 @@ import java.util.function.Predicate;
 public final class Property {
 
     private final String key;
-    private final Datatype value;
+    private PropertyValue value;
     private final String description;
     private final String group;
     private final boolean isOptional;
-    private final Predicate<Datatype> isValid;
+    private final Predicate<PropertyValue> isValid;
     private final List<PropertyListener> listeners;
 
     private Property() {
@@ -31,11 +30,11 @@ public final class Property {
         this.group = null;
         this.isOptional = false;
         this.isValid = null;
-        this.listeners = null;
+        this.listeners = new ArrayList<>();
     }
 
-    private Property(String key, Datatype value, String description, String group, boolean isOptional,
-                     Predicate<Datatype> isValid, List<PropertyListener> listeners) {
+    private Property(String key, PropertyValue value, String description, String group, boolean isOptional,
+                     Predicate<PropertyValue> isValid, List<PropertyListener> listeners) {
         this.key = key;
         this.value = value;
         this.description = description;
@@ -49,8 +48,26 @@ public final class Property {
         return key;
     }
 
-    public Datatype getValue() {
+    public PropertyValue getValue() {
         return value;
+    }
+
+    public void setValue(Object value) {
+
+        if (value == null) {
+            throw new NullPointerException("The value cannot be null");
+        }
+
+        if (value.getClass() != value.getClass()) {
+            throw new IllegalArgumentException("The value must be of the same class as the one declared");
+        }
+
+        this.value = new PropertyValue(value);
+
+        this.listeners.forEach(listener -> {
+            listener.onChange(this.value);
+        });
+
     }
 
     public String getDescription() {
@@ -59,10 +76,6 @@ public final class Property {
 
     public String getGroup() {
         return group;
-    }
-
-    public List<PropertyListener> getListeners() {
-        return new ArrayList<>(Objects.requireNonNull(listeners));
     }
 
     public boolean isOptional() {
@@ -78,14 +91,28 @@ public final class Property {
         return Objects.hash(key, value, description, group, isOptional, isValid);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Property property = (Property) o;
+        return isOptional == property.isOptional &&
+                Objects.equals(key, property.key) &&
+                Objects.equals(value, property.value) &&
+                Objects.equals(description, property.description) &&
+                Objects.equals(group, property.group) &&
+                Objects.equals(isValid, property.isValid) &&
+                Objects.equals(listeners, property.listeners);
+    }
+
     public static class Builder {
 
         private String key;
-        private Datatype value;
+        private PropertyValue value;
         private String description;
         private String group;
         private boolean isOptional;
-        private Predicate<Datatype> isValid;
+        private Predicate<PropertyValue> isValid;
         private List<PropertyListener> listeners;
 
         public Builder() {
@@ -113,7 +140,7 @@ public final class Property {
                 throw new NullPointerException("The value cannot be null");
             }
 
-            this.value = Datatype.Utils.generate(value);
+            this.value = new PropertyValue(value);
 
             return this;
         }
@@ -146,7 +173,7 @@ public final class Property {
             return this;
         }
 
-        public Builder setValidator(Predicate<Datatype> validator) {
+        public Builder setValidator(Predicate<PropertyValue> validator) {
 
             if (validator == null) {
                 throw new NullPointerException("The validator function cannot be null");
@@ -168,7 +195,7 @@ public final class Property {
         public Builder copy(Property o) {
 
             this.key = o.key;
-            this.value = Datatype.Utils.copy(Objects.requireNonNull(o.value));
+            this.value = new PropertyValue(Objects.requireNonNull(o.getValue()));
             this.description = o.description;
             this.group = o.group;
             this.isOptional = o.isOptional;

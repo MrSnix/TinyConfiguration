@@ -9,16 +9,15 @@ All notable changes to TinyConfiguration will be documented in this file.
 
 - Features
   - Support for property groups
+  - Exports as JSON and XML
 
 - Methods
   - Configuration.put(key, value)
     - Insert arrays
     - Insert lists
-    - Insert custom data type
   - Configuration.get(key)
     - Retrieve arrays
     - Retrieve lists
-    - Retrieve custom data type
 
 **Changed**
 - WIP

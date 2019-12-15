@@ -1,10 +1,10 @@
-package org.tinyconfiguration.io.impl;
+package org.tinyconfiguration.io.writers;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import org.tinyconfiguration.base.Configuration;
-import org.tinyconfiguration.data.base.Datatype;
-import org.tinyconfiguration.io.Writer;
+import org.tinyconfiguration.data.PropertyValue;
+import org.tinyconfiguration.io.writers.base.Writer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -14,7 +14,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 
-public class XmlWriter implements Writer<Document> {
+public final class XmlWriter implements Writer<Document> {
 
     /**
      * This method allow to generate an object representation from the configuration instance
@@ -60,11 +60,11 @@ public class XmlWriter implements Writer<Document> {
                 key.setTextContent(p.getKey());
                 desc.setTextContent(p.getDescription());
 
-                Datatype dt = p.getValue();
+                PropertyValue dt = p.getValue();
 
                 if (dt.isArray()) {
 
-                    String[] tmp = dt.asArray().asStringArray();
+                    String[] tmp = dt.asStringArray();
 
                     values = xml.createElement("values");
 
@@ -81,7 +81,7 @@ public class XmlWriter implements Writer<Document> {
                     // Create single node
                     values = xml.createElement("value");
                     // Setting text
-                    values.setTextContent(dt.asValue().asString());
+                    values.setTextContent(dt.asString());
                 }
 
                 if (p.getDescription() == null)

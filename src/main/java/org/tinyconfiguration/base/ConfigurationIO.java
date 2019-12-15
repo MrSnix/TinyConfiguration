@@ -1,9 +1,11 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
-import org.tinyconfiguration.io.impl.JsonWriter;
-import org.tinyconfiguration.io.impl.XmlWriter;
-import org.tinyconfiguration.utils.ExportType;
+import org.tinyconfiguration.io.readers.JsonReader;
+import org.tinyconfiguration.io.readers.XmlReader;
+import org.tinyconfiguration.io.writers.JsonWriter;
+import org.tinyconfiguration.io.writers.XmlWriter;
+import org.tinyconfiguration.utils.FormatType;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +23,10 @@ import java.util.concurrent.Future;
  * This class provides simple methods in order to achieve maximum efficiency without creating complexity:
  *
  * <ul>
- *     <li>{@link ConfigurationIO#read(Configuration)} - Blocking method to load configuration files</li>
- *     <li>{@link ConfigurationIO#readAsync(Configuration)} - Non-blocking method to load configuration files</li>
- *     <li>{@link ConfigurationIO#write(ExportType, Configuration)} - Blocking method to save configuration files</li>
- *     <li>{@link ConfigurationIO#writeAsync(ExportType, Configuration)} - Non-blocking method to save configuration files</li>
+ *     <li>{@link ConfigurationIO#read(FormatType, Configuration)} - Blocking method to load configuration files</li>
+ *     <li>{@link ConfigurationIO#readAsync(FormatType, Configuration)} - Non-blocking method to load configuration files</li>
+ *     <li>{@link ConfigurationIO#write(FormatType, Configuration)} - Blocking method to save configuration files</li>
+ *     <li>{@link ConfigurationIO#writeAsync(FormatType, Configuration)} - Non-blocking method to save configuration files</li>
  * </ul>
  *
  *
@@ -54,35 +56,51 @@ public final class ConfigurationIO {
      * Reads the configuration file
      * <p></p>
      *
+     * @param type     The format type used to encode the configuration instance
      * @param instance The configuration instance to read and update
      * @throws IOException If anything goes wrong while processing the file
      */
-    public static void read(Configuration instance) throws IOException {
-
+    public static void read(FormatType type, Configuration instance) throws IOException {
+        switch (type) {
+            case JSON:
+                new JsonReader().toObject(instance);
+                break;
+            case XML:
+                new XmlReader().toObject(instance);
+                break;
+            default:
+                throw new IllegalArgumentException("The following format is unknown: " + type);
+        }
     }
 
     /**
      * Reads the configuration file asynchronously
      * <p></p>
      *
-     * @param instance The configuration instance to read and update
-     * @return The result of the asynchronous reading computation
+     * @param type     The format type which translate the configuration instance
+     * @param instance The configuration instance to read
+     * @return Future object representing the reading task
      */
-    public static Future<Void> readAsync(Configuration instance) {
-
-        return null;
+    public static Future<Void> readAsync(FormatType type, Configuration instance) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                read(type, instance);
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
     }
 
     /**
      * Write the configuration file
      *
-     * @param type     The export type which translate the configuration instance
+     * @param type     The format type which translate the configuration instance
      * @param instance The configuration instance to write
      * @throws IOException              If anything goes wrong while processing the file
      * @throws IllegalArgumentException If the export format type is unknown
      */
-    public static void write(ExportType type, Configuration instance) throws Exception {
-
+    public static void write(FormatType type, Configuration instance) throws Exception {
         switch (type) {
             case JSON:
                 new JsonWriter().toFile(instance);
@@ -93,17 +111,16 @@ public final class ConfigurationIO {
             default:
                 throw new IllegalArgumentException("The following format is unknown: " + type);
         }
-
     }
 
     /**
      * Write the configuration file asynchronously
      *
-     * @param type     The export type which translate the configuration instance
+     * @param type     The format type which translate the configuration instance
      * @param instance The configuration instance to write
      * @return Future object representing the writing task
      */
-    public static Future writeAsync(ExportType type, Configuration instance) {
+    public static Future<Void> writeAsync(FormatType type, Configuration instance) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 write(type, instance);
@@ -137,7 +154,7 @@ public final class ConfigurationIO {
      * @param instance The configuration instance to delete
      * @return Future object representing the deleting task
      */
-    public static Future deleteAsync(Configuration instance) {
+    public static Future<Void> deleteAsync(Configuration instance) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 delete(instance);

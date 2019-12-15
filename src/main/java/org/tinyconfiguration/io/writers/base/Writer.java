@@ -1,4 +1,4 @@
-package org.tinyconfiguration.io;
+package org.tinyconfiguration.io.writers.base;
 
 import org.tinyconfiguration.base.Configuration;
 
