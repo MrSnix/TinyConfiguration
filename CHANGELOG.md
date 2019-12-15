@@ -14,10 +14,8 @@ All notable changes to TinyConfiguration will be documented in this file.
 - Methods
   - Configuration.put(key, value)
     - Insert arrays
-    - Insert lists
   - Configuration.get(key)
     - Retrieve arrays
-    - Retrieve lists
 
 **Changed**
 - WIP

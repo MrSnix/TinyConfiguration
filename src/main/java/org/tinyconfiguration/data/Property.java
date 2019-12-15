@@ -65,7 +65,7 @@ public final class Property {
         this.value = new PropertyValue(value);
 
         this.listeners.forEach(listener -> {
-            listener.onChange(this.value);
+            listener.onChange(this);
         });
 
     }
@@ -86,6 +86,37 @@ public final class Property {
         return Objects.requireNonNull(this.isValid).test(this.value);
     }
 
+    public List<PropertyListener> getListeners() {
+        return new ArrayList<>(listeners);
+    }
+
+    public boolean addListener(PropertyListener.Type type, PropertyListener l) {
+
+        boolean result = false;
+
+        if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+            result = this.listeners.add(l);
+
+        return result;
+    }
+
+    public boolean removeListener(PropertyListener.Type type, PropertyListener l) {
+
+        boolean result = false;
+
+        if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+            result = this.listeners.remove(l);
+
+        return result;
+    }
+
+    /**
+     * Removes all listeners associated to the current property object
+     */
+    public void resetListeners() {
+        this.listeners.clear();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(key, value, description, group, isOptional, isValid);
@@ -104,6 +135,7 @@ public final class Property {
                 Objects.equals(isValid, property.isValid) &&
                 Objects.equals(listeners, property.listeners);
     }
+
 
     public static class Builder {
 
@@ -180,27 +212,6 @@ public final class Property {
             }
 
             this.isValid = validator;
-
-            return this;
-        }
-
-        public Builder addListener(PropertyListener.Type type, PropertyListener l) {
-
-            if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
-                this.listeners.add(l);
-
-            return this;
-        }
-
-        public Builder copy(Property o) {
-
-            this.key = o.key;
-            this.value = new PropertyValue(Objects.requireNonNull(o.getValue()));
-            this.description = o.description;
-            this.group = o.group;
-            this.isOptional = o.isOptional;
-            this.isValid = o.isValid;
-            this.listeners = new ArrayList<>(Objects.requireNonNull(o.listeners));
 
             return this;
         }

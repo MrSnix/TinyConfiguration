@@ -157,7 +157,7 @@ public final class Configuration {
      *
      * @param group The group related to the key
      * @param key   The key used to identify the value
-     * @return An immutable {@link Property} object used to retrieve any known information
+     * @return The {@link Property} object used to retrieve any known information
      * @throws NullPointerException     If the key or group is null
      * @throws IllegalArgumentException If the key is empty or the group is empty
      * @throws NoSuchElementException   If the key does not match any property
@@ -182,7 +182,7 @@ public final class Configuration {
         if (this.properties.get(group).get(key) == null)
             throw new NoSuchElementException("The following key does not exists: " + key);
 
-        return new Property.Builder().copy(this.properties.get(group).get(key)).build();
+        return this.properties.get(group).get(key);
     }
 
     /**
@@ -207,9 +207,10 @@ public final class Configuration {
             throw new NoSuchElementException("The following group does not exists: " + group);
 
         for (Map.Entry<String, Property> entry : this.properties.get(group).entrySet()) {
-            String s = entry.getKey();
+
             Property property = entry.getValue();
-            propertiesList.add(new Property.Builder().copy(property).build());
+
+            propertiesList.add(property);
         }
 
         return propertiesList;
@@ -260,15 +261,20 @@ public final class Configuration {
      * @param type     The event type
      * @param listener The custom function to execute when the event will be fired
      */
-    public void addListener(ConfigurationListener.Type type, ConfigurationListener listener) {
+    public boolean addListener(ConfigurationListener.Type type, ConfigurationListener listener) {
+
+        boolean result = false;
+
         switch (type) {
             case ON_CONFIG_SAVE:
-                this.onSave.add(listener);
+                result = this.onSave.add(listener);
                 break;
             case ON_CONFIG_DELETE:
-                this.onDelete.add(listener);
+                result = this.onDelete.add(listener);
                 break;
         }
+
+        return result;
     }
 
     /**
@@ -277,15 +283,20 @@ public final class Configuration {
      * @param type     The event type
      * @param listener The custom function reference which was associated to the event
      */
-    public void removeListener(ConfigurationListener.Type type, ConfigurationListener listener) {
+    public boolean removeListener(ConfigurationListener.Type type, ConfigurationListener listener) {
+
+        boolean result = false;
+
         switch (type) {
             case ON_CONFIG_SAVE:
-                this.onSave.remove(listener);
+                result = this.onSave.remove(listener);
                 break;
             case ON_CONFIG_DELETE:
-                this.onDelete.remove(listener);
+                result = this.onDelete.remove(listener);
                 break;
         }
+
+        return result;
     }
 
     /**
@@ -321,7 +332,7 @@ public final class Configuration {
             properties.forEach((s1, property) -> {
 
                 // Adding on list
-                propertiesList.add(new Property.Builder().copy(property).build());
+                propertiesList.add(property);
             });
         });
 

@@ -25,11 +25,9 @@ public final class PropertyValue {
     PropertyValue(Object value) {
 
         if (value instanceof PropertyValue) {
-
-            PropertyValue pabst = (PropertyValue) value;
-
-            this.type = pabst.type;
-            this.value = pabst.value;
+            PropertyValue o = (PropertyValue) value;
+            this.type = o.type;
+            this.value = o.value;
         } else {
             this.value = value;
             this.type = value.getClass();

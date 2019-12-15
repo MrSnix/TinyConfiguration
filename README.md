@@ -211,8 +211,9 @@ release.
 
 **Features:**
 - Insert, edit and retrieve **property groups**
-- Insert and retrieve **arrays** and **lists**
-- Insert and retrieve **custom** data **type**
+- Insert and retrieve **arrays**
+- Export as JSON
+- Export as XML
 
 The full changelog is available at [CHANGELOG.md](CHANGELOG.md)
 
