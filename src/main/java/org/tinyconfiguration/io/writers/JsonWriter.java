@@ -13,64 +13,25 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The {@link JsonWriter} provides methods to convert the underlying data representation as JSON
+ *
+ * @author G. Baittiner
+ * @version 0.1
+ */
 public final class JsonWriter implements Writer<JsonObject> {
 
+    /**
+     * This method allow to insert a property object inside an intermediate representation
+     *
+     * @param p    The property instance
+     * @param root The intermediate representation
+     * @return The new representation
+     */
     @Override
-    public JsonObject toObject(Configuration instance) {
+    public JsonObjectBuilder toProperty(Property p, Object root) {
 
-        JsonObjectBuilder root = Json.createObjectBuilder();
-        JsonArrayBuilder nodes = Json.createArrayBuilder();
-
-        root.add("name", instance.getName());
-        root.add("version", instance.getVersion());
-
-        if (instance.getUngrouped().size() != 0) {
-
-            JsonArrayBuilder properties = Json.createArrayBuilder();
-
-            for (Property p : instance.getUngrouped()) {
-
-                JsonObjectBuilder property = Json.createObjectBuilder();
-
-                __addProperty(p, property);
-
-                properties.add(property);
-
-            }
-
-            root.add("properties", properties);
-
-        }
-
-        instance.getGroups().forEach(group -> {
-
-            JsonObjectBuilder node = Json.createObjectBuilder();
-
-            JsonArrayBuilder properties = Json.createArrayBuilder();
-            JsonObjectBuilder property = Json.createObjectBuilder();
-
-            node.add("group", group);
-
-            instance.getGroup(group).forEach(p -> {
-
-                __addProperty(p, property);
-
-                properties.add(property);
-
-            });
-
-            node.add("properties", properties);
-
-            nodes.add(node);
-
-        });
-
-        root.add("groups", nodes);
-
-        return root.build();
-    }
-
-    private void __addProperty(Property p, JsonObjectBuilder property) {
+        JsonObjectBuilder property = (JsonObjectBuilder) root;
 
         property.add("key", p.getKey());
 
@@ -192,8 +153,78 @@ public final class JsonWriter implements Writer<JsonObject> {
         else
             property.add("description", p.getDescription());
 
+        return property;
+
     }
 
+    /**
+     * This method allow to generate an object representation from the configuration instance
+     *
+     * @param instance The configuration instance
+     * @return The object representation of the following instance
+     */
+    @Override
+    public JsonObject toObject(Configuration instance) {
+
+        JsonObjectBuilder root = Json.createObjectBuilder();
+        JsonArrayBuilder nodes = Json.createArrayBuilder();
+
+        root.add("name", instance.getName());
+        root.add("version", instance.getVersion());
+
+        if (instance.getUngrouped().size() != 0) {
+
+            JsonArrayBuilder properties = Json.createArrayBuilder();
+
+            for (Property p : instance.getUngrouped()) {
+
+                JsonObjectBuilder property = Json.createObjectBuilder();
+
+                toProperty(p, property);
+
+                properties.add(property);
+
+            }
+
+            root.add("properties", properties);
+
+        }
+
+        instance.getGroups().forEach(group -> {
+
+            JsonObjectBuilder node = Json.createObjectBuilder();
+
+            JsonArrayBuilder properties = Json.createArrayBuilder();
+            JsonObjectBuilder property = Json.createObjectBuilder();
+
+            node.add("group", group);
+
+            instance.getGroup(group).forEach(p -> {
+
+                toProperty(p, property);
+
+                properties.add(property);
+
+            });
+
+            node.add("properties", properties);
+
+            nodes.add(node);
+
+        });
+
+        root.add("groups", nodes);
+
+        return root.build();
+    }
+
+    /**
+     * This method allow to generate a file given any object representation of the configuration instance
+     *
+     * @param instance The configuration instance
+     * @throws IOException If something goes wrong during the process
+     * @see Writer#toObject(Configuration)
+     */
     @Override
     public void toFile(Configuration instance) throws IOException {
         Map<String, Object> options = new HashMap<>(1);
@@ -209,4 +240,5 @@ public final class JsonWriter implements Writer<JsonObject> {
 
         }
     }
+
 }

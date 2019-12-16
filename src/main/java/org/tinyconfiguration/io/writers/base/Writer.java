@@ -1,6 +1,7 @@
 package org.tinyconfiguration.io.writers.base;
 
 import org.tinyconfiguration.base.Configuration;
+import org.tinyconfiguration.data.Property;
 
 /**
  * The {@link Writer} interface provides methods to convert the underlying data representation as common formats
@@ -27,5 +28,14 @@ public interface Writer<T> {
      * @see Writer#toObject(Configuration)
      */
     void toFile(Configuration instance) throws Exception;
+
+    /**
+     * This method allow to insert a property object inside an intermediate representation
+     *
+     * @param p    The property instance
+     * @param root The intermediate representation
+     * @return The new representation
+     */
+    Object toProperty(Property p, Object root);
 
 }

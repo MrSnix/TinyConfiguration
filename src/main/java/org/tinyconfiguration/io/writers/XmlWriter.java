@@ -15,74 +15,26 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The {@link XmlWriter} provides methods to convert the underlying data representation as XML
+ *
+ * @author G. Baittiner
+ * @version 0.1
+ */
 public final class XmlWriter implements Writer<Document> {
 
     /**
-     * This method allow to generate an object representation from the configuration instance
+     * This method allow to insert a property object inside an intermediate representation
      *
-     * @param instance The configuration instance
-     * @return The object representation of the following instance
-     * @throws Exception If something goes wrong during the process
+     * @param p    The property instance
+     * @param root The intermediate representation
+     * @return The new representation
      */
     @Override
-    public Document toObject(Configuration instance) throws Exception {
+    public Element toProperty(Property p, Object root) {
 
-        DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
-        // Using factory to get an instance of document builder
-        DocumentBuilder db = builder.newDocumentBuilder();
-        // Creating the doc representation
-        Document xml = db.newDocument();
+        Document xml = (Document) root;
 
-        // The root element
-        Element root = xml.createElement("configuration");
-
-        root.setAttribute("name", instance.getName());
-        root.setAttribute("version", instance.getVersion());
-
-        Element ungrouped = xml.createElement("properties");
-
-        instance.getUngrouped().forEach(property -> {
-
-            Element node = __addProperty(xml, property);
-
-            ungrouped.appendChild(node);
-
-        });
-
-        // This will contain all elements to attach to the root
-        Element groups = xml.createElement("groups");
-
-        instance.getGroups().forEach(name -> {
-
-            Element group = xml.createElement("group");
-
-            group.setAttribute("name", name);
-
-            Element properties = xml.createElement("properties");
-
-            instance.getGroup(name).forEach(p -> {
-
-                Element property = __addProperty(xml, p);
-
-                properties.appendChild(property);
-
-            });
-
-            group.appendChild(properties);
-
-            groups.appendChild(group);
-
-        });
-
-        root.appendChild(ungrouped);
-        root.appendChild(groups);
-
-        xml.appendChild(root);
-
-        return xml;
-    }
-
-    private Element __addProperty(Document xml, Property p) {
         Element property = xml.createElement("property");
 
         Element key = xml.createElement("key");
@@ -125,6 +77,71 @@ public final class XmlWriter implements Writer<Document> {
         property.appendChild(desc);
         property.appendChild(values);
         return property;
+    }
+
+    /**
+     * This method allow to generate an object representation from the configuration instance
+     *
+     * @param instance The configuration instance
+     * @return The object representation of the following instance
+     * @throws Exception If something goes wrong during the process
+     */
+    @Override
+    public Document toObject(Configuration instance) throws Exception {
+
+        DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
+        // Using factory to get an instance of document builder
+        DocumentBuilder db = builder.newDocumentBuilder();
+        // Creating the doc representation
+        Document xml = db.newDocument();
+
+        // The root element
+        Element root = xml.createElement("configuration");
+
+        root.setAttribute("name", instance.getName());
+        root.setAttribute("version", instance.getVersion());
+
+        Element ungrouped = xml.createElement("properties");
+
+        instance.getUngrouped().forEach(property -> {
+
+            Element node = toProperty(property, xml);
+
+            ungrouped.appendChild(node);
+
+        });
+
+        // This will contain all elements to attach to the root
+        Element groups = xml.createElement("groups");
+
+        instance.getGroups().forEach(name -> {
+
+            Element group = xml.createElement("group");
+
+            group.setAttribute("name", name);
+
+            Element properties = xml.createElement("properties");
+
+            instance.getGroup(name).forEach(p -> {
+
+                Element property = toProperty(p, xml);
+
+                properties.appendChild(property);
+
+            });
+
+            group.appendChild(properties);
+
+            groups.appendChild(group);
+
+        });
+
+        root.appendChild(ungrouped);
+        root.appendChild(groups);
+
+        xml.appendChild(root);
+
+        return xml;
     }
 
     /**

@@ -171,7 +171,7 @@ class ConfigurationTest {
                 setFilename("tiny-configuration.cfg");
 
 
-        assertThrows(NullPointerException.class, () -> {
+        assertDoesNotThrow(() -> {
             // Inserting new property
             Property p = new Property.Builder().
                     setKey("language").
