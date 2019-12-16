@@ -16,33 +16,11 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
 /**
- * The {@link ConfigurationIO} class contains I/O operations which can be executed on any {@link Configuration} instance.
- *
- * <p></p>
- * <p>
- * This class provides simple methods in order to achieve maximum efficiency without creating complexity:
- *
- * <ul>
- *     <li>{@link ConfigurationIO#read(FormatType, Configuration)} - Blocking method to load configuration files</li>
- *     <li>{@link ConfigurationIO#readAsync(FormatType, Configuration)} - Non-blocking method to load configuration files</li>
- *     <li>{@link ConfigurationIO#write(FormatType, Configuration)} - Blocking method to save configuration files</li>
- *     <li>{@link ConfigurationIO#writeAsync(FormatType, Configuration)} - Non-blocking method to save configuration files</li>
- * </ul>
- *
- *
- * <ul>
- *     <li>{@link ConfigurationIO#delete(Configuration)} - Blocking method to delete configuration files</li>
- *     <li>{@link ConfigurationIO#deleteAsync(Configuration)} - Non-blocking method to delete configuration files</li>
- * </ul>
- *
- * <ul>
- *     <li>{@link ConfigurationIO#exist(Configuration)} - It can be used to verify if the configuration has been saved on disk </li>
- * </ul>
+ * The {@link ConfigurationIO} class contains I/O operations which can be executed on any {@link Configuration} instance
  *
  * @author G. Baittiner
  * @version 0.1
  */
-@SuppressWarnings("WeakerAccess")
 public final class ConfigurationIO {
 
     /**
@@ -54,11 +32,11 @@ public final class ConfigurationIO {
 
     /**
      * Reads the configuration file
-     * <p></p>
      *
      * @param type     The format type used to encode the configuration instance
      * @param instance The configuration instance to read and update
-     * @throws IOException If anything goes wrong while processing the file
+     * @throws IllegalArgumentException If the format type is unknown
+     * @throws IOException              If anything goes wrong while processing the file
      */
     public static void read(FormatType type, Configuration instance) throws IOException {
         switch (type) {
@@ -75,7 +53,6 @@ public final class ConfigurationIO {
 
     /**
      * Reads the configuration file asynchronously
-     * <p></p>
      *
      * @param type     The format type which translate the configuration instance
      * @param instance The configuration instance to read
@@ -95,9 +72,9 @@ public final class ConfigurationIO {
     /**
      * Write the configuration file
      *
-     * @param type     The format type which translate the configuration instance
+     * @param type The format type which translate the configuration instance
      * @param instance The configuration instance to write
-     * @throws IOException              If anything goes wrong while processing the file
+     * @throws IOException If anything goes wrong while processing the file
      * @throws IllegalArgumentException If the export format type is unknown
      */
     public static void write(FormatType type, Configuration instance) throws Exception {

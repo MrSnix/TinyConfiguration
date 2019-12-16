@@ -23,6 +23,9 @@ public final class Property {
     private final Predicate<PropertyValue> isValid;
     private final List<PropertyListener> listeners;
 
+    /**
+     * Private empty constructor
+     */
     private Property() {
         this.key = null;
         this.value = null;
@@ -33,8 +36,10 @@ public final class Property {
         this.listeners = new ArrayList<>();
     }
 
-    private Property(String key, PropertyValue value, String description, String group, boolean isOptional,
-                     Predicate<PropertyValue> isValid, List<PropertyListener> listeners) {
+    /**
+     * Private configuration constructor with parameters
+     */
+    private Property(String key, PropertyValue value, String description, String group, boolean isOptional, Predicate<PropertyValue> isValid, List<PropertyListener> listeners) {
         this.key = key;
         this.value = value;
         this.description = description;
@@ -44,100 +49,265 @@ public final class Property {
         this.listeners = new ArrayList<>(listeners);
     }
 
+    /**
+     * Gets the key
+     *
+     * @return The key ({@link String}) associated to the property object.
+     */
     public String getKey() {
         return key;
     }
+
+    /**
+     * Gets the value
+     *
+     * @return The value ({@link PropertyValue}) associated to the property object.
+     */
     public PropertyValue getValue() {
         return value;
     }
+
+    /**
+     * Gets the description
+     *
+     * @return The description ({@link String}) associated to the property object.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Gets the group name
+     *
+     * @return The group ({@link String}) associated to the property object.
+     */
     public String getGroup() {
         return group;
     }
 
+    /**
+     * Gets the optionality
+     *
+     * @return The boolean value representing the optionality state
+     */
     public boolean isOptional() {
         return isOptional;
     }
 
+    /**
+     * Gets the validity performing the specified {@link Predicate} test
+     *
+     * @return The boolean value representing the validity state
+     */
     public boolean isValid() {
         return Objects.requireNonNull(this.isValid).test(this.value);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(String s) {
         __setValue(s);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(boolean b) {
         __setValue(b);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param c The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(char c) {
         __setValue(c);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(byte b) {
         __setValue(b);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(short s) {
         __setValue(s);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param i The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(int i) {
         __setValue(i);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param l The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(long l) {
         __setValue(l);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param f The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(float f) {
         __setValue(f);
     }
 
+    /**
+     * Sets the value on this property
+     *
+     * @param d The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(double d) {
         __setValue(d);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(String[] s) {
         __setValue(s);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(boolean[] b) {
         __setValue(b);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param c The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(char[] c) {
         __setValue(c);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(byte[] b) {
         __setValue(b);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(short[] s) {
         __setValue(s);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param i The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(int[] i) {
         __setValue(i);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param l The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(long[] l) {
         __setValue(l);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param f The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(float[] f) {
         __setValue(f);
     }
 
+    /**
+     * Sets the array value on this property
+     *
+     * @param d The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     public void setValue(double[] d) {
         __setValue(d);
     }
 
+    /**
+     * Sets any generic value on this property
+     *
+     * @param value The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
     private void __setValue(Object value) {
 
         if (value == null) {
@@ -156,10 +326,22 @@ public final class Property {
 
     }
 
+    /**
+     * Gets the listeners on this property
+     *
+     * @return The listeners associated to the property object.
+     */
     public List<PropertyListener> getListeners() {
         return new ArrayList<>(listeners);
     }
 
+    /**
+     * Insert new listeners on this property
+     *
+     * @param type The {@link PropertyListener.Type} which specifies the listener type
+     * @param l    The property listener to associate on this property object
+     * @return The boolean value representing the outcome on the insert operation
+     */
     public boolean addListener(PropertyListener.Type type, PropertyListener l) {
 
         boolean result = false;
@@ -169,6 +351,14 @@ public final class Property {
 
         return result;
     }
+
+    /**
+     * Remove listeners from this property
+     *
+     * @param type The {@link PropertyListener.Type} which specifies the listener type
+     * @param l    The property listener to remove from this property object
+     * @return The boolean value representing the outcome on the remove operation
+     */
     public boolean removeListener(PropertyListener.Type type, PropertyListener l) {
 
         boolean result = false;
@@ -178,6 +368,7 @@ public final class Property {
 
         return result;
     }
+
     /**
      * Removes all listeners associated to the current property object
      */

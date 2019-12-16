@@ -43,10 +43,6 @@ public final class Configuration {
 
     /**
      * Private configuration constructor with parameters
-     *
-     * @param filename   The configuration filename
-     * @param pathname   The configuration pathname
-     * @param properties The configuration properties
      */
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, LinkedHashMap<String, Property>> properties) {
         this.name = name;
@@ -187,8 +183,9 @@ public final class Configuration {
      *
      * @param group The group identifier
      * @return All the {@link Property} matching the group identifier
+     * @throws NullPointerException     If the group is null
      * @throws IllegalArgumentException If the the group is empty
-     * @throws NoSuchElementException   If the key does not match any property
+     * @throws NoSuchElementException   If the group does not match any value
      */
     public List<Property> getGroup(String group) {
 
@@ -228,7 +225,7 @@ public final class Configuration {
         if (key == null)
             throw new NullPointerException("The key cannot be null");
 
-        if (key.isEmpty())
+        if (key.trim().isEmpty())
             throw new IllegalArgumentException("The key cannot be empty");
 
         if (group == null)
@@ -305,9 +302,9 @@ public final class Configuration {
     }
 
     /**
-     * Returns a {@link Set} containing all groups stored inside this configuration instance
+     * Returns a {@link Set<String>} containing all group names stored inside this configuration instance
      *
-     * @return The group names stored inside the configuration instance
+     * @return A list containing all group names stored
      */
     public Set<String> getGroups() {
 
@@ -317,7 +314,7 @@ public final class Configuration {
     }
 
     /**
-     * Returns an {@link ArrayList} containing all the properties stored inside this configuration instance
+     * Returns {@link List<Property>} containing all the properties stored inside this configuration instance
      *
      * @return The properties stored in the configuration instance
      */
@@ -358,29 +355,7 @@ public final class Configuration {
     }
 
     /**
-     * The {@link Configuration.Builder} class allows to generate {@link Configuration} instances.
-     * <p></p>
-     * <p>You can use {@link #build()} in order to retrieve a configuration instance.
-     * The {@link Configuration.Builder} class will execute some checks on the given arguments
-     * in order to prevent misleading values.</p>
-     *
-     * <p>In detail, {@link Configuration.Builder#setFilename(String)} is expecting a {@link String} value
-     * formatted as follow:
-     * <ul>
-     *      <li>"filename.ext" -&gt; "configuration.cfg" -&gt; <b>VALID</b></li>
-     *      <li>"filename.ext" -&gt; "setting.prop" -&gt; <b>VALID</b></li>
-     *      <li>"../dir/filename.ext" -&gt; "../cfg/configuration.cfg" -&gt; <b>NOT VALID</b></li>
-     *      <li>"./filename.ext" -&gt; "./setting.prop" -&gt; <b>NOT VALID</b></li>
-     * </ul>
-     * <p>while {@link Configuration.Builder#setPathname(String)} consider valid only the directory
-     * into which the configuration file will be saved, for example:
-     * <p>
-     * <ul>
-     *      <li>"./" -&gt; <b>VALID</b></li>
-     *      <li>"../cfg/" -&gt; <b>VALID</b></li>
-     *      <li>"./configuration.cfg" -&gt; <b>NOT VALID</b>
-     *      <li>"../cfg/setting.prop" -&gt; <b>NOT VALID</b></li>
-     * </ul>
+     * The {@link Configuration.Builder} class allows to generate {@link Configuration} instances
      *
      * @author G. Baittiner
      * @since 0.1
@@ -556,4 +531,3 @@ public final class Configuration {
     }
 
 }
-
