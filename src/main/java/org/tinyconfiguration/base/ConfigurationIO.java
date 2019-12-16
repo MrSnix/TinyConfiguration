@@ -72,9 +72,9 @@ public final class ConfigurationIO {
     /**
      * Write the configuration file
      *
-     * @param type The format type which translate the configuration instance
+     * @param type     The format type which translate the configuration instance
      * @param instance The configuration instance to write
-     * @throws IOException If anything goes wrong while processing the file
+     * @throws IOException              If anything goes wrong while processing the file
      * @throws IllegalArgumentException If the export format type is unknown
      */
     public static void write(FormatType type, Configuration instance) throws Exception {

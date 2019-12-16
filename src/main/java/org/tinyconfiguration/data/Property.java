@@ -16,12 +16,12 @@ import java.util.function.Predicate;
 public final class Property {
 
     private final String key;
-    private PropertyValue value;
     private final String description;
     private final String group;
     private final boolean isOptional;
     private final Predicate<PropertyValue> isValid;
     private final List<PropertyListener> listeners;
+    private PropertyValue value;
 
     /**
      * Private empty constructor
@@ -65,42 +65,6 @@ public final class Property {
      */
     public PropertyValue getValue() {
         return value;
-    }
-
-    /**
-     * Gets the description
-     *
-     * @return The description ({@link String}) associated to the property object.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Gets the group name
-     *
-     * @return The group ({@link String}) associated to the property object.
-     */
-    public String getGroup() {
-        return group;
-    }
-
-    /**
-     * Gets the optionality
-     *
-     * @return The boolean value representing the optionality state
-     */
-    public boolean isOptional() {
-        return isOptional;
-    }
-
-    /**
-     * Gets the validity performing the specified {@link Predicate} test
-     *
-     * @return The boolean value representing the validity state
-     */
-    public boolean isValid() {
-        return Objects.requireNonNull(this.isValid).test(this.value);
     }
 
     /**
@@ -302,6 +266,42 @@ public final class Property {
     }
 
     /**
+     * Gets the description
+     *
+     * @return The description ({@link String}) associated to the property object.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Gets the group name
+     *
+     * @return The group ({@link String}) associated to the property object.
+     */
+    public String getGroup() {
+        return group;
+    }
+
+    /**
+     * Gets the optionality
+     *
+     * @return The boolean value representing the optionality state
+     */
+    public boolean isOptional() {
+        return isOptional;
+    }
+
+    /**
+     * Gets the validity performing the specified {@link Predicate} test
+     *
+     * @return The boolean value representing the validity state
+     */
+    public boolean isValid() {
+        return Objects.requireNonNull(this.isValid).test(this.value);
+    }
+
+    /**
      * Sets any generic value on this property
      *
      * @param value The new value
@@ -380,6 +380,7 @@ public final class Property {
     public int hashCode() {
         return Objects.hash(key, value, description, group, isOptional, isValid);
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -515,6 +516,7 @@ public final class Property {
             this.description = description;
             return this;
         }
+
         public Builder setGroup(String group) {
 
             if (group != null && group.trim().isEmpty())
@@ -524,10 +526,12 @@ public final class Property {
 
             return this;
         }
+
         public Builder setOptional(boolean optional) {
             isOptional = optional;
             return this;
         }
+
         public Builder setValidator(Predicate<PropertyValue> validator) {
 
             if (validator == null) {
