@@ -1,5 +1,6 @@
 package org.tinyconfiguration.data;
 
+import org.tinyconfiguration.base.Configuration;
 import org.tinyconfiguration.events.PropertyListener;
 
 import java.util.ArrayList;
@@ -395,6 +396,12 @@ public final class Property {
                 Objects.equals(listeners, property.listeners);
     }
 
+    /**
+     * The {@link Configuration.Builder} class is used to build the {@link Property} object
+     *
+     * @author G. Baittiner
+     * @version 0.1
+     */
     public static class Builder {
 
         private String key;
@@ -409,17 +416,13 @@ public final class Property {
             this.listeners = new ArrayList<>();
         }
 
-        private Builder __setValue(Object value) {
-
-            if (value == null) {
-                throw new NullPointerException("The value cannot be null");
-            }
-
-            this.value = new PropertyValue(value);
-
-            return this;
-        }
-
+        /**
+         * Sets the key value
+         *
+         * @param key The key value
+         * @throws NullPointerException     If the key is null
+         * @throws IllegalArgumentException If the key is empty
+         */
         public Builder setKey(String key) {
 
             if (key == null) {
@@ -435,91 +438,254 @@ public final class Property {
             return this;
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param s The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(String s) {
             return __setValue(s);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param b The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(boolean b) {
             return __setValue(b);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param c The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(char c) {
             return __setValue(c);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param b The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(byte b) {
             return __setValue(b);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param s The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(short s) {
             return __setValue(s);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param i The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(int i) {
             return __setValue(i);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param l The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(long l) {
             return __setValue(l);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param f The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(float f) {
             return __setValue(f);
         }
 
+        /**
+         * Sets the value on this property
+         *
+         * @param d The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(double d) {
             return __setValue(d);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param s The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(String[] s) {
             return __setValue(s);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param b The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(boolean[] b) {
             return __setValue(b);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param c The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(char[] c) {
             return __setValue(c);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param b The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(byte[] b) {
             return __setValue(b);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param s The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(short[] s) {
             return __setValue(s);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param i The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(int[] i) {
             return __setValue(i);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param l The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(long[] l) {
             return __setValue(l);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param f The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(float[] f) {
             return __setValue(f);
         }
 
+        /**
+         * Sets the array value on this property
+         *
+         * @param d The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
         public Builder setValue(double[] d) {
             return __setValue(d);
         }
 
+        /**
+         * Sets any generic value on this property
+         *
+         * @param value The new value
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        private Builder __setValue(Object value) {
+
+            if (value == null) {
+                throw new NullPointerException("The value cannot be null");
+            }
+
+            this.value = new PropertyValue(value);
+
+            return this;
+        }
+
+        /**
+         * Sets the description value
+         *
+         * @param description The description value
+         * @throws NullPointerException     If the description is null
+         * @throws IllegalArgumentException If the description is empty
+         */
         public Builder setDescription(String description) {
 
-            if (description == null) {
+            if (description == null)
                 throw new NullPointerException("The description cannot be null");
-            }
+
+            if (description.trim().isEmpty())
+                throw new IllegalArgumentException("The description cannot be empty");
 
             this.description = description;
             return this;
         }
 
+        /**
+         * Sets the group value
+         *
+         * @param group The group value
+         * @throws NullPointerException     If the group is null
+         * @throws IllegalArgumentException If the group is empty
+         */
         public Builder setGroup(String group) {
 
-            if (group != null && group.trim().isEmpty())
+            if (group == null)
+                throw new NullPointerException("The group name cannot be null");
+
+            if (group.trim().isEmpty())
                 throw new IllegalArgumentException("The group name cannot be empty");
 
             this.group = group;
@@ -527,11 +693,22 @@ public final class Property {
             return this;
         }
 
+        /**
+         * Sets the optionality
+         *
+         * @param optional The optional value
+         */
         public Builder setOptional(boolean optional) {
             isOptional = optional;
             return this;
         }
 
+        /**
+         * Sets the validator function
+         *
+         * @param validator The validator function
+         * @throws NullPointerException If the validator function is null
+         */
         public Builder setValidator(Predicate<PropertyValue> validator) {
 
             if (validator == null) {
@@ -543,6 +720,11 @@ public final class Property {
             return this;
         }
 
+        /**
+         * Build the property object
+         *
+         * @throws NullPointerException If the key or value is not set
+         */
         public Property build() {
 
             Objects.requireNonNull(key, "The key must be set!");

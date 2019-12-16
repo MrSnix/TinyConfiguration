@@ -1,6 +1,5 @@
 package org.tinyconfiguration.data;
 
-
 import java.util.Objects;
 
 import static java.lang.String.valueOf;
