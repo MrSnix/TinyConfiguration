@@ -33,11 +33,10 @@ and tries to be simple and effective at the same time.
 A few of the things you can do with TinyConfiguration:
 
 * **Read**, **write** and **delete** custom configuration file (even async)
-* Set **listeners** on properties changes, configuration saving and deleting
-* Apply **description** on every property
-* Set **strict** or **tolerant** reading **mode**
 * Easily **search and retrieve** values
-* Escape **special characters** by default
+* Sort by **group** every property
+* Set **listeners** on properties changes, configuration saving and deleting
+* Escape **special characters**
 
 ## Example
 
@@ -75,7 +74,7 @@ The generated JARs is compatible only with Java 8 and higher.
 Build command:
 
 ````
-mvn clean install
+mvn clean package
 ````
 
 The " ***target*** " directory with javadoc documentation 
@@ -110,21 +109,21 @@ release.
 
 <br>
 
-| Version |                        Description                        |
-|:-------:|:---------------------------------------------------------:|
-|   0.1   |                      Initial release                      |
+| Version |                      Changelog                           |
+|:-------:|:--------------------------------------------------------:|
+|   0.1   |                   Initial release                        |
+|   0.2   |   New arrays methods, property groups and exports mode   |
 
 ## What's next?
 
-**Version:** 0.2
+**Version:** 0.3
 
 **Release date:** [ *???* ]
 
 **Features:**
-- Insert, edit and retrieve **property groups**
-- Insert and retrieve **arrays**
-- Export as JSON
-- Export as XML
+- ?
+- ?
+- ?
 
 The full changelog is available at [CHANGELOG.md](CHANGELOG.md)
 

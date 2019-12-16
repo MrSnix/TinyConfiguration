@@ -254,6 +254,7 @@ public final class Configuration {
      *
      * @param type     The event type
      * @param listener The custom function to execute when the event will be fired
+     * @return The boolean value representing the outcome on the inserting operation
      */
     public boolean addListener(ConfigurationListener.Type type, ConfigurationListener listener) {
 
@@ -276,6 +277,7 @@ public final class Configuration {
      *
      * @param type     The event type
      * @param listener The custom function reference which was associated to the event
+     * @return The boolean value representing the outcome on the removing operation
      */
     public boolean removeListener(ConfigurationListener.Type type, ConfigurationListener listener) {
 
@@ -302,7 +304,7 @@ public final class Configuration {
     }
 
     /**
-     * Returns a {@link Set<String>} containing all group names stored inside this configuration instance
+     * Returns a {@link Set} containing all group names stored inside this configuration instance
      *
      * @return A list containing all group names stored
      */
@@ -314,7 +316,7 @@ public final class Configuration {
     }
 
     /**
-     * Returns {@link List<Property>} containing all the properties stored inside this configuration instance
+     * Returns {@link List} containing all the properties stored inside this configuration instance
      *
      * @return The properties stored in the configuration instance
      */

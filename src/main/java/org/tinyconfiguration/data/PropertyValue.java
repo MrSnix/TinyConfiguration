@@ -51,7 +51,6 @@ public final class PropertyValue {
      *          <li>{@code Byte}</li>
      *          <li>{@code Byte[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -74,7 +73,6 @@ public final class PropertyValue {
      *          <li>{@code Short}</li>
      *          <li>{@code Short[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -97,7 +95,6 @@ public final class PropertyValue {
      *          <li>{@code Integer}</li>
      *          <li>{@code Integer[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -120,7 +117,6 @@ public final class PropertyValue {
      *          <li>{@code Long}</li>
      *          <li>{@code Long[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -143,7 +139,6 @@ public final class PropertyValue {
      *          <li>{@code Float}</li>
      *          <li>{@code Float[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -166,7 +161,6 @@ public final class PropertyValue {
      *          <li>{@code Double}</li>
      *          <li>{@code Double[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -189,7 +183,6 @@ public final class PropertyValue {
      *          <li>{@code Boolean}</li>
      *          <li>{@code Boolean[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -212,7 +205,6 @@ public final class PropertyValue {
      *          <li>{@code Character}</li>
      *          <li>{@code Character[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()
@@ -232,7 +224,6 @@ public final class PropertyValue {
      *          <li>{@code CharSequence}</li>
      *          <li>{@code CharSequence[]}</li>
      *      </ul>
-     * </p>
      *
      * @return true if any condition is matched otherwise false
      * @see PropertyValue#isArray()

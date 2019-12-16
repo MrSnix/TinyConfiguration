@@ -6,23 +6,32 @@ All notable changes to TinyConfiguration will be documented in this file.
 **Release date:** [ *???* ]
 
 **New**
-
-- Features
-  - Support for property groups
-  - Exports as JSON and XML
-
-- Methods
-  - Configuration.put(key, value)
-    - Insert arrays
-  - Configuration.get(key)
-    - Retrieve arrays
+- Nothing changed
 
 **Changed**
-- WIP
+- Nothing changed
 
 **Removed**
-- WIP
+- Nothing removed
 
+## 0.0.2
+
+**Release date:** [ *20 / 12 / 2019* ]
+
+**New**
+
+- Insert, edit and retrieve **property groups**
+- Insert and retrieve **arrays**
+- Import and export as **JSON**
+- Import and export as **XML**
+
+**Changed**
+- Property object now has its own builder
+- PropertyValue object now has its own builder
+- Completely rewritten ConfigurationIO
+
+**Removed**
+- Reading mode: strict and tolerant
 
 ## 0.0.1
 

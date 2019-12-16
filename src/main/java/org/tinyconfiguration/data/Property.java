@@ -420,6 +420,7 @@ public final class Property {
          * Sets the key value
          *
          * @param key The key value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the key is null
          * @throws IllegalArgumentException If the key is empty
          */
@@ -442,6 +443,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param s The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -453,6 +455,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param b The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -464,6 +467,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param c The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -475,6 +479,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param b The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -486,6 +491,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param s The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -497,6 +503,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param i The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -508,6 +515,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param l The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -519,6 +527,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param f The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -530,6 +539,7 @@ public final class Property {
          * Sets the value on this property
          *
          * @param d The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -541,6 +551,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param s The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -552,6 +563,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param b The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -563,6 +575,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param c The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -574,6 +587,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param b The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -585,6 +599,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param s The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -596,6 +611,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param i The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -607,6 +623,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param l The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -618,6 +635,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param f The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -629,6 +647,7 @@ public final class Property {
          * Sets the array value on this property
          *
          * @param d The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -640,6 +659,7 @@ public final class Property {
          * Sets any generic value on this property
          *
          * @param value The new value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
@@ -658,6 +678,7 @@ public final class Property {
          * Sets the description value
          *
          * @param description The description value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the description is null
          * @throws IllegalArgumentException If the description is empty
          */
@@ -677,6 +698,7 @@ public final class Property {
          * Sets the group value
          *
          * @param group The group value
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException     If the group is null
          * @throws IllegalArgumentException If the group is empty
          */
@@ -697,6 +719,7 @@ public final class Property {
          * Sets the optionality
          *
          * @param optional The optional value
+         * @return The {@link Property.Builder} current instance
          */
         public Builder setOptional(boolean optional) {
             isOptional = optional;
@@ -707,6 +730,7 @@ public final class Property {
          * Sets the validator function
          *
          * @param validator The validator function
+         * @return The {@link Property.Builder} current instance
          * @throws NullPointerException If the validator function is null
          */
         public Builder setValidator(Predicate<PropertyValue> validator) {
@@ -723,6 +747,7 @@ public final class Property {
         /**
          * Build the property object
          *
+         * @return The {@link Property} object
          * @throws NullPointerException If the key or value is not set
          */
         public Property build() {
