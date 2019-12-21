@@ -1,13 +1,17 @@
 package org.tinyconfiguration.base;
 
 import org.tinyconfiguration.events.ConfigurationListener;
+import org.tinyconfiguration.exceptions.InvalidConfigurationNameException;
+import org.tinyconfiguration.exceptions.InvalidConfigurationVersionException;
+import org.tinyconfiguration.exceptions.MissingConfigurationPropertyException;
+import org.tinyconfiguration.exceptions.UnknownConfigurationPropertyException;
 import org.tinyconfiguration.io.readers.JsonReader;
-import org.tinyconfiguration.io.readers.XmlReader;
 import org.tinyconfiguration.io.writers.JsonWriter;
 import org.tinyconfiguration.io.writers.XmlWriter;
 import org.tinyconfiguration.utils.FormatType;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,15 +40,14 @@ public final class ConfigurationIO {
      * @param type     The format type used to encode the configuration instance
      * @param instance The configuration instance to read and update
      * @throws IllegalArgumentException If the format type is unknown
-     * @throws IOException              If anything goes wrong while processing the file
      */
-    public static void read(FormatType type, Configuration instance) throws IOException {
+    public static void read(FormatType type, Configuration instance) throws FileNotFoundException, InvalidConfigurationVersionException, InvalidConfigurationNameException, MissingConfigurationPropertyException, UnknownConfigurationPropertyException {
         switch (type) {
             case JSON:
-                new JsonReader().toObject(instance);
+                new JsonReader(instance).toObject();
                 break;
             case XML:
-                new XmlReader().toObject(instance);
+
                 break;
             default:
                 throw new IllegalArgumentException("The following format is unknown: " + type);

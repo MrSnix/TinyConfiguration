@@ -277,10 +277,7 @@ class ConfigurationTest {
 
         assertTrue(cfg.get("account", "password").isValid());
         assertFalse(cfg.get("account", "invalid_password").isValid());
-
         assertTrue(cfg.get("account", "invalid_password").isOptional());
-
-
     }
 
     @Test

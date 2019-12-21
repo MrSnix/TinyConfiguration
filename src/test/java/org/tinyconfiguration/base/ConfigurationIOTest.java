@@ -1,14 +1,19 @@
 package org.tinyconfiguration.base;
 
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.tinyconfiguration.data.Property;
+import org.tinyconfiguration.exceptions.InvalidConfigurationNameException;
+import org.tinyconfiguration.exceptions.InvalidConfigurationVersionException;
+import org.tinyconfiguration.exceptions.MissingConfigurationPropertyException;
+import org.tinyconfiguration.exceptions.UnknownConfigurationPropertyException;
 import org.tinyconfiguration.utils.FormatType;
+
+import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.tinyconfiguration.utils.FormatType.JSON;
 
 @TestMethodOrder(OrderAnnotation.class)
 class ConfigurationIOTest {
@@ -99,7 +104,6 @@ class ConfigurationIOTest {
         builder.put(new Property.Builder().
                 setKey("values").
                 setValue(new long[]{1054345347, 43554543, 46543432}).
-                setGroup("long-values").
                 setDescription("This is a truly useless description").
                 build());
 
@@ -128,8 +132,8 @@ class ConfigurationIOTest {
         final Configuration cfg1 = builder.build();
 
         // Write as JSON
-        assertDoesNotThrow(() -> ConfigurationIO.write(FormatType.JSON, cfg1));
-        assertDoesNotThrow(() -> ConfigurationIO.writeAsync(FormatType.JSON, cfg1).get());
+        assertDoesNotThrow(() -> ConfigurationIO.write(JSON, cfg1));
+        assertDoesNotThrow(() -> ConfigurationIO.writeAsync(JSON, cfg1).get());
 
     }
 
@@ -160,11 +164,125 @@ class ConfigurationIOTest {
     @Test
     @Order(3)
     void read() {
-        Configuration.Builder cfg0 = new Configuration.Builder().
+        Configuration.Builder builder = new Configuration.Builder().
                 setName("ConfigurationTest").
                 setVersion("1.0.0").
                 setPathname("./").
-                setFilename("tiny-configuration.xml");
+                setFilename("tiny-configuration.json");
+
+        builder.put(new Property.Builder().
+                setKey("ungrouped-0").
+                setValue(10).
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("ungrouped-1").
+                setValue("Hello").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("ungrouped-2").
+                setValue(10d).
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("value-int").
+                setValue(10).
+                setGroup("single-value").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("value-float").
+                setValue(12.4f).
+                setGroup("single-value").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("value-boolean").
+                setValue(true).
+                setGroup("single-value").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("value-string").
+                setValue("This is a really cool string").
+                setGroup("single-value").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new boolean[]{true, false, false}).
+                setGroup("boolean-values").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new byte[]{1, 2, 3}).
+                setGroup("byte-values").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new short[]{10, 23, 45}).
+                setGroup("short-values").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new int[]{107, 273, 465}).
+                setGroup("int-values").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new long[]{1054345347, 43554543, 46543432}).
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new float[]{1.0f, 20.5f, 3f}).
+                setGroup("float-values").
+                setDescription("This is a truly useless description").
+                build());
+
+        builder.put(new Property.Builder().
+                setKey("values").
+                setValue(new double[]{12d, 7.54d, 8e1d}).
+                setGroup("double-values").
+                setDescription("This is a truly useless description").
+                build());
+
+        final Configuration cfg0 = builder.build();
+
+        Assertions.assertDoesNotThrow(() -> {
+            try {
+                ConfigurationIO.read(JSON, cfg0);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (InvalidConfigurationVersionException e) {
+                e.printStackTrace();
+            } catch (InvalidConfigurationNameException e) {
+                e.printStackTrace();
+            } catch (MissingConfigurationPropertyException e) {
+                e.printStackTrace();
+            } catch (UnknownConfigurationPropertyException e) {
+                e.printStackTrace();
+            }
+        });
+
+
     }
 
     @Test
@@ -187,6 +305,7 @@ class ConfigurationIOTest {
 
     @Test
     @Order(5)
+    @Disabled
     void delete() {
         Configuration.Builder builder = new Configuration.Builder().
                 setName("ConfigurationTest").

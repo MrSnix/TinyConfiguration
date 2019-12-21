@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -148,13 +149,18 @@ public final class XmlWriter implements Writer<Document> {
      * This method allow to generate a file given any object representation of the configuration instance
      *
      * @param instance The configuration instance
-     * @throws Exception If something goes wrong during the process
+     * @throws IOException If something goes wrong during the process
      * @see Writer#toObject(Configuration)
      */
     @Override
-    public void toFile(Configuration instance) throws Exception {
+    public void toFile(Configuration instance) throws IOException {
 
-        Document obj = this.toObject(instance);
+        Document obj;
+        try {
+            obj = this.toObject(instance);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
 
         OutputFormat format = new OutputFormat();
 
