@@ -1,24 +1,24 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.models;
 
 import java.io.File;
 import java.nio.file.Paths;
 
 /**
- * The {@link AbstractConfiguration} is the base class used to define any type of data structure
+ * The {@link AbstractConfiguration} is the base class used to define any configuration data structure
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractConfiguration {
+public abstract class AbstractConfiguration implements AbstractContainer {
 
-    protected String name;
-    protected String filename;
-    protected String pathname;
-    protected File file;
-    protected String version;
+    protected final String name;
+    protected final String filename;
+    protected final String pathname;
+    protected final File file;
+    protected final String version;
 
     /**
-     * Private empty constructor
+     * Protected empty constructor
      */
     protected AbstractConfiguration() {
         this.name = null;
@@ -29,7 +29,7 @@ public abstract class AbstractConfiguration {
     }
 
     /**
-     * Private configuration constructor with parameters
+     * Protected container constructor with parameters
      */
     protected AbstractConfiguration(String name, String version, String filename, String pathname) {
         this.name = name;
@@ -42,7 +42,7 @@ public abstract class AbstractConfiguration {
     /**
      * Gets the name.
      *
-     * @return The name ({@link String}) associated to the configuration object.
+     * @return The name ({@link String}) associated to the container object.
      */
     public String getName() {
         return name;
@@ -51,7 +51,7 @@ public abstract class AbstractConfiguration {
     /**
      * Gets the version.
      *
-     * @return The version ({@link String}) associated to the configuration object.
+     * @return The version ({@link String}) associated to the container object.
      */
     public String getVersion() {
         return version;
@@ -60,7 +60,7 @@ public abstract class AbstractConfiguration {
     /**
      * Gets the filename.
      *
-     * @return The filename ({@link String}) associated to the configuration object.
+     * @return The filename ({@link String}) associated to the container object.
      */
     public String getFilename() {
         return this.filename;
@@ -69,7 +69,7 @@ public abstract class AbstractConfiguration {
     /**
      * Gets the pathname.
      *
-     * @return The pathname ({@link String}) associated to the configuration object.
+     * @return The pathname ({@link String}) associated to the container object.
      */
     public String getPathname() {
         return this.pathname;
@@ -78,7 +78,7 @@ public abstract class AbstractConfiguration {
     /**
      * Gets the file.
      *
-     * @return The {@link File} associated to the configuration object.
+     * @return The {@link File} associated to the container object.
      */
     public File getFile() {
         return file;

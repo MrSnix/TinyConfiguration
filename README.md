@@ -43,10 +43,10 @@ A few of the things you can do with TinyConfiguration:
 This tutorial covers most of the methods available in the library, 
 for further information check the javadoc.
 
-```java
-public class Main {
-    
-    public static void main(String[] args){
+````java
+
+    public class Main {
+        public static void main(String[] args){
         
       // Creating a new instance
         Configuration cfg = new Configuration.Builder().
@@ -57,9 +57,9 @@ public class Main {
 
         // For further information check the javadoc
 
+        }
     }
-}
-```
+````
 
 ## Build, download & changelog
 
@@ -86,13 +86,14 @@ and all JARs will be available at the root directory.
 
 To use the package, you need to use following Maven dependency:
 
-```
+
+````
 <dependency>
   <groupId>io.github.mrsnix</groupId>
   <artifactId>tiny-configuration</artifactId>
   <version>0.0.1</version>
 </dependency>
-```
+````
 Package has no external dependencies, except for testing (which uses JUnit).
 
 ##### Non-Maven
