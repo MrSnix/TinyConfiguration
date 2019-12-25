@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc.events;
 
-import org.tinyconfiguration.abc.models.AbstractConfiguration;
+import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 
 /**

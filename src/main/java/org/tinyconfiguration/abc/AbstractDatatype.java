@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.models;
+package org.tinyconfiguration.abc;
 
 import static java.lang.String.valueOf;
 

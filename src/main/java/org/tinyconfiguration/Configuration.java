@@ -1,9 +1,9 @@
 package org.tinyconfiguration;
 
-import org.tinyconfiguration.abc.models.AbstractConfiguration;
+import org.tinyconfiguration.abc.AbstractConfiguration;
+import org.tinyconfiguration.abc.common.Property;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
-import org.tinyconfiguration.abc.classes.Property;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

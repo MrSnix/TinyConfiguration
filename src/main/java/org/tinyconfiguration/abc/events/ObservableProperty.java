@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc.events;
 
-import org.tinyconfiguration.abc.models.AbstractProperty;
+import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
 /**

@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc.listeners;
 
-import org.tinyconfiguration.abc.models.AbstractConfiguration;
+import org.tinyconfiguration.abc.AbstractConfiguration;
 
 import java.util.EventListener;
 

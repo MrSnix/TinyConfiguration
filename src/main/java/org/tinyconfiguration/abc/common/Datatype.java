@@ -1,13 +1,13 @@
-package org.tinyconfiguration.abc.classes;
+package org.tinyconfiguration.abc.common;
 
-import org.tinyconfiguration.abc.models.AbstractDatatype;
+import org.tinyconfiguration.abc.AbstractDatatype;
 
-public final class Datatype extends AbstractDatatype {
+public class Datatype extends AbstractDatatype {
 
     /**
      * Private empty constructor
      */
-    private Datatype(){
+    private Datatype() {
         super();
     }
 
@@ -28,7 +28,7 @@ public final class Datatype extends AbstractDatatype {
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
     @Override
-    protected void __setValue(Object value) {
+    protected final void __setValue(Object value) {
 
         if (value == null) {
             throw new NullPointerException("The value cannot be null");
