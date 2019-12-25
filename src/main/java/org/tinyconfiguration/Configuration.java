@@ -1,6 +1,7 @@
 package org.tinyconfiguration;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
+import org.tinyconfiguration.abc.Buildable;
 import org.tinyconfiguration.abc.common.Property;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
@@ -150,7 +151,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
      * @author G. Baittiner
      * @since 0.1
      */
-    public static final class Builder {
+    public static final class Builder implements Buildable {
 
         private String name;
         private String version;
@@ -287,7 +288,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
             if (property == null)
                 throw new NullPointerException("The property object cannot be null");
 
-            if(properties.containsKey(property.getKey()))
+            if (properties.containsKey(property.getKey()))
                 throw new IllegalStateException("The property has been already inserted");
 
             this.properties.put(property.getKey(), property);
@@ -295,10 +296,8 @@ public final class Configuration extends AbstractConfiguration implements Observ
             return this;
         }
 
-        /**
-         * Reset the builder in order to reuse it
-         */
-        public Configuration.Builder clear() {
+        @Override
+        public void clear() {
 
             this.name = null;
             this.version = null;
@@ -307,7 +306,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
 
             this.properties.clear();
 
-            return this;
         }
 
         /**

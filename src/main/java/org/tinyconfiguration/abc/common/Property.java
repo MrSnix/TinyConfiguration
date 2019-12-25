@@ -1,6 +1,7 @@
 package org.tinyconfiguration.abc.common;
 
 import org.tinyconfiguration.abc.AbstractProperty;
+import org.tinyconfiguration.abc.Buildable;
 import org.tinyconfiguration.abc.events.ObservableProperty;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
@@ -263,7 +264,7 @@ public final class Property extends AbstractProperty implements ObservableProper
      * @author G. Baittiner
      * @version 0.1
      */
-    public static final class Builder extends AbstractProperty implements ObservableProperty<Property> {
+    public static final class Builder extends AbstractProperty implements ObservableProperty<Property>, Buildable {
 
         private boolean isOptional;
         private Predicate<Property> isValid;
@@ -376,12 +377,26 @@ public final class Property extends AbstractProperty implements ObservableProper
             this.listeners.clear();
         }
 
+        @Override
+        public void clear() {
+
+            this.key = null;
+            this.value = null;
+            this.description = null;
+            this.isValid = null;
+            this.isOptional = false;
+
+            this.listeners.clear();
+
+        }
+
         /**
          * Build the property object
          *
          * @return The {@link Property} object
          * @throws NullPointerException If the key or value is not set
          */
+        @Override
         public Property build() {
 
             if (this.key == null)

@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractProperty implements Modifiable {
 
-    protected final Datatype value;
+    protected Datatype value;
     protected String key;
     protected String description;
 
@@ -50,6 +50,15 @@ public abstract class AbstractProperty implements Modifiable {
      */
     protected Datatype getValue() {
         return value;
+    }
+
+    /**
+     * Gets the description
+     *
+     * @return The description ({@link String}) associated to the property object.
+     */
+    protected String getDescription() {
+        return description;
     }
 
     /**
@@ -268,12 +277,4 @@ public abstract class AbstractProperty implements Modifiable {
         requireNonNull(this.value, "The value must be set").setValue(d);
     }
 
-    /**
-     * Gets the description
-     *
-     * @return The description ({@link String}) associated to the property object.
-     */
-    protected String getDescription() {
-        return description;
-    }
 }
