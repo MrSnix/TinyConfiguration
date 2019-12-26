@@ -2,9 +2,9 @@ package org.tinyconfiguration;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.Buildable;
-import org.tinyconfiguration.abc.common.Property;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
+import org.tinyconfiguration.common.Property;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -314,6 +314,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
          * @return The new {@link Configuration} instance
          * @throws NullPointerException If one or more properties are not set
          */
+        @Override
         public Configuration build() {
 
             if (name == null)

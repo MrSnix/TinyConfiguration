@@ -64,7 +64,7 @@ for further information check the javadoc.
 ## Build, download & changelog
 
 >This library **should not** be used in a production environment.  
->TinyConfiguration is currently in an alpha state and any new update could break backward compatibility
+>TinyConfiguration is currently in an ++***alpha state***++ and any new update may break backward compatibility
 
 
 #### Building the library

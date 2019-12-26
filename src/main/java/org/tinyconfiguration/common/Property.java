@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.common;
+package org.tinyconfiguration.common;
 
 import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.Buildable;

@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc;
 
-import org.tinyconfiguration.abc.common.Datatype;
+import org.tinyconfiguration.common.Datatype;
 
 import static java.util.Objects.requireNonNull;
 
