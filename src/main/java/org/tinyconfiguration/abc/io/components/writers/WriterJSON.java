@@ -12,7 +12,7 @@ import javax.json.JsonObject;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface WriterJSON<C extends AbstractConfiguration> extends AbstractWriter<C> {
+public interface WriterJSON<C extends AbstractConfiguration, P extends AbstractProperty> extends AbstractWriter<C, P> {
 
     /**
      * This method allow to generate an object representation from the configuration instance
@@ -41,5 +41,6 @@ public interface WriterJSON<C extends AbstractConfiguration> extends AbstractWri
      * @return The new representation
      */
     @Override
-    <P extends AbstractProperty> JsonObject toProperty(P property);
+    JsonObject toProperty(P property);
+
 }

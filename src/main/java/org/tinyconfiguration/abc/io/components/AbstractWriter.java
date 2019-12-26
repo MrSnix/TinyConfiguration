@@ -9,7 +9,15 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractWriter<C extends AbstractConfiguration> {
+public interface AbstractWriter<C extends AbstractConfiguration, P extends AbstractProperty> {
+
+    /**
+     * This method allow to insert a property object inside an intermediate representation
+     *
+     * @param property The property instance
+     * @return The new representation
+     */
+    Object toProperty(P property);
 
     /**
      * This method allow to generate an object representation from the configuration instance
@@ -28,13 +36,5 @@ public interface AbstractWriter<C extends AbstractConfiguration> {
      * @see AbstractWriter#toObject(AbstractConfiguration)
      */
     void toFile(C instance) throws Exception;
-
-    /**
-     * This method allow to insert a property object inside an intermediate representation
-     *
-     * @param property The property instance
-     * @return The new representation
-     */
-    <P extends AbstractProperty> Object toProperty(P property);
 
 }

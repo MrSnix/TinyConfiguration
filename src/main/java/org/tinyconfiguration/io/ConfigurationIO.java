@@ -2,8 +2,11 @@ package org.tinyconfiguration.io;
 
 import org.tinyconfiguration.Configuration;
 import org.tinyconfiguration.abc.io.components.HandlerIO;
+import org.tinyconfiguration.abc.io.components.writers.WriterJSON;
 import org.tinyconfiguration.abc.io.utils.FormatType;
+import org.tinyconfiguration.common.Property;
 
+import javax.json.JsonObject;
 import java.util.concurrent.Future;
 
 /**
@@ -92,4 +95,42 @@ public class ConfigurationIO implements HandlerIO<Configuration> {
     public Future<Void> writeAsync(FormatType type, Configuration instance) throws Exception {
         return null;
     }
+
+    private static final class Writer implements WriterJSON<Configuration, Property> {
+
+        /**
+         * This method allow to generate an object representation from the configuration instance
+         *
+         * @param instance The configuration instance
+         * @return The object representation of the following instance
+         * @throws Exception If something goes wrong during the process
+         */
+        @Override
+        public JsonObject toObject(Configuration instance) throws Exception {
+            return null;
+        }
+
+        /**
+         * This method allow to generate a file given any object representation of the configuration instance
+         *
+         * @param instance The configuration instance
+         * @throws Exception If something goes wrong during the process
+         */
+        @Override
+        public void toFile(Configuration instance) throws Exception {
+
+        }
+
+        /**
+         * This method allow to insert a property object inside an intermediate representation
+         *
+         * @param property The property instance
+         * @return The new representation
+         */
+        @Override
+        public JsonObject toProperty(Property property) {
+            return null;
+        }
+    }
+
 }
