@@ -20,26 +20,31 @@ class ConfigurationIOTest {
         b.put(new Property.Builder().
                 setKey("language").
                 setValue("EN").
+                setDescription("Specifies the language environment for the session").
                 build());
 
         b.put(new Property.Builder().
                 setKey("user").
                 setValue("root").
+                setDescription("Sets the username required to open the application's database").
                 build());
 
         b.put(new Property.Builder().
                 setKey("password").
                 setValue("toor").
+                setDescription("Sets the password required to open the application's database").
                 build());
 
         b.put(new Property.Builder().
                 setKey("last-access").
                 setValue("never").
+                setDescription("Specifies when the last session was started").
                 build());
 
         b.put(new Property.Builder().
                 setKey("hex-digits").
                 setValue(new String[]{"332a", "4f2e", "f0be", "cac2"}).
+                setDescription("Specifies the seed numbers").
                 build());
 
         Configuration c = b.build();

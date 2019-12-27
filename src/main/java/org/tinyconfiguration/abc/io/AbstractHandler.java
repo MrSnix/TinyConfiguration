@@ -5,12 +5,12 @@ import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.utils.FormatType;
 
 /**
- * The {@link AbstractHandlerManager} provides on any {@link AbstractConfiguration} its own {@link AbstractHandlerIO} for each {@link FormatType}
+ * The {@link AbstractHandler} provides on any {@link AbstractConfiguration} its own {@link AbstractHandlerIO} for each {@link FormatType}
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractHandlerManager<C extends AbstractConfiguration> {
+public interface AbstractHandler<C extends AbstractConfiguration> {
 
     /**
      * Gets the JSON handler

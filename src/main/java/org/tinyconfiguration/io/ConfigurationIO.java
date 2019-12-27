@@ -1,8 +1,8 @@
 package org.tinyconfiguration.io;
 
 import org.tinyconfiguration.Configuration;
+import org.tinyconfiguration.abc.io.AbstractHandler;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
-import org.tinyconfiguration.abc.io.AbstractHandlerManager;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
 import org.tinyconfiguration.common.Datatype;
 import org.tinyconfiguration.common.Property;
@@ -21,8 +21,9 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class ConfigurationIO implements AbstractHandlerManager<Configuration> {
+public final class ConfigurationIO implements AbstractHandler<Configuration> {
 
+    // Handlers
     private final HandlerJSON HandlerJSON;
 
     /**
@@ -125,6 +126,9 @@ public final class ConfigurationIO implements AbstractHandlerManager<Configurati
                 __encode_array(root, property);
             else
                 __encode_obj(root, property);
+
+            // Inserting description
+            root.add("description", property.getDescription());
 
             return root.build();
         }

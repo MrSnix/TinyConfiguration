@@ -401,7 +401,7 @@ public final class Property extends AbstractProperty implements ObservableProper
          * Build the property object
          *
          * @return The {@link Property} object
-         * @throws NullPointerException If the key or value is not set
+         * @throws NullPointerException If the key, value or description is not set
          */
         @Override
         public Property build() {
@@ -411,6 +411,9 @@ public final class Property extends AbstractProperty implements ObservableProper
 
             if (this.value == null)
                 throw new NullPointerException("The value must be set!");
+
+            if (this.description == null)
+                throw new NullPointerException("The description must be set!");
 
             return new Property(key, value, description, isOptional, isValid, listeners);
         }
