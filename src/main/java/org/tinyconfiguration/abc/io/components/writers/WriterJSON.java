@@ -5,6 +5,7 @@ import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.io.components.AbstractWriter;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  * The {@link WriterJSON} provides methods to convert the underlying data representation as JSON
@@ -41,6 +42,24 @@ public interface WriterJSON<C extends AbstractConfiguration, P extends AbstractP
      * @return The new representation
      */
     @Override
-    JsonObject toProperty(P property);
+    JsonObject encode(P property);
+
+    /**
+     * This method encode object-only property
+     *
+     * @param property The property instance
+     * @param root     The root object
+     * @return The new representation
+     */
+    void __encode_obj(JsonObjectBuilder root, P property);
+
+    /**
+     * This method encode array-only property
+     *
+     * @param property The property instance
+     * @param root     The root object
+     * @return The new representation
+     */
+    void __encode_array(JsonObjectBuilder root, P property);
 
 }

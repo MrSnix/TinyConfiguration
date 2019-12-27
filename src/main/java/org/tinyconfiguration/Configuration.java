@@ -1,13 +1,14 @@
 package org.tinyconfiguration;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
-import org.tinyconfiguration.abc.Buildable;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
+import org.tinyconfiguration.abc.functionalities.Buildable;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 import org.tinyconfiguration.common.Property;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -30,6 +31,16 @@ public final class Configuration extends AbstractConfiguration implements Observ
         this.properties = new LinkedHashMap<>();
         this.onSave = new ArrayList<>();
         this.onDelete = new ArrayList<>();
+    }
+
+    /**
+     * Gets the properties.
+     *
+     * @return The properties associated to the container object as {@link List}
+     */
+    @Override
+    public List<Property> getProperties() {
+        return new ArrayList<>(properties.values());
     }
 
     /**

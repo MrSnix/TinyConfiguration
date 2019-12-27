@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.functionalities;
 
 import org.tinyconfiguration.Configuration;
 

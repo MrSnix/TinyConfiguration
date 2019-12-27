@@ -1,33 +1,6 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.functionalities;
 
-import org.tinyconfiguration.abc.functionalities.Modifiable;
-
-/**
- * The {@link AbstractValue} is the foundation to represent generic data "as-it-is"
- *
- * @author G. Baittiner
- * @version 0.1
- */
-public abstract class AbstractValue implements Modifiable {
-
-    protected Object value;
-    protected Class<?> type;
-
-    /**
-     * Protected empty constructor
-     */
-    protected AbstractValue() {
-    }
-
-    /**
-     * Protected constructor with parameters
-     *
-     * @param value The data to store as object instance
-     */
-    protected AbstractValue(Object value) {
-        this.value = value;
-        this.type = value.getClass();
-    }
+public interface Modifiable {
 
     /**
      * Sets the value on this property
@@ -36,9 +9,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(String s) {
-        __setValue(s);
-    }
+    void setValue(String s);
 
     /**
      * Sets the value on this property
@@ -47,9 +18,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(boolean b) {
-        __setValue(b);
-    }
+    void setValue(boolean b);
 
     /**
      * Sets the value on this property
@@ -58,9 +27,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(char c) {
-        __setValue(c);
-    }
+    void setValue(char c);
 
     /**
      * Sets the value on this property
@@ -69,9 +36,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(byte b) {
-        __setValue(b);
-    }
+    void setValue(byte b);
 
     /**
      * Sets the value on this property
@@ -80,9 +45,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(short s) {
-        __setValue(s);
-    }
+    void setValue(short s);
 
     /**
      * Sets the value on this property
@@ -91,9 +54,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(int i) {
-        __setValue(i);
-    }
+    void setValue(int i);
 
     /**
      * Sets the value on this property
@@ -102,9 +63,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(long l) {
-        __setValue(l);
-    }
+    void setValue(long l);
 
     /**
      * Sets the value on this property
@@ -113,9 +72,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(float f) {
-        __setValue(f);
-    }
+    void setValue(float f);
 
     /**
      * Sets the value on this property
@@ -124,9 +81,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(double d) {
-        __setValue(d);
-    }
+    void setValue(double d);
 
     /**
      * Sets the array value on this property
@@ -135,9 +90,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(String[] s) {
-        __setValue(s);
-    }
+    void setValue(String[] s);
 
     /**
      * Sets the array value on this property
@@ -146,9 +99,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(boolean[] b) {
-        __setValue(b);
-    }
+    void setValue(boolean[] b);
 
     /**
      * Sets the array value on this property
@@ -157,9 +108,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(char[] c) {
-        __setValue(c);
-    }
+    void setValue(char[] c);
 
     /**
      * Sets the array value on this property
@@ -168,9 +117,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(byte[] b) {
-        __setValue(b);
-    }
+    void setValue(byte[] b);
 
     /**
      * Sets the array value on this property
@@ -179,9 +126,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(short[] s) {
-        __setValue(s);
-    }
+    void setValue(short[] s);
 
     /**
      * Sets the array value on this property
@@ -190,9 +135,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(int[] i) {
-        __setValue(i);
-    }
+    void setValue(int[] i);
 
     /**
      * Sets the array value on this property
@@ -201,9 +144,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(long[] l) {
-        __setValue(l);
-    }
+    void setValue(long[] l);
 
     /**
      * Sets the array value on this property
@@ -212,9 +153,7 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(float[] f) {
-        __setValue(f);
-    }
+    void setValue(float[] f);
 
     /**
      * Sets the array value on this property
@@ -223,17 +162,6 @@ public abstract class AbstractValue implements Modifiable {
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    public final void setValue(double[] d) {
-        __setValue(d);
-    }
-
-    /**
-     * Sets any generic value on this property
-     *
-     * @param value The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    protected abstract void __setValue(Object value);
+    void setValue(double[] d);
 
 }

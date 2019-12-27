@@ -12,11 +12,11 @@ public class Datatype extends AbstractDatatype {
     }
 
     /**
-     * Private constructor with parameters
+     * Public constructor with parameters
      *
      * @param value The data to store as object instance
      */
-    private Datatype(Object value) {
+    public Datatype(Object value) {
         super(value);
     }
 

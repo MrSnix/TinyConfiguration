@@ -2,6 +2,7 @@ package org.tinyconfiguration.abc;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * The {@link AbstractConfiguration} is the base class used to define any configuration data structure
@@ -83,5 +84,12 @@ public abstract class AbstractConfiguration implements AbstractContainer {
     public File getFile() {
         return file;
     }
+
+    /**
+     * Gets the properties.
+     *
+     * @return The properties associated to the container object as {@link List}
+     */
+    public abstract <T extends AbstractProperty> List<T> getProperties();
 
 }

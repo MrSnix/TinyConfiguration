@@ -1,8 +1,9 @@
 package org.tinyconfiguration.common;
 
 import org.tinyconfiguration.abc.AbstractProperty;
-import org.tinyconfiguration.abc.Buildable;
 import org.tinyconfiguration.abc.events.ObservableProperty;
+import org.tinyconfiguration.abc.functionalities.Buildable;
+import org.tinyconfiguration.abc.functionalities.Mutable;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
 import java.util.ArrayList;
@@ -264,8 +265,11 @@ public final class Property extends AbstractProperty implements ObservableProper
      * @author G. Baittiner
      * @version 0.1
      */
-    public static final class Builder extends AbstractProperty implements ObservableProperty<Property>, Buildable {
+    public static final class Builder implements ObservableProperty<Property>, Mutable, Buildable {
 
+        private String key;
+        private Datatype value;
+        private String description;
         private boolean isOptional;
         private Predicate<Property> isValid;
         private List<PropertyListener<Property>> listeners;
@@ -274,6 +278,9 @@ public final class Property extends AbstractProperty implements ObservableProper
          * Empty builder constructor
          */
         public Builder() {
+            this.key = null;
+            this.value = null;
+            this.description = null;
             this.isOptional = false;
             this.isValid = null;
             this.listeners = new ArrayList<>();
@@ -408,6 +415,348 @@ public final class Property extends AbstractProperty implements ObservableProper
             return new Property(key, value, description, isOptional, isValid, listeners);
         }
 
+
+        /**
+         * Sets the value on this property
+         *
+         * @param s The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(String s) {
+
+            if (value == null)
+                this.value = new Datatype(s);
+            else
+                value.setValue(s);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param b The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(boolean b) {
+
+            if (value == null)
+                this.value = new Datatype(b);
+            else
+                value.setValue(b);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param c The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(char c) {
+
+            if (value == null)
+                this.value = new Datatype(c);
+            else
+                value.setValue(c);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param b The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(byte b) {
+
+            if (value == null)
+                this.value = new Datatype(b);
+            else
+                value.setValue(b);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param s The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(short s) {
+
+            if (value == null)
+                this.value = new Datatype(s);
+            else
+                value.setValue(s);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param i The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(int i) {
+
+            if (value == null)
+                this.value = new Datatype(i);
+            else
+                value.setValue(i);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param l The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(long l) {
+
+            if (value == null)
+                this.value = new Datatype(l);
+            else
+                value.setValue(l);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param f The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(float f) {
+
+            if (value == null)
+                this.value = new Datatype(f);
+            else
+                value.setValue(f);
+
+            return this;
+        }
+
+        /**
+         * Sets the value on this property
+         *
+         * @param d The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(double d) {
+
+            if (value == null)
+                this.value = new Datatype(d);
+            else
+                value.setValue(d);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param s The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(String[] s) {
+
+            if (value == null)
+                this.value = new Datatype(s);
+            else
+                value.setValue(s);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param b The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(boolean[] b) {
+
+            if (value == null)
+                this.value = new Datatype(b);
+            else
+                value.setValue(b);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param c The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(char[] c) {
+
+            if (value == null)
+                this.value = new Datatype(c);
+            else
+                value.setValue(c);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param b The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(byte[] b) {
+
+            if (value == null)
+                this.value = new Datatype(b);
+            else
+                value.setValue(b);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param s The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(short[] s) {
+
+            if (value == null)
+                this.value = new Datatype(s);
+            else
+                value.setValue(s);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param i The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(int[] i) {
+
+            if (value == null)
+                this.value = new Datatype(i);
+            else
+                value.setValue(i);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param l The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(long[] l) {
+
+            if (value == null)
+                this.value = new Datatype(l);
+            else
+                value.setValue(l);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param f The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(float[] f) {
+
+            if (value == null)
+                this.value = new Datatype(f);
+            else
+                value.setValue(f);
+
+            return this;
+        }
+
+        /**
+         * Sets the array value on this property
+         *
+         * @param d The new value
+         * @return The {@link Property.Builder} current instance
+         * @throws NullPointerException     If the value is null
+         * @throws IllegalArgumentException If the class type is different from the one declared
+         */
+        @Override
+        public Property.Builder setValue(double[] d) {
+
+            if (value == null)
+                this.value = new Datatype(d);
+            else
+                value.setValue(d);
+
+            return this;
+        }
     }
 
 }

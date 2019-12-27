@@ -17,7 +17,7 @@ public interface AbstractWriter<C extends AbstractConfiguration, P extends Abstr
      * @param property The property instance
      * @return The new representation
      */
-    Object toProperty(P property);
+    Object encode(P property);
 
     /**
      * This method allow to generate an object representation from the configuration instance
