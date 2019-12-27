@@ -5,7 +5,6 @@ import org.tinyconfiguration.Configuration;
 import org.tinyconfiguration.common.Property;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.tinyconfiguration.abc.io.utils.FormatType.JSON;
 
 class ConfigurationIOTest {
 
@@ -49,7 +48,7 @@ class ConfigurationIOTest {
 
             ConfigurationIO io = new ConfigurationIO();
 
-            io.write(JSON, c);
+            io.getHandlerJSON().write(c);
 
         });
 

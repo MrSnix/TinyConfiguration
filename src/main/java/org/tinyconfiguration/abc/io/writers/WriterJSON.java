@@ -1,8 +1,8 @@
-package org.tinyconfiguration.abc.io.components.writers;
+package org.tinyconfiguration.abc.io.writers;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;
-import org.tinyconfiguration.abc.io.components.AbstractWriter;
+import org.tinyconfiguration.abc.io.AbstractWriter;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;

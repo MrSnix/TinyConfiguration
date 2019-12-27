@@ -1,9 +1,9 @@
 package org.tinyconfiguration.io;
 
 import org.tinyconfiguration.Configuration;
-import org.tinyconfiguration.abc.io.components.HandlerIO;
-import org.tinyconfiguration.abc.io.components.writers.WriterJSON;
-import org.tinyconfiguration.abc.io.utils.FormatType;
+import org.tinyconfiguration.abc.io.AbstractHandlerIO;
+import org.tinyconfiguration.abc.io.AbstractHandlerManager;
+import org.tinyconfiguration.abc.io.writers.WriterJSON;
 import org.tinyconfiguration.common.Datatype;
 import org.tinyconfiguration.common.Property;
 
@@ -21,97 +21,25 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class ConfigurationIO implements HandlerIO<Configuration> {
+public final class ConfigurationIO implements AbstractHandlerManager<Configuration> {
 
-    private static final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
+    private final HandlerJSON HandlerJSON;
 
     /**
-     * Private empty constructor
+     * Public empty constructor
      */
     public ConfigurationIO() {
-
-    }
-
-
-
-    /**
-     * Reads the configuration file
-     *
-     * @param type     The format type to encode the configuration instance
-     * @param instance The configuration instance to read and update
-     * @throws Exception If anything goes wrong while processing the file
-     */
-    @Override
-    public void read(FormatType type, Configuration instance) throws Exception {
-
+        this.HandlerJSON = new HandlerJSON();
     }
 
     /**
-     * Reads the configuration file asynchronously
+     * Gets the JSON handler
      *
-     * @param type     The format type to encode the configuration instance
-     * @param instance The configuration instance to read
-     * @return Future object representing the reading task
-     * @throws Exception If anything goes wrong while processing the file
+     * @return The {@link AbstractHandlerIO} interface on {@link Configuration} as JSON
      */
     @Override
-    public Future<Void> readAsync(FormatType type, Configuration instance) throws Exception {
-        return null;
-    }
-
-    /**
-     * Write the configuration file
-     *
-     * @param type     The format type to encode the configuration instance
-     * @param instance The configuration instance to write
-     * @throws Exception If anything goes wrong while processing the file
-     */
-    @Override
-    public void write(FormatType type, Configuration instance) throws Exception {
-        switch (type) {
-            case JSON:
-                IMPL_WRITER_JSON.toFile(instance);
-                break;
-            case XML:
-                break;
-            default:
-                throw new IllegalArgumentException("The following format is unknown: " + type);
-        }
-    }
-
-    /**
-     * Write the configuration file asynchronously
-     *
-     * @param type     The format type to encode the configuration instance
-     * @param instance The configuration instance to write
-     * @return Future object representing the writing task
-     * @throws Exception If anything goes wrong while processing the file
-     */
-    @Override
-    public Future<Void> writeAsync(FormatType type, Configuration instance) throws Exception {
-        return null;
-    }
-
-    /**
-     * Delete the configuration file
-     *
-     * @param instance The configuration instance to delete
-     * @throws Exception If the configuration file cannot be deleted
-     */
-    @Override
-    public void delete(Configuration instance) throws Exception {
-
-    }
-
-    /**
-     * Delete the configuration file asynchronously
-     *
-     * @param instance The configuration instance to delete
-     * @return Future object representing the deleting task
-     */
-    @Override
-    public Future<Void> deleteAsync(Configuration instance) {
-        return null;
+    public HandlerJSON getHandlerJSON() {
+        return HandlerJSON;
     }
 
     /**
@@ -325,7 +253,7 @@ public final class ConfigurationIO implements HandlerIO<Configuration> {
 
                 boolean[] tmp = dt.asBooleanArray();
 
-                for (Boolean e : tmp) {
+                for (boolean e : tmp) {
                     values.add(e);
                 }
 
@@ -335,6 +263,88 @@ public final class ConfigurationIO implements HandlerIO<Configuration> {
 
             obj.add(property.getKey(), values);
 
+        }
+    }
+
+    public static final class HandlerJSON implements AbstractHandlerIO<Configuration> {
+
+        // Writers
+        private final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
+
+        // Readers
+
+        /**
+         * Private empty constructor
+         */
+        private HandlerJSON() {
+        }
+
+        /**
+         * Reads the configuration file
+         *
+         * @param instance The configuration instance to read and update
+         * @throws Exception If anything goes wrong while processing the file
+         */
+        @Override
+        public void read(Configuration instance) throws Exception {
+
+        }
+
+        /**
+         * Reads the configuration file asynchronously
+         *
+         * @param instance The configuration instance to read
+         * @return Future object representing the reading task
+         * @throws Exception If anything goes wrong while processing the file
+         */
+        @Override
+        public Future<Void> readAsync(Configuration instance) throws Exception {
+            return null;
+        }
+
+        /**
+         * Write the configuration file
+         *
+         * @param instance The configuration instance to write
+         * @throws Exception If anything goes wrong while processing the file
+         */
+        @Override
+        public void write(Configuration instance) throws Exception {
+            IMPL_WRITER_JSON.toFile(instance);
+        }
+
+        /**
+         * Write the configuration file asynchronously
+         *
+         * @param instance The configuration instance to write
+         * @return Future object representing the writing task
+         * @throws Exception If anything goes wrong while processing the file
+         */
+        @Override
+        public Future<Void> writeAsync(Configuration instance) throws Exception {
+            return null;
+        }
+
+        /**
+         * Delete the configuration file
+         *
+         * @param instance The configuration instance to delete
+         * @throws Exception If the configuration file cannot be deleted
+         */
+        @Override
+        public void delete(Configuration instance) throws Exception {
+
+        }
+
+        /**
+         * Delete the configuration file asynchronously
+         *
+         * @param instance The configuration instance to delete
+         * @return Future object representing the deleting task
+         */
+        @Override
+        public Future<Void> deleteAsync(Configuration instance) {
+            return null;
         }
     }
 

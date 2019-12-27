@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.io.utils;
+package org.tinyconfiguration.abc.utils;
 
 /**
  * This enum defines a common gateway to escape or unescape all the special characters inside the properties

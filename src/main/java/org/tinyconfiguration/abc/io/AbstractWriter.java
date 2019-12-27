@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.io.components;
+package org.tinyconfiguration.abc.io;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;

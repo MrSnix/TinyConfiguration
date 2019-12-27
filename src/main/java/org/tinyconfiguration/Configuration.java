@@ -1,8 +1,8 @@
 package org.tinyconfiguration;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
+import org.tinyconfiguration.abc.builders.Buildable;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
-import org.tinyconfiguration.abc.functionalities.Buildable;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 import org.tinyconfiguration.common.Property;
 

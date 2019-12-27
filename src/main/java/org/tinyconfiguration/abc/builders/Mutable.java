@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.functionalities;
+package org.tinyconfiguration.abc.builders;
 
 public interface Mutable {
 

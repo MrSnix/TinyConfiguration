@@ -1,7 +1,7 @@
-package org.tinyconfiguration.abc.io.components.readers;
+package org.tinyconfiguration.abc.io.readers;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
-import org.tinyconfiguration.abc.io.components.AbstractReader;
+import org.tinyconfiguration.abc.io.AbstractReader;
 
 public interface ReaderJSON<C extends AbstractConfiguration> extends AbstractReader<C> {
 }

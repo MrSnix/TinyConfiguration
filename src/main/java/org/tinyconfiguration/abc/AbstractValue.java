@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc;
 
-import org.tinyconfiguration.abc.functionalities.Modifiable;
+import org.tinyconfiguration.abc.builders.Modifiable;
 
 /**
  * The {@link AbstractValue} is the foundation to represent generic data "as-it-is"

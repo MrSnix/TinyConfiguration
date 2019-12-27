@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.io.utils;
+package org.tinyconfiguration.abc.utils;
 
 /**
  * This enumeration provides the format type which are supported to export the configuration data

@@ -1,9 +1,9 @@
 package org.tinyconfiguration.common;
 
 import org.tinyconfiguration.abc.AbstractProperty;
+import org.tinyconfiguration.abc.builders.Buildable;
+import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.events.ObservableProperty;
-import org.tinyconfiguration.abc.functionalities.Buildable;
-import org.tinyconfiguration.abc.functionalities.Mutable;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
 import java.util.ArrayList;
