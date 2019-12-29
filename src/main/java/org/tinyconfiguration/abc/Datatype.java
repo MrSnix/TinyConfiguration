@@ -1,6 +1,4 @@
-package org.tinyconfiguration.common;
-
-import org.tinyconfiguration.abc.AbstractDatatype;
+package org.tinyconfiguration.abc;
 
 public class Datatype extends AbstractDatatype {
 

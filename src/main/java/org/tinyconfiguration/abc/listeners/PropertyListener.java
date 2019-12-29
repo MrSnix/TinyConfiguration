@@ -1,6 +1,7 @@
 package org.tinyconfiguration.abc.listeners;
 
 import org.tinyconfiguration.abc.AbstractProperty;
+import org.tinyconfiguration.abc.events.base.PropertyEvent;
 
 import java.util.EventListener;
 
@@ -10,14 +11,14 @@ import java.util.EventListener;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface PropertyListener<T extends AbstractProperty> extends EventListener {
+public interface PropertyListener<P extends AbstractProperty> extends EventListener {
 
     /**
      * Executes a custom function when a specific event fires
      *
-     * @param property The property instance associated to the event
+     * @param event The event which was fired
      */
-    void onChange(T property);
+    void onChange(PropertyEvent<P> event);
 
     /**
      * All the events available

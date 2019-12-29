@@ -1,6 +1,7 @@
 package org.tinyconfiguration.abc.listeners;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
+import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
 
 import java.util.EventListener;
 
@@ -10,14 +11,14 @@ import java.util.EventListener;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface ConfigurationListener<T extends AbstractConfiguration> extends EventListener {
+public interface ConfigurationListener<C extends AbstractConfiguration> extends EventListener {
 
     /**
      * Executes a custom function when a specific event fires
      *
-     * @param configuration The configuration instance associated to the event
+     * @param event The event which was fired
      */
-    void execute(T configuration);
+    void execute(ConfigurationEvent<C> event);
 
     /**
      * All the events available

@@ -1,14 +1,19 @@
-package org.tinyconfiguration.common;
+package org.tinyconfiguration.properties;
 
 import org.tinyconfiguration.abc.AbstractProperty;
+import org.tinyconfiguration.abc.Datatype;
 import org.tinyconfiguration.abc.builders.Buildable;
 import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.events.ObservableProperty;
+import org.tinyconfiguration.abc.events.base.UpdateEvent;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static org.tinyconfiguration.abc.listeners.PropertyListener.Type;
+import static org.tinyconfiguration.abc.listeners.PropertyListener.Type.ON_PROPERTY_UPDATE;
 
 /**
  * This class represent the properties stored inside the configuration instance
@@ -16,7 +21,7 @@ import java.util.function.Predicate;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Property extends AbstractProperty implements ObservableProperty<Property> {
+public class Property extends AbstractProperty implements ObservableProperty<Property> {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
@@ -54,138 +59,248 @@ public final class Property extends AbstractProperty implements ObservableProper
     @Override
     public void setValue(String s) {
 
-        super.setValue(s);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(s);
 
     }
 
     @Override
     public void setValue(boolean b) {
 
-        super.setValue(b);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(b);
 
     }
 
     @Override
     public void setValue(char c) {
 
-        super.setValue(c);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(c);
 
     }
 
     @Override
     public void setValue(byte b) {
 
-        super.setValue(b);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(b);
 
     }
 
     @Override
     public void setValue(short s) {
 
-        super.setValue(s);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(s);
 
     }
 
     @Override
     public void setValue(int i) {
-        super.setValue(i);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
+
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(i);
 
     }
 
     @Override
     public void setValue(long l) {
-        super.setValue(l);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
+
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(l);
     }
 
     @Override
     public void setValue(float f) {
-        super.setValue(f);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(f);
     }
 
     @Override
     public void setValue(double d) {
-        super.setValue(d);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(d);
     }
 
     @Override
     public void setValue(String[] s) {
-        super.setValue(s);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(s);
     }
 
     @Override
     public void setValue(boolean[] b) {
-        super.setValue(b);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(b);
     }
 
     @Override
     public void setValue(char[] c) {
-        super.setValue(c);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(c);
     }
 
     @Override
     public void setValue(byte[] b) {
-        super.setValue(b);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(b);
     }
 
     @Override
     public void setValue(short[] s) {
-        super.setValue(s);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(s);
     }
 
     @Override
     public void setValue(int[] i) {
-        super.setValue(i);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(i);
     }
 
     @Override
     public void setValue(long[] l) {
-        super.setValue(l);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(l);
     }
 
     @Override
     public void setValue(float[] f) {
-        super.setValue(f);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(f);
     }
 
     @Override
     public void setValue(double[] d) {
-        super.setValue(d);
+        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
 
-        this.listeners.forEach(listener -> listener.onChange(this));
+        this.listeners.forEach(listener -> {
+            if (!e.isConsumed())
+                listener.onChange(e);
+        });
+
+        if (!e.isConsumed())
+            super.setValue(d);
     }
 
     @Override
@@ -196,15 +311,15 @@ public final class Property extends AbstractProperty implements ObservableProper
     /**
      * Insert new listeners on this property
      *
-     * @param type The {@link PropertyListener.Type} which specifies the listener type
+     * @param type The {@link Type} which specifies the listener type
      * @param l    The property listener to associate on this property object
      * @return The boolean value representing the outcome on the insert operation
      */
     @Override
-    public boolean addListener(PropertyListener.Type type, PropertyListener<Property> l) {
+    public boolean addListener(Type type, PropertyListener<Property> l) {
         boolean result = false;
 
-        if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+        if (type == ON_PROPERTY_UPDATE)
             result = this.listeners.add(l);
 
         return result;
@@ -213,16 +328,16 @@ public final class Property extends AbstractProperty implements ObservableProper
     /**
      * Remove listeners from this property
      *
-     * @param type The {@link PropertyListener.Type} which specifies the listener type
+     * @param type The {@link Type} which specifies the listener type
      * @param l    The property listener to remove from this property object
      * @return The boolean value representing the outcome on the remove operation
      */
     @Override
-    public boolean removeListener(PropertyListener.Type type, PropertyListener<Property> l) {
+    public boolean removeListener(Type type, PropertyListener<Property> l) {
 
         boolean result = false;
 
-        if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+        if (type == ON_PROPERTY_UPDATE)
             result = this.listeners.remove(l);
 
         return result;
@@ -360,20 +475,20 @@ public final class Property extends AbstractProperty implements ObservableProper
         }
 
         @Override
-        public boolean addListener(PropertyListener.Type type, PropertyListener<Property> l) {
+        public boolean addListener(Type type, PropertyListener<Property> l) {
             boolean result = false;
 
-            if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+            if (type == ON_PROPERTY_UPDATE)
                 result = this.listeners.add(l);
 
             return result;
         }
 
         @Override
-        public boolean removeListener(PropertyListener.Type type, PropertyListener<Property> l) {
+        public boolean removeListener(Type type, PropertyListener<Property> l) {
             boolean result = false;
 
-            if (type == PropertyListener.Type.ON_PROPERTY_UPDATE)
+            if (type == ON_PROPERTY_UPDATE)
                 result = this.listeners.remove(l);
 
             return result;

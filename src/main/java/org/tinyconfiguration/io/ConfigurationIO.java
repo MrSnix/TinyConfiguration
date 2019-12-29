@@ -1,17 +1,18 @@
 package org.tinyconfiguration.io;
 
 import org.tinyconfiguration.Configuration;
+import org.tinyconfiguration.abc.Datatype;
+import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
 import org.tinyconfiguration.abc.io.AbstractHandler;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
-import org.tinyconfiguration.common.Datatype;
-import org.tinyconfiguration.common.Property;
 import org.tinyconfiguration.ex.InvalidConfigurationNameException;
 import org.tinyconfiguration.ex.InvalidConfigurationVersionException;
 import org.tinyconfiguration.ex.MalformedConfigurationPropertyException;
 import org.tinyconfiguration.ex.MissingConfigurationPropertyException;
+import org.tinyconfiguration.properties.Property;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
@@ -727,12 +728,17 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 MalformedConfigurationPropertyException,
                 MissingConfigurationPropertyException {
 
+            ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_READ);
+
             for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_READ)) {
-                listener.execute(instance);
+
+                if (!e.isConsumed())
+                    listener.execute(e);
+
             }
 
-            IMPL_READER_JSON.toObject(instance);
-
+            if (!e.isConsumed())
+                IMPL_READER_JSON.toObject(instance);
         }
 
         /**
@@ -766,11 +772,17 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         @Override
         public synchronized void write(Configuration instance) throws IOException {
 
+            ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_WRITE);
+
             for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_WRITE)) {
-                listener.execute(instance);
+
+                if (!e.isConsumed())
+                    listener.execute(e);
+
             }
 
-            IMPL_WRITER_JSON.toFile(instance);
+            if (!e.isConsumed())
+                IMPL_WRITER_JSON.toFile(instance);
         }
 
         /**
@@ -800,11 +812,17 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         @Override
         public synchronized void delete(Configuration instance) throws IOException {
 
+            ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_DELETE);
+
             for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_DELETE)) {
-                listener.execute(instance);
+
+                if (!e.isConsumed())
+                    listener.execute(e);
+
             }
 
-            Files.delete(instance.getFile().toPath());
+            if (!e.isConsumed())
+                Files.delete(instance.getFile().toPath());
         }
 
         /**

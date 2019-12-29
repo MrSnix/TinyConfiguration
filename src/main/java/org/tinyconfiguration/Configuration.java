@@ -4,7 +4,7 @@ import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.Buildable;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
-import org.tinyconfiguration.common.Property;
+import org.tinyconfiguration.properties.Property;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -332,6 +332,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
          * @throws NullPointerException If the property is null
          * @throws IllegalStateException If the property has been already inserted
          */
+        @SuppressWarnings("UnusedReturnValue")
         public Configuration.Builder put(Property property) {
 
             if (property == null)

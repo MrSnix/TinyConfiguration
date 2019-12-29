@@ -2,7 +2,7 @@ package org.tinyconfiguration.io;
 
 import org.junit.jupiter.api.Test;
 import org.tinyconfiguration.Configuration;
-import org.tinyconfiguration.common.Property;
+import org.tinyconfiguration.properties.Property;
 
 import java.util.Arrays;
 

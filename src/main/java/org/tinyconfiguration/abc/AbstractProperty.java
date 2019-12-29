@@ -1,7 +1,6 @@
 package org.tinyconfiguration.abc;
 
 import org.tinyconfiguration.abc.builders.Modifiable;
-import org.tinyconfiguration.common.Datatype;
 
 import static java.util.Objects.requireNonNull;
 
