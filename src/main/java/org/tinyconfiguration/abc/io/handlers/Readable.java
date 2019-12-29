@@ -25,9 +25,8 @@ public interface Readable<C extends AbstractConfiguration> {
      *
      * @param instance The configuration instance to read
      * @return Future object representing the reading task
-     * @throws Exception If anything goes wrong while processing the file
      */
-    Future<Void> readAsync(C instance) throws Exception;
+    Future<Void> readAsync(C instance);
 
     /**
      * Check if the configuration file exists

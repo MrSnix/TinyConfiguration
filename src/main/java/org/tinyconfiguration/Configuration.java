@@ -20,7 +20,9 @@ import java.util.NoSuchElementException;
 public final class Configuration extends AbstractConfiguration implements ObservableConfiguration<Configuration> {
 
     private final LinkedHashMap<String, Property> properties;
-    private final ArrayList<ConfigurationListener<Configuration>> onSave;
+
+    private final ArrayList<ConfigurationListener<Configuration>> onRead;
+    private final ArrayList<ConfigurationListener<Configuration>> onWrite;
     private final ArrayList<ConfigurationListener<Configuration>> onDelete;
 
     /**
@@ -29,7 +31,8 @@ public final class Configuration extends AbstractConfiguration implements Observ
     private Configuration() {
         super();
         this.properties = new LinkedHashMap<>();
-        this.onSave = new ArrayList<>();
+        this.onRead = new ArrayList<>();
+        this.onWrite = new ArrayList<>();
         this.onDelete = new ArrayList<>();
     }
 
@@ -49,7 +52,8 @@ public final class Configuration extends AbstractConfiguration implements Observ
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, Property> properties) {
         super(name, version, filename, pathname);
         this.properties = properties;
-        this.onSave = new ArrayList<>();
+        this.onRead = new ArrayList<>();
+        this.onWrite = new ArrayList<>();
         this.onDelete = new ArrayList<>();
     }
 
@@ -112,8 +116,11 @@ public final class Configuration extends AbstractConfiguration implements Observ
         boolean result = false;
 
         switch (type) {
-            case ON_CONFIG_SAVE:
-                result = this.onSave.add(listener);
+            case ON_CONFIG_READ:
+                result = this.onRead.add(listener);
+                break;
+            case ON_CONFIG_WRITE:
+                result = this.onWrite.add(listener);
                 break;
             case ON_CONFIG_DELETE:
                 result = this.onDelete.add(listener);
@@ -136,8 +143,11 @@ public final class Configuration extends AbstractConfiguration implements Observ
         boolean result = false;
 
         switch (type) {
-            case ON_CONFIG_SAVE:
-                result = this.onSave.remove(listener);
+            case ON_CONFIG_READ:
+                result = this.onRead.remove(listener);
+                break;
+            case ON_CONFIG_WRITE:
+                result = this.onWrite.remove(listener);
                 break;
             case ON_CONFIG_DELETE:
                 result = this.onDelete.remove(listener);
@@ -148,11 +158,39 @@ public final class Configuration extends AbstractConfiguration implements Observ
     }
 
     /**
+     * Returns {@link List} of listeners for any {@link ConfigurationListener.Type} value.
+     *
+     * @param type The event type
+     * @return The list holding functions references associated to the event
+     */
+    @Override
+    public List<ConfigurationListener<Configuration>> getListeners(ConfigurationListener.Type type) {
+
+        ArrayList<ConfigurationListener<Configuration>> e;
+
+        switch (type) {
+            case ON_CONFIG_READ:
+                e = new ArrayList<>(onRead);
+                break;
+            case ON_CONFIG_WRITE:
+                e = new ArrayList<>(onWrite);
+                break;
+            case ON_CONFIG_DELETE:
+                e = new ArrayList<>(onDelete);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
+
+        return e;
+    }
+
+    /**
      * Removes all listeners associated to the current configuration object
      */
     @Override
     public void resetListeners() {
-        this.onSave.clear();
+        this.onWrite.clear();
         this.onDelete.clear();
     }
 

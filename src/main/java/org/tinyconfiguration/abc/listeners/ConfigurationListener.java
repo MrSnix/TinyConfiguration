@@ -23,7 +23,7 @@ public interface ConfigurationListener<T extends AbstractConfiguration> extends 
      * All the events available
      */
     enum Type {
-        ON_CONFIG_SAVE, ON_CONFIG_DELETE
+        ON_CONFIG_READ, ON_CONFIG_WRITE, ON_CONFIG_DELETE
     }
 
 }

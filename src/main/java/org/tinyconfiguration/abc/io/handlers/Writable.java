@@ -25,9 +25,8 @@ public interface Writable<C extends AbstractConfiguration> {
      *
      * @param instance The configuration instance to write
      * @return Future object representing the writing task
-     * @throws Exception If anything goes wrong while processing the file
      */
-    Future<Void> writeAsync(C instance) throws Exception;
+    Future<Void> writeAsync(C instance);
 
     /**
      * Check if the configuration file exists

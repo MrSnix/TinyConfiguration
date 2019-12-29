@@ -3,17 +3,31 @@ package org.tinyconfiguration.io;
 import org.tinyconfiguration.Configuration;
 import org.tinyconfiguration.abc.io.AbstractHandler;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
+import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
+import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 import org.tinyconfiguration.common.Datatype;
 import org.tinyconfiguration.common.Property;
+import org.tinyconfiguration.ex.InvalidConfigurationNameException;
+import org.tinyconfiguration.ex.InvalidConfigurationVersionException;
+import org.tinyconfiguration.ex.MalformedConfigurationPropertyException;
+import org.tinyconfiguration.ex.MissingConfigurationPropertyException;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
+
+import static javax.json.JsonValue.ValueType;
+import static javax.json.JsonValue.ValueType.ARRAY;
+import static org.tinyconfiguration.abc.listeners.ConfigurationListener.Type.*;
 
 /**
  * The {@link ConfigurationIO} class contains I/O operations which can be executed on any {@link Configuration} instance
@@ -56,10 +70,9 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          *
          * @param instance The configuration instance
          * @return The object representation of the following instance
-         * @throws Exception If something goes wrong during the process
          */
         @Override
-        public JsonObject toObject(Configuration instance) throws Exception {
+        public JsonObject toObject(Configuration instance) {
 
             JsonObjectBuilder root = Json.createObjectBuilder();
             JsonArrayBuilder nodes = Json.createArrayBuilder();
@@ -80,10 +93,10 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * This method allow to generate a file given any object representation of the configuration instance
          *
          * @param instance The configuration instance
-         * @throws Exception If something goes wrong during the process
+         * @throws IOException If an I/O exception of some sort has occurred.
          */
         @Override
-        public void toFile(Configuration instance) throws Exception {
+        public void toFile(Configuration instance) throws IOException {
 
             // Defining exporting rules
             Map<String, Object> options = new HashMap<>(1);
@@ -95,8 +108,12 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
             // Obtaining object representation
             JsonObject obj = this.toObject(instance);
 
+            // Creating stream and setting charset
+            FileOutputStream fos = new FileOutputStream(instance.getFile());
+            OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+
             // Buffering and streaming
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()));
+            try (BufferedWriter bw = new BufferedWriter(osw);
                  javax.json.JsonWriter writer = writerFactory.createWriter(bw)) {
 
                 // Writing on disk
@@ -270,12 +287,159 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         }
     }
 
+    private static final class ImplReaderJSON implements ReaderJSON<Configuration, Property, JsonArray, JsonObject> {
+
+
+        /**
+         * This method allow to return a property object inside an intermediate representation
+         *
+         * @param property       The property instance
+         * @param representation The property intermediate representation instance
+         */
+        @Override
+        public void decode(Property property, JsonArray representation) throws
+                MissingConfigurationPropertyException,
+                MalformedConfigurationPropertyException {
+
+            // This is the intermediate property representation
+            JsonObject property0 = null;
+            // This flag stop the iteration
+            boolean stop = false;
+
+            // Now, we look inside "properties" on each node if the current "Property" object exists
+            for (Iterator<JsonValue> iterator = representation.iterator(); iterator.hasNext() && !stop; ) {
+                // Acquiring value
+                JsonValue p = iterator.next();
+
+                try {
+                    // So, we pick the first object inside "properties" array
+                    JsonObject tmp = p.asJsonObject();
+
+                    // If there is mapping on the key we are looking for, then we assign it, otherwise stay null
+                    if (tmp.get(property.getKey()) != null) {
+                        // Assign
+                        property0 = tmp;
+                        // Update flag
+                        stop = true;
+                    }
+
+                } catch (ClassCastException ex) {
+                    throw new MalformedConfigurationPropertyException("It was expecting an OBJECT type but an " + p.getValueType().name() + " type was found", property);
+                }
+
+            }
+
+            // In the end, if it is still null, no property with the given key was found inside the file
+            if (property0 == null)
+                throw new MissingConfigurationPropertyException(property);
+
+            // Now, the property may be an array or an object
+            ValueType type = property0.get(property.getKey()).getValueType();
+
+            // Let's handle both cases, checking validity then updating the property value
+            if (type != ARRAY) {
+                __decode_obj(property, property0);
+            } else {
+                __decode_array(property, property0.asJsonArray());
+            }
+
+        }
+
+        /**
+         * This method decode object-only property
+         *
+         * @param property The property instance
+         * @param obj      The intermediate object
+         * @return The new representation
+         */
+        @Override
+        public void __decode_obj(Property property, JsonObject obj) {
+
+        }
+
+        /**
+         * This method decode array-only property
+         *
+         * @param property The property instance
+         * @param array    The intermediate array
+         * @return The new representation
+         */
+        @Override
+        public void __decode_array(Property property, JsonArray array) {
+
+        }
+
+        /**
+         * This method generate the final representation of the configuration
+         *
+         * @param instance The configuration instance
+         * @throws InvalidConfigurationNameException       If the configuration name does not match the one inside the file
+         * @throws InvalidConfigurationVersionException    If the configuration version does not match the one inside the file
+         * @throws MissingConfigurationPropertyException   If any configuration property is missing from the file
+         * @throws MalformedConfigurationPropertyException If any configuration property is not well-formed
+         * @throws IOException                             If an I/O exception of some sort has occurred.
+         */
+        @Override
+        public void toObject(Configuration instance) throws
+                IOException,
+                InvalidConfigurationNameException,
+                InvalidConfigurationVersionException,
+                MissingConfigurationPropertyException,
+                MalformedConfigurationPropertyException {
+
+            // Acquiring the intermediate representation
+            JsonObject configuration = fromFile(instance);
+            JsonArray properties = configuration.getJsonArray("properties");
+
+            // Acquiring basic info
+            String name = configuration.getString("name");
+            String version = configuration.getString("version");
+
+            if (!name.equals(instance.getName()))
+                throw new InvalidConfigurationNameException(instance.getName(), name);
+
+            if (!version.equals(instance.getVersion()))
+                throw new InvalidConfigurationVersionException(instance.getVersion(), version);
+
+            for (Property property : instance.getProperties()) {
+                decode(property, properties);
+            }
+
+        }
+
+        /**
+         * This method generate an intermediate object representation of the configuration from the file
+         *
+         * @param instance The configuration instance
+         * @throws IOException If an I/O exception of some sort has occurred.
+         */
+        @Override
+        public JsonObject fromFile(Configuration instance) throws IOException {
+
+            // Creating stream and setting charset
+            FileInputStream fis = new FileInputStream(instance.getFile());
+            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+
+            JsonObject obj;
+
+            try (BufferedReader br = new BufferedReader(isr);
+                 JsonReader reader = Json.createReader(br)) {
+
+                obj = reader.readObject();
+
+            }
+
+            return obj;
+
+        }
+    }
+
     public static final class HandlerJSON implements AbstractHandlerIO<Configuration> {
 
         // Writers
         private final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
-
         // Readers
+        private final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
 
         /**
          * Private empty constructor
@@ -287,10 +451,21 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * Reads the configuration file
          *
          * @param instance The configuration instance to read and update
-         * @throws Exception If anything goes wrong while processing the file
+         * @throws IOException If an I/O exception of some sort has occurred.
          */
         @Override
-        public void read(Configuration instance) throws Exception {
+        public synchronized void read(Configuration instance) throws
+                IOException,
+                InvalidConfigurationNameException,
+                InvalidConfigurationVersionException,
+                MalformedConfigurationPropertyException,
+                MissingConfigurationPropertyException {
+
+            for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_READ)) {
+                listener.execute(instance);
+            }
+
+            IMPL_READER_JSON.toObject(instance);
 
         }
 
@@ -299,21 +474,36 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          *
          * @param instance The configuration instance to read
          * @return Future object representing the reading task
-         * @throws Exception If anything goes wrong while processing the file
          */
         @Override
-        public Future<Void> readAsync(Configuration instance) throws Exception {
-            return null;
+        public Future<Void> readAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    read(instance);
+                } catch (IOException |
+                        InvalidConfigurationNameException |
+                        InvalidConfigurationVersionException |
+                        MalformedConfigurationPropertyException |
+                        MissingConfigurationPropertyException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
         }
 
         /**
          * Write the configuration file
          *
          * @param instance The configuration instance to write
-         * @throws Exception If anything goes wrong while processing the file
+         * @throws IOException If an I/O exception of some sort has occurred.
          */
         @Override
-        public void write(Configuration instance) throws Exception {
+        public synchronized void write(Configuration instance) throws IOException {
+
+            for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_WRITE)) {
+                listener.execute(instance);
+            }
+
             IMPL_WRITER_JSON.toFile(instance);
         }
 
@@ -322,22 +512,33 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          *
          * @param instance The configuration instance to write
          * @return Future object representing the writing task
-         * @throws Exception If anything goes wrong while processing the file
          */
         @Override
-        public Future<Void> writeAsync(Configuration instance) throws Exception {
-            return null;
+        public Future<Void> writeAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    write(instance);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
         }
 
         /**
          * Delete the configuration file
          *
          * @param instance The configuration instance to delete
-         * @throws Exception If the configuration file cannot be deleted
+         * @throws IOException If an I/O exception of some sort has occurred.
          */
         @Override
-        public void delete(Configuration instance) throws Exception {
+        public synchronized void delete(Configuration instance) throws IOException {
 
+            for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_DELETE)) {
+                listener.execute(instance);
+            }
+
+            Files.delete(instance.getFile().toPath());
         }
 
         /**
@@ -348,7 +549,14 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          */
         @Override
         public Future<Void> deleteAsync(Configuration instance) {
-            return null;
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    delete(instance);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
         }
     }
 
