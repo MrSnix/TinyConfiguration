@@ -9,15 +9,14 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractReader<C extends AbstractConfiguration, P extends AbstractProperty, I> {
+public interface AbstractReader<C extends AbstractConfiguration, P extends AbstractProperty> {
 
     /**
-     * This method allow to return a property object inside an intermediate representation
+     * This method allow to translate a property object inside an intermediate representation
      *
-     * @param property       The property instance
-     * @param representation The property intermediate representation instance
+     * @param property The property instance
      */
-    void decode(P property, I representation) throws Exception;
+    void decode(P property) throws Exception;
 
     /**
      * This method generate the final representation of the configuration

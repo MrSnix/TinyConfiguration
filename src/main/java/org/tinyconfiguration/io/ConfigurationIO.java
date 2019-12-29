@@ -290,17 +290,17 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         }
     }
 
-    private static final class ImplReaderJSON implements ReaderJSON<Configuration, Property, JsonArray, JsonObject> {
+    private static final class ImplReaderJSON implements ReaderJSON<Configuration, Property> {
 
+        private JsonArray properties;
 
         /**
-         * This method allow to return a property object inside an intermediate representation
+         * This method allow to translate a property object inside an intermediate representation
          *
-         * @param property       The property instance
-         * @param representation The property intermediate representation instance
+         * @param property The property instance
          */
         @Override
-        public void decode(Property property, JsonArray representation) throws
+        public void decode(Property property) throws
                 MissingConfigurationPropertyException,
                 MalformedConfigurationPropertyException {
 
@@ -310,7 +310,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
             boolean stop = false;
 
             // Now, we look inside "properties" on each node if the current "Property" object exists
-            for (Iterator<JsonValue> iterator = representation.iterator(); iterator.hasNext() && !stop; ) {
+            for (Iterator<JsonValue> iterator = properties.iterator(); iterator.hasNext() && !stop; ) {
                 // Acquiring value
                 JsonValue p = iterator.next();
 
@@ -656,7 +656,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
 
             // Acquiring the intermediate representation
             JsonObject configuration = fromFile(instance);
-            JsonArray properties = configuration.getJsonArray("properties");
+            this.properties = configuration.getJsonArray("properties");
 
             // Acquiring basic info
             String name = configuration.getString("name");
@@ -669,8 +669,10 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 throw new InvalidConfigurationVersionException(instance.getVersion(), version);
 
             for (Property property : instance.getProperties()) {
-                decode(property, properties);
+                decode(property);
             }
+
+            this.properties = null;
 
         }
 
