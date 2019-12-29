@@ -22,16 +22,16 @@ public interface ReaderJSON<C extends AbstractConfiguration, P extends AbstractP
      * @param obj      The intermediate object
      * @return The new representation
      */
-    void __decode_obj(P property, O obj);
+    void __decode_obj(P property, O obj) throws Exception;
 
     /**
      * This method decode array-only property
      *
      * @param property The property instance
-     * @param array    The intermediate array
+     * @param obj      The intermediate array
      * @return The new representation
      */
-    void __decode_array(P property, A array);
+    void __decode_array(P property, O obj) throws Exception;
 
     /**
      * This method generate the final representation of the configuration

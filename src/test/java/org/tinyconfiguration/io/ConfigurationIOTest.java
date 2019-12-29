@@ -1,9 +1,10 @@
 package org.tinyconfiguration.io;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.tinyconfiguration.Configuration;
 import org.tinyconfiguration.common.Property;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -11,7 +12,6 @@ class ConfigurationIOTest {
 
 
     @Test
-    @Disabled
     void writeJSON() {
 
         Configuration.Builder b = new Configuration.Builder().
@@ -39,10 +39,28 @@ class ConfigurationIOTest {
                 build());
 
         b.put(new Property.Builder().
+                setKey("sex").
+                setValue('M').
+                setDescription("Sets the user gender").
+                build());
+
+        b.put(new Property.Builder().
                 setKey("last-access").
                 setValue("never").
                 setDescription("Specifies when the last session was started").
                 build());
+
+        b.put(new Property.Builder().
+                setKey("auto-update").
+                setValue(true).
+                setDescription("Specifies if the application should regularly check for new software releases")
+                .build());
+
+        b.put(new Property.Builder().
+                setKey("auto-update-reminder").
+                setValue(5).
+                setDescription("Specifies how many times the application should remind to install the new release")
+                .build());
 
         b.put(new Property.Builder().
                 setKey("hex-digits").
@@ -90,10 +108,28 @@ class ConfigurationIOTest {
                 build());
 
         b.put(new Property.Builder().
+                setKey("sex").
+                setValue('F').
+                setDescription("Sets the user gender").
+                build());
+
+        b.put(new Property.Builder().
                 setKey("last-access").
                 setValue("never").
                 setDescription("Specifies when the last session was started").
                 build());
+
+        b.put(new Property.Builder().
+                setKey("auto-update").
+                setValue(false).
+                setDescription("Specifies if the application should regularly check for new software releases")
+                .build());
+
+        b.put(new Property.Builder().
+                setKey("auto-update-reminder").
+                setValue(2).
+                setDescription("Specifies how many times the application should remind to install the new release")
+                .build());
 
         b.put(new Property.Builder().
                 setKey("hex-digits").
@@ -108,6 +144,10 @@ class ConfigurationIOTest {
             ConfigurationIO io = new ConfigurationIO();
 
             io.getHandlerJSON().read(c);
+
+            c.getProperties().forEach(property -> {
+                System.out.println("Key: " + property.getKey() + " - " + "Value: " + Arrays.toString(property.getValue().asStringArray()));
+            });
 
         });
 

@@ -16,6 +16,8 @@ import org.tinyconfiguration.ex.MissingConfigurationPropertyException;
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -210,9 +212,9 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
             // Acquiring value
             Datatype dt = property.getValue();
 
-            if (dt.isNumeric()) {
+            if (dt.isNumericArray()) {
 
-                if (dt.isByte()) {
+                if (dt.isByteArray()) {
 
                     byte[] tmp = dt.asByteArray();
 
@@ -220,7 +222,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                         values.add(e);
                     }
 
-                } else if (dt.isShort()) {
+                } else if (dt.isShortArray()) {
 
                     short[] tmp = dt.asShortArray();
 
@@ -228,7 +230,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                         values.add(e);
                     }
 
-                } else if (dt.isInteger()) {
+                } else if (dt.isIntegerArray()) {
 
                     int[] tmp = dt.asIntArray();
 
@@ -236,7 +238,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                         values.add(e);
                     }
 
-                } else if (dt.isLong()) {
+                } else if (dt.isLongArray()) {
 
                     long[] tmp = dt.asLongArray();
 
@@ -244,7 +246,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                         values.add(e);
                     }
 
-                } else if (dt.isFloat()) {
+                } else if (dt.isFloatArray()) {
 
                     float[] tmp = dt.asFloatArray();
 
@@ -252,7 +254,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                         values.add(e);
                     }
 
-                } else if (dt.isDouble()) {
+                } else if (dt.isDoubleArray()) {
 
                     double[] tmp = dt.asDoubleArray();
 
@@ -262,7 +264,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
 
                 }
 
-            } else if (dt.isText()) {
+            } else if (dt.isTextArray()) {
 
                 String[] tmp = dt.asStringArray();
 
@@ -270,7 +272,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                     values.add(e);
                 }
 
-            } else if (dt.isBoolean()) {
+            } else if (dt.isBooleanArray()) {
 
                 boolean[] tmp = dt.asBooleanArray();
 
@@ -338,9 +340,9 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
 
             // Let's handle both cases, checking validity then updating the property value
             if (type != ARRAY) {
-                __decode_obj(property, property0);
+                __decode_obj(property, property0.asJsonObject());
             } else {
-                __decode_array(property, property0.asJsonArray());
+                __decode_array(property, property0.asJsonObject());
             }
 
         }
@@ -353,7 +355,92 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * @return The new representation
          */
         @Override
-        public void __decode_obj(Property property, JsonObject obj) {
+        public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException {
+
+            Datatype value = property.getValue();
+
+            ValueType type = obj.get(property.getKey()).getValueType();
+
+            switch (type) {
+
+                case STRING:
+
+                    String s = obj.getString(property.getKey());
+
+                    if (value.isString()) {
+                        property.setValue(s);
+                    } else if (value.isCharacter()) {
+
+                        if (s.length() > 1) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                        }
+
+                        property.setValue(s.charAt(0));
+
+                    } else {
+                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                    }
+
+                    break;
+                case NUMBER:
+
+                    BigInteger integral = obj.getJsonNumber(property.getKey()).bigIntegerValueExact();
+                    BigDecimal decimal = obj.getJsonNumber(property.getKey()).bigDecimalValue();
+
+
+                    if (value.isByte()) {
+
+                        try {
+                            value.setValue(integral.byteValueExact());
+                        } catch (ArithmeticException ex) {
+                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                        }
+
+                    } else if (value.isShort()) {
+
+                        try {
+                            value.setValue(integral.shortValueExact());
+                        } catch (ArithmeticException ex) {
+                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                        }
+
+                    } else if (value.isInteger()) {
+
+                        try {
+                            value.setValue(integral.intValueExact());
+                        } catch (ArithmeticException ex) {
+                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                        }
+
+                    } else if (value.isLong()) {
+
+                        try {
+                            value.setValue(integral.longValueExact());
+                        } catch (ArithmeticException ex) {
+                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                        }
+
+                    } else if (value.isFloat()) {
+                        value.setValue(decimal.floatValue());
+                    } else if (value.isDouble()) {
+                        value.setValue(decimal.doubleValue());
+                    } else {
+                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                    }
+                    break;
+                case TRUE:
+                case FALSE:
+                    if (value.isBoolean())
+                        property.setValue(obj.getBoolean(property.getKey()));
+                    else {
+                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                    }
+                    break;
+                case NULL:
+                    throw new MalformedConfigurationPropertyException("The value was NULL", property);
+                default:
+                    throw new MalformedConfigurationPropertyException("Unexpected value: " + obj.getValueType(), property);
+            }
 
         }
 
@@ -361,11 +448,190 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * This method decode array-only property
          *
          * @param property The property instance
-         * @param array    The intermediate array
+         * @param obj      The intermediate array
          * @return The new representation
          */
         @Override
-        public void __decode_array(Property property, JsonArray array) {
+        public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException {
+
+            Datatype value = property.getValue();
+
+            JsonArray array = obj.get(property.getKey()).asJsonArray();
+
+            // Temp arrays
+            String[] arrString = null;
+            char[] arrChars = null;
+            byte[] arrBytes = null;
+            short[] arrShort = null;
+            int[] arrInt = null;
+            long[] arrLong = null;
+            float[] arrFloat = null;
+            double[] arrDouble = null;
+            boolean[] arrBoolean = null;
+
+            for (int i = 0; i < array.size(); i++) {
+
+                ValueType type = array.get(i).getValueType();
+
+                switch (type) {
+
+                    case STRING:
+
+                        String s = array.getString(i);
+
+                        if (value.isStringArray()) {
+
+                            if (arrString == null)
+                                arrString = new String[array.size()];
+
+                            arrString[i] = s;
+
+                            value.setValue(arrString);
+
+                        } else if (value.isCharacterArray()) {
+
+                            if (arrChars == null)
+                                arrChars = new char[array.size()];
+
+                            if (s.length() > 1) {
+                                throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                            }
+
+                            arrChars[i] = s.charAt(0);
+
+                            property.setValue(arrChars);
+
+                        } else {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                        }
+
+                        break;
+                    case NUMBER:
+
+                        BigInteger integral = array.getJsonNumber(i).bigIntegerValueExact();
+                        BigDecimal decimal = array.getJsonNumber(i).bigDecimalValue();
+
+
+                        if (value.isByteArray()) {
+
+                            byte b;
+
+                            if (arrBytes == null)
+                                arrBytes = new byte[array.size()];
+
+                            try {
+                                b = integral.byteValueExact();
+                            } catch (ArithmeticException ex) {
+                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            }
+
+                            arrBytes[i] = b;
+
+                            value.setValue(arrBytes);
+
+                        } else if (value.isShortArray()) {
+
+                            short b;
+
+                            if (arrShort == null)
+                                arrShort = new short[array.size()];
+
+                            try {
+                                b = integral.shortValueExact();
+                            } catch (ArithmeticException ex) {
+                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            }
+
+                            arrShort[i] = b;
+
+                            value.setValue(arrShort);
+
+                        } else if (value.isIntegerArray()) {
+
+                            int b;
+
+                            if (arrInt == null)
+                                arrInt = new int[array.size()];
+
+                            try {
+                                b = integral.intValueExact();
+                            } catch (ArithmeticException ex) {
+                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            }
+
+                            arrInt[i] = b;
+
+                            value.setValue(arrInt);
+
+                        } else if (value.isLongArray()) {
+
+                            long b;
+
+                            if (arrLong == null)
+                                arrLong = new long[array.size()];
+
+                            try {
+                                b = integral.longValueExact();
+                            } catch (ArithmeticException ex) {
+                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            }
+
+                            arrLong[i] = b;
+
+                            value.setValue(arrLong);
+
+                        } else if (value.isFloat()) {
+
+                            if (arrFloat == null)
+                                arrFloat = new float[array.size()];
+
+                            float b = decimal.floatValue();
+
+                            arrFloat[i] = b;
+
+                            value.setValue(arrFloat);
+                        } else if (value.isDouble()) {
+
+                            if (arrDouble == null)
+                                arrDouble = new double[array.size()];
+
+                            double b = decimal.doubleValue();
+
+                            arrDouble[i] = b;
+
+                            value.setValue(arrDouble);
+                        } else {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                        }
+                        break;
+                    case TRUE:
+                    case FALSE:
+
+                        if (value.isBooleanArray()) {
+
+                            if (arrBoolean == null)
+                                arrBoolean = new boolean[array.size()];
+
+                            boolean b = array.getBoolean(i);
+
+                            arrBoolean[i] = b;
+
+                            value.setValue(arrBoolean);
+
+                        } else {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                        }
+
+                        break;
+                    case NULL:
+                        throw new MalformedConfigurationPropertyException("The value was NULL", property);
+                    default:
+                        throw new MalformedConfigurationPropertyException("Unexpected value: " + obj.getValueType(), property);
+                }
+
+
+            }
+
 
         }
 

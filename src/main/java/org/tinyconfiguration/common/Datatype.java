@@ -38,6 +38,7 @@ public class Datatype extends AbstractDatatype {
             throw new IllegalArgumentException("The value must be of the same class as the one declared");
         }
 
-        this.value = new Datatype(value);
+        this.value = value;
     }
+
 }
