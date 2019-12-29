@@ -114,6 +114,9 @@ release.
 |:-------:|:--------------------------------------------------------:|
 |   0.1   |                   Initial release                        |
 |   0.2   |   New arrays methods, property groups and exports mode   |
+|         |    Overhauled the entire class and package hierarchy     |
+|         |           Overhauled event management system             |
+|         |                Rewritten documentation                   |
 
 ## What's next?
 
@@ -122,6 +125,7 @@ release.
 **Release date:** [ *???* ]
 
 **Features:**
+
 - ?
 - ?
 - ?

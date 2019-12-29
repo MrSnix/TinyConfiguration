@@ -16,7 +16,7 @@ All notable changes to TinyConfiguration will be documented in this file.
 
 ## 0.0.2
 
-**Release date:** [ *20 / 12 / 2019* ]
+**Release date:** [ *30 / 12 / 2019* ]
 
 **New**
 
@@ -26,12 +26,13 @@ All notable changes to TinyConfiguration will be documented in this file.
 - Import and export as **XML**
 
 **Changed**
-- Property object now has its own builder
-- PropertyValue object now has its own builder
-- Completely rewritten ConfigurationIO
+- Overhauled the entire class and package hierarchy
+- Overhauled event management system
+- Rewritten documentation
 
 **Removed**
 - Reading mode: strict and tolerant
+- A lot of useless stuff
 
 ## 0.0.1
 
