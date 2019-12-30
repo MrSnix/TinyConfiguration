@@ -11,7 +11,7 @@ import org.tinyconfiguration.abc.io.handlers.Writable;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractHandlerIO<C extends AbstractConfiguration> extends Readable<C>, Writable<C>, Deletable<C> {
+public abstract class AbstractHandlerIO<C extends AbstractConfiguration> implements Readable<C>, Writable<C>, Deletable<C> {
 
     /**
      * Check if the configuration file exists
@@ -20,7 +20,7 @@ public interface AbstractHandlerIO<C extends AbstractConfiguration> extends Read
      * @return True or false
      */
     @Override
-    default boolean exist(C instance) {
+    public boolean exist(C instance) {
         return instance.getFile().exists();
     }
 

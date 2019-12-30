@@ -1,23 +1,17 @@
-package org.tinyconfiguration.common.basic.io;
+package org.tinyconfiguration.common.basic;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.tinyconfiguration.abc.Property;
-import org.tinyconfiguration.common.basic.Configuration;
 
-import java.util.concurrent.Future;
+import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ConfigurationIOTest {
+class ConfigurationTest {
 
     private final Configuration instance;
 
-    public ConfigurationIOTest() {
+    public ConfigurationTest() {
 
         Configuration.Builder b = new Configuration.Builder().
                 setName("ConfigurationTest").
@@ -78,76 +72,82 @@ class ConfigurationIOTest {
     }
 
     @Test
-    @Order(1)
-    void writeJSON() {
+    void getProperties() {
 
-        assertDoesNotThrow(() -> {
+        Configuration.Builder b = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
+                setPathname("./").
+                setFilename("tiny-configuration.json");
 
-            ConfigurationIO.JSON.write(this.instance);
+        Configuration e = b.build();
 
-        });
+        assertEquals(0, e.getProperties().size());
 
+        assertEquals(8, this.instance.getProperties().size());
     }
 
     @Test
-    @Order(2)
-    void writeAsyncJSON() {
+    void get() {
 
-        assertDoesNotThrow(() -> {
-
-            int x = 0;
-
-            Future<Void> task = ConfigurationIO.JSON.writeAsync(this.instance);
-
-            while (!task.isDone()) {
-                ++x;
-            }
-
-            assertTrue(x != 0);
-
+        assertThrows(NullPointerException.class, () -> {
+            this.instance.get(null);
         });
 
+        assertThrows(IllegalArgumentException.class, () -> {
+            this.instance.get("");
+        });
+
+        assertThrows(NoSuchElementException.class, () -> {
+            this.instance.get("unknown");
+        });
+
+        assertTrue(this.instance.get("password").getValue().asString().equalsIgnoreCase("toor"));
     }
 
     @Test
-    @Order(3)
-    void readJSON() {
-
-        assertDoesNotThrow(() -> {
-
-            ConfigurationIO.JSON.read(this.instance);
-
-        });
-
+    void isEmpty() {
+        assertFalse(instance.isEmpty());
     }
 
     @Test
-    @Order(4)
-    void readAsyncJSON() {
+    void clear() {
 
-        assertDoesNotThrow(() -> {
+        Configuration.Builder b = new Configuration.Builder().
+                setName("ConfigurationTest").
+                setVersion("1.0.0").
+                setPathname("./").
+                setFilename("tiny-configuration.json");
 
-            int x = 0;
+        b.put(new Property.Builder().
+                setKey("language").
+                setValue("EN").
+                setDescription("Specifies the language environment for the session").
+                build());
 
-            Future<Void> task = ConfigurationIO.JSON.readAsync(this.instance);
+        Configuration e = b.build();
 
-            while (!task.isDone()) {
-                ++x;
-            }
+        e.clear();
 
-            assertTrue(x != 0);
-
-        });
-
+        assertTrue(e.isEmpty());
     }
 
     @Test
-    @Order(5)
-    void deleteJSON() {
+    void contains() {
 
         assertDoesNotThrow(() -> {
-            ConfigurationIO.JSON.delete(instance);
+            assertTrue(this.instance.contains("language"));
+            assertFalse(this.instance.contains("unknown"));
         });
+
+        assertThrows(NullPointerException.class, () -> {
+            this.instance.contains(null);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            this.instance.contains("");
+        });
+
     }
 
 }

@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 public interface AbstractContainer {
 
     /**
-     * Check if a specific key is stored inside the configuration instance
+     * Check if a specific key is stored inside the container instance
      *
      * @param key The key used to identify the value
      * @return True or false

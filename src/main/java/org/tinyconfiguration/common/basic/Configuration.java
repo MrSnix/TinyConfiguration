@@ -81,16 +81,35 @@ public final class Configuration extends AbstractConfiguration implements Observ
         return this.properties.get(key);
     }
 
+    /**
+     * Checks if any properties has been inserted inside the configuration.
+     *
+     * @return True or false
+     */
     @Override
     public boolean isEmpty() {
         return properties.isEmpty();
     }
 
+    /**
+     * Remove all properties and listeners stored by the container.
+     */
     @Override
     public void clear() {
         this.properties.clear();
+        this.onRead.clear();
+        this.onWrite.clear();
+        this.onDelete.clear();
     }
 
+    /**
+     * Check if a specific key is stored inside the configuration instance
+     *
+     * @param key The key used to identify the value
+     * @return True or false
+     * @throws NullPointerException     If the key is null
+     * @throws IllegalArgumentException If the key is empty
+     */
     @Override
     public boolean contains(String key) {
 

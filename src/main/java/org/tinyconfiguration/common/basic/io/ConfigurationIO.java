@@ -3,7 +3,6 @@ package org.tinyconfiguration.common.basic.io;
 import org.tinyconfiguration.abc.Datatype;
 import org.tinyconfiguration.abc.Property;
 import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
-import org.tinyconfiguration.abc.io.AbstractHandler;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
@@ -35,26 +34,14 @@ import static org.tinyconfiguration.abc.listeners.ConfigurationListener.Type.*;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class ConfigurationIO implements AbstractHandler<Configuration> {
+public final class ConfigurationIO {
 
-    // Handlers
-    private final HandlerJSON HandlerJSON;
-
-    /**
-     * Public empty constructor
-     */
-    public ConfigurationIO() {
-        this.HandlerJSON = new HandlerJSON();
-    }
+    public static final HandlerJSON JSON = new HandlerJSON();
 
     /**
-     * Gets the JSON handler
-     *
-     * @return The {@link AbstractHandlerIO} interface on {@link Configuration} as JSON
+     * Private empty constructor
      */
-    @Override
-    public HandlerJSON getHandlerJSON() {
-        return HandlerJSON;
+    private ConfigurationIO() {
     }
 
     /**
@@ -287,6 +274,12 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         }
     }
 
+    /**
+     * The {@link ImplReaderJSON} class contains the implementations of I/O operations which can be executed on any {@link Configuration} instance
+     *
+     * @author G. Baittiner
+     * @version 0.1
+     */
     private static final class ImplReaderJSON implements ReaderJSON<Configuration, Property> {
 
         private JsonArray properties;
@@ -661,7 +654,8 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 InvalidConfigurationVersionException,
                 MissingConfigurationPropertyException,
                 MalformedConfigurationPropertyException,
-                InvalidConfigurationPropertyException {
+                InvalidConfigurationPropertyException,
+                UnknownConfigurationPropertyException {
 
             // Acquiring the intermediate representation
             JsonObject configuration = fromFile(instance);
@@ -671,11 +665,17 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
             String name = configuration.getString("name");
             String version = configuration.getString("version");
 
+            int readProperties = this.properties.size();
+            int expectedProperties = instance.getProperties().size();
+
             if (!name.equals(instance.getName()))
                 throw new InvalidConfigurationNameException(instance.getName(), name);
 
             if (!version.equals(instance.getVersion()))
                 throw new InvalidConfigurationVersionException(instance.getVersion(), version);
+
+            if (expectedProperties != readProperties)
+                throw new UnknownConfigurationPropertyException();
 
             for (Property property : instance.getProperties()) {
                 decode(property);
@@ -712,12 +712,16 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         }
     }
 
-    public static final class HandlerJSON implements AbstractHandlerIO<Configuration> {
+    /**
+     * The {@link HandlerJSON} class contains the implementations of I/O operations which can be executed on any {@link Configuration} instance
+     *
+     * @author G. Baittiner
+     * @version 0.1
+     */
+    public static final class HandlerJSON extends AbstractHandlerIO<Configuration> {
 
-        // Writers
-        private final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
-        // Readers
-        private final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
+        private static final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
+        private static final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
 
         /**
          * Private empty constructor
@@ -734,6 +738,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * @throws MissingConfigurationPropertyException   If any configuration property is missing from the file
          * @throws MalformedConfigurationPropertyException If any configuration property is not well-formed
          * @throws InvalidConfigurationPropertyException   If any configuration property fails its own validation test
+         * @throws UnknownConfigurationPropertyException   If there are more properties inside the file than the one declared
          * @throws IOException                             If an I/O exception of some sort has occurred.
          */
         @Override
@@ -743,7 +748,8 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 InvalidConfigurationVersionException,
                 MalformedConfigurationPropertyException,
                 MissingConfigurationPropertyException,
-                InvalidConfigurationPropertyException {
+                InvalidConfigurationPropertyException,
+                UnknownConfigurationPropertyException {
 
             ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_READ);
 
@@ -764,7 +770,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * @param instance The configuration instance to read
          * @return Future object representing the reading task
          * @throws CompletionException If any exceptions occurs at runtime
-         * @see ConfigurationIO.HandlerJSON#read(Configuration)
+         * @see HandlerJSON#read(Configuration)
          */
         @Override
         public Future<Void> readAsync(Configuration instance) {
@@ -772,12 +778,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 try {
                     read(instance);
                 } catch (
-                        IOException |
-                                InvalidConfigurationNameException |
-                                InvalidConfigurationVersionException |
-                                MalformedConfigurationPropertyException |
-                                MissingConfigurationPropertyException |
-                                InvalidConfigurationPropertyException e) {
+                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException e) {
                     throw new CompletionException(e);
                 }
                 return null;
