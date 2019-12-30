@@ -21,7 +21,6 @@ public interface ReaderJSON<C extends AbstractConfiguration, P extends AbstractP
      *
      * @param property The property instance
      * @param obj      The intermediate object
-     * @return The new representation
      */
     void __decode_obj(P property, JsonObject obj) throws Exception;
 
@@ -30,7 +29,6 @@ public interface ReaderJSON<C extends AbstractConfiguration, P extends AbstractP
      *
      * @param property The property instance
      * @param obj      The intermediate array
-     * @return The new representation
      */
     void __decode_array(P property, JsonObject obj) throws Exception;
 

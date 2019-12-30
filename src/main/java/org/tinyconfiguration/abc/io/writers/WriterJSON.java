@@ -49,7 +49,6 @@ public interface WriterJSON<C extends AbstractConfiguration, P extends AbstractP
      *
      * @param property The property instance
      * @param root     The root object
-     * @return The new representation
      */
     void __encode_obj(JsonObjectBuilder root, P property);
 
@@ -58,7 +57,6 @@ public interface WriterJSON<C extends AbstractConfiguration, P extends AbstractP
      *
      * @param property The property instance
      * @param root     The root object
-     * @return The new representation
      */
     void __encode_array(JsonObjectBuilder root, P property);
 
