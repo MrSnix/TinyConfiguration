@@ -1,7 +1,5 @@
-package org.tinyconfiguration.properties;
+package org.tinyconfiguration.abc;
 
-import org.tinyconfiguration.abc.AbstractProperty;
-import org.tinyconfiguration.abc.Datatype;
 import org.tinyconfiguration.abc.builders.Buildable;
 import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.events.ObservableProperty;
@@ -362,16 +360,21 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     /**
      * Gets the validity performing the specified {@link Predicate} test
+     * <p></p>
+     * It returns <u>always</u> <b>true</b>, if no validation function was defined
      *
      * @return The boolean value representing the validity state
-     * @throws NullPointerException If the validator function is null
      */
     public boolean isValid() {
 
-        if (this.isValid == null)
-            throw new NullPointerException("The validator function is null");
+        boolean isValid = false;
 
-        return this.isValid.test(this);
+        if (this.isValid == null)
+            isValid = true;
+        else
+            isValid = this.isValid.test(this);
+
+        return isValid;
     }
 
     /**

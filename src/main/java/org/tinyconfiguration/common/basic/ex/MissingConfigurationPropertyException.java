@@ -1,7 +1,7 @@
-package org.tinyconfiguration.ex;
+package org.tinyconfiguration.common.basic.ex;
 
+import org.tinyconfiguration.abc.Property;
 import org.tinyconfiguration.abc.ex.PropertyException;
-import org.tinyconfiguration.properties.Property;
 
 public class MissingConfigurationPropertyException extends PropertyException {
 

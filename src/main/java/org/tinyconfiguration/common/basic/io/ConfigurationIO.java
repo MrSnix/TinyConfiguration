@@ -1,18 +1,15 @@
-package org.tinyconfiguration.io;
+package org.tinyconfiguration.common.basic.io;
 
-import org.tinyconfiguration.Configuration;
 import org.tinyconfiguration.abc.Datatype;
+import org.tinyconfiguration.abc.Property;
 import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
 import org.tinyconfiguration.abc.io.AbstractHandler;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
-import org.tinyconfiguration.ex.InvalidConfigurationNameException;
-import org.tinyconfiguration.ex.InvalidConfigurationVersionException;
-import org.tinyconfiguration.ex.MalformedConfigurationPropertyException;
-import org.tinyconfiguration.ex.MissingConfigurationPropertyException;
-import org.tinyconfiguration.properties.Property;
+import org.tinyconfiguration.common.basic.Configuration;
+import org.tinyconfiguration.common.basic.ex.*;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
@@ -302,7 +299,8 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
         @Override
         public void decode(Property property) throws
                 MissingConfigurationPropertyException,
-                MalformedConfigurationPropertyException {
+                MalformedConfigurationPropertyException,
+                InvalidConfigurationPropertyException {
 
             // This is the intermediate property representation
             JsonObject property0 = null;
@@ -332,19 +330,25 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
 
             }
 
-            // In the end, if it is still null, no property with the given key was found inside the file
-            if (property0 == null)
-                throw new MissingConfigurationPropertyException(property);
+            // If the property was found, we proceed
+            if (property0 != null) {
 
-            // Now, the property may be an array or an object
-            ValueType type = property0.get(property.getKey()).getValueType();
+                // Now, the property may be an array or an object
+                ValueType type = property0.get(property.getKey()).getValueType();
 
-            // Let's handle both cases, checking validity then updating the property value
-            if (type != ARRAY) {
-                __decode_obj(property, property0.asJsonObject());
-            } else {
-                __decode_array(property, property0.asJsonObject());
+                // Let's handle both cases, checking validity then updating the property value
+                if (type != ARRAY) {
+                    __decode_obj(property, property0.asJsonObject());
+                } else {
+                    __decode_array(property, property0.asJsonObject());
+                }
             }
+
+            // In the end, if it is still null, no property with the given key was found inside the file
+            if (property0 == null && !property.isOptional()) {
+                throw new MissingConfigurationPropertyException(property);
+            }
+
 
         }
 
@@ -356,7 +360,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * @return The new representation
          */
         @Override
-        public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException {
+        public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
             Datatype value = property.getValue();
 
@@ -443,6 +447,11 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                     throw new MalformedConfigurationPropertyException("Unexpected value: " + obj.getValueType(), property);
             }
 
+            // Final check
+            if (!property.isValid()) {
+                throw new InvalidConfigurationPropertyException("The validation test failed", property);
+            }
+
         }
 
         /**
@@ -453,7 +462,7 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * @return The new representation
          */
         @Override
-        public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException {
+        public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
             Datatype value = property.getValue();
 
@@ -633,6 +642,10 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
 
             }
 
+            // Final check
+            if (!property.isValid()) {
+                throw new InvalidConfigurationPropertyException("The validation test failed", property);
+            }
 
         }
 
@@ -640,11 +653,6 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * This method generate the final representation of the configuration
          *
          * @param instance The configuration instance
-         * @throws InvalidConfigurationNameException       If the configuration name does not match the one inside the file
-         * @throws InvalidConfigurationVersionException    If the configuration version does not match the one inside the file
-         * @throws MissingConfigurationPropertyException   If any configuration property is missing from the file
-         * @throws MalformedConfigurationPropertyException If any configuration property is not well-formed
-         * @throws IOException                             If an I/O exception of some sort has occurred.
          */
         @Override
         public void toObject(Configuration instance) throws
@@ -652,7 +660,8 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 InvalidConfigurationNameException,
                 InvalidConfigurationVersionException,
                 MissingConfigurationPropertyException,
-                MalformedConfigurationPropertyException {
+                MalformedConfigurationPropertyException,
+                InvalidConfigurationPropertyException {
 
             // Acquiring the intermediate representation
             JsonObject configuration = fromFile(instance);
@@ -720,7 +729,12 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          * Reads the configuration file
          *
          * @param instance The configuration instance to read and update
-         * @throws IOException If an I/O exception of some sort has occurred.
+         * @throws InvalidConfigurationNameException       If the configuration name does not match the one inside the file
+         * @throws InvalidConfigurationVersionException    If the configuration version does not match the one inside the file
+         * @throws MissingConfigurationPropertyException   If any configuration property is missing from the file
+         * @throws MalformedConfigurationPropertyException If any configuration property is not well-formed
+         * @throws InvalidConfigurationPropertyException   If any configuration property fails its own validation test
+         * @throws IOException                             If an I/O exception of some sort has occurred.
          */
         @Override
         public synchronized void read(Configuration instance) throws
@@ -728,7 +742,8 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
                 InvalidConfigurationNameException,
                 InvalidConfigurationVersionException,
                 MalformedConfigurationPropertyException,
-                MissingConfigurationPropertyException {
+                MissingConfigurationPropertyException,
+                InvalidConfigurationPropertyException {
 
             ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_READ);
 
@@ -748,17 +763,21 @@ public final class ConfigurationIO implements AbstractHandler<Configuration> {
          *
          * @param instance The configuration instance to read
          * @return Future object representing the reading task
+         * @throws CompletionException If any exceptions occurs at runtime
+         * @see ConfigurationIO.HandlerJSON#read(Configuration)
          */
         @Override
         public Future<Void> readAsync(Configuration instance) {
             return CompletableFuture.supplyAsync(() -> {
                 try {
                     read(instance);
-                } catch (IOException |
-                        InvalidConfigurationNameException |
-                        InvalidConfigurationVersionException |
-                        MalformedConfigurationPropertyException |
-                        MissingConfigurationPropertyException e) {
+                } catch (
+                        IOException |
+                                InvalidConfigurationNameException |
+                                InvalidConfigurationVersionException |
+                                MalformedConfigurationPropertyException |
+                                MissingConfigurationPropertyException |
+                                InvalidConfigurationPropertyException e) {
                     throw new CompletionException(e);
                 }
                 return null;

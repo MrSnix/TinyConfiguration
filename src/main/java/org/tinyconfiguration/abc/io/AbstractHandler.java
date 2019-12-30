@@ -1,8 +1,8 @@
 package org.tinyconfiguration.abc.io;
 
-import org.tinyconfiguration.Configuration;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.utils.FormatType;
+import org.tinyconfiguration.common.basic.Configuration;
 
 /**
  * The {@link AbstractHandler} provides on any {@link AbstractConfiguration} its own {@link AbstractHandlerIO} for each {@link FormatType}

@@ -1,4 +1,4 @@
-package org.tinyconfiguration.ex;
+package org.tinyconfiguration.common.basic.ex;
 
 import org.tinyconfiguration.abc.ex.ConfigurationException;
 

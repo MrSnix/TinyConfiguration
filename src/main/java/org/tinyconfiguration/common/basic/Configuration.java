@@ -1,10 +1,10 @@
-package org.tinyconfiguration;
+package org.tinyconfiguration.common.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
+import org.tinyconfiguration.abc.Property;
 import org.tinyconfiguration.abc.builders.Buildable;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
-import org.tinyconfiguration.properties.Property;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

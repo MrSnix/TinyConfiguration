@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc.builders;
 
-import org.tinyconfiguration.Configuration;
+import org.tinyconfiguration.common.basic.Configuration;
 
 public interface Buildable {
 
