@@ -5,7 +5,7 @@ import org.tinyconfiguration.abc.ex.PropertyException;
 
 public class MalformedConfigurationPropertyException extends PropertyException {
 
-    private Property malformed;
+    private final Property malformed;
 
     public MalformedConfigurationPropertyException(String message, Property malformed) {
         super("The following property is malformed: \"" + malformed.getKey() + "\" => " + message);

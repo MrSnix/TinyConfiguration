@@ -5,7 +5,7 @@ import org.tinyconfiguration.abc.ex.PropertyException;
 
 public class MissingConfigurationPropertyException extends PropertyException {
 
-    private Property missing;
+    private final Property missing;
 
     public MissingConfigurationPropertyException(Property missing) {
         super("The following property is missed: " + missing.getKey());

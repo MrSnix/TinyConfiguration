@@ -5,7 +5,7 @@ import org.tinyconfiguration.abc.ex.PropertyException;
 
 public class DuplicatedConfigurationPropertyException extends PropertyException {
 
-    private Property duplicated;
+    private final Property duplicated;
 
     public DuplicatedConfigurationPropertyException(Property duplicated) {
         super("The following property is duplicated: " + duplicated.getKey());

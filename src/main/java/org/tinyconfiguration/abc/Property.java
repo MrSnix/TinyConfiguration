@@ -365,7 +365,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
      */
     public boolean isValid() {
 
-        boolean isValid = false;
+        boolean isValid;
 
         if (this.isValid == null)
             isValid = true;
@@ -390,7 +390,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         private Predicate<Property> isValid;
         private List<PropertyListener<Property>> listeners;
 
-        private boolean isCleanable;
+        private final boolean isCleanable;
 
         /**
          * Empty builder constructor

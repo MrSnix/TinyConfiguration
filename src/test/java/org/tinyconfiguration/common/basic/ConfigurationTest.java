@@ -90,17 +90,11 @@ class ConfigurationTest {
     @Test
     void get() {
 
-        assertThrows(NullPointerException.class, () -> {
-            this.instance.get(null);
-        });
+        assertThrows(NullPointerException.class, () -> this.instance.get(null));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.instance.get("");
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.instance.get(""));
 
-        assertThrows(NoSuchElementException.class, () -> {
-            this.instance.get("unknown");
-        });
+        assertThrows(NoSuchElementException.class, () -> this.instance.get("unknown"));
 
         assertTrue(this.instance.get("password").getValue().asString().equalsIgnoreCase("toor"));
     }
@@ -140,13 +134,9 @@ class ConfigurationTest {
             assertFalse(this.instance.contains("unknown"));
         });
 
-        assertThrows(NullPointerException.class, () -> {
-            this.instance.contains(null);
-        });
+        assertThrows(NullPointerException.class, () -> this.instance.contains(null));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.instance.contains("");
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.instance.contains(""));
 
     }
 

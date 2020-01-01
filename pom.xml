@@ -96,6 +96,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>shaded</shadedClassifierName>
+                </configuration>
             </plugin>
 
             <!-- Staging plugin -->

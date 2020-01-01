@@ -9,7 +9,7 @@ package org.tinyconfiguration.abc;
  */
 public abstract class AbstractBuilder<C> {
 
-    protected boolean isCleanable;
+    protected final boolean isCleanable;
 
     /**
      * Empty constructor

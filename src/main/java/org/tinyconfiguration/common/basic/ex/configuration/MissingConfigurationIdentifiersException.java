@@ -4,7 +4,7 @@ import org.tinyconfiguration.abc.ex.ConfigurationException;
 
 public class MissingConfigurationIdentifiersException extends ConfigurationException {
 
-    private String expected;
+    private final String expected;
 
     public MissingConfigurationIdentifiersException(String expected) {
         super("The configuration is missing the following identifier: " + expected);

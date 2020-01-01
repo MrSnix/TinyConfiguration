@@ -10,9 +10,9 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractProperty implements Modifiable {
 
-    protected Datatype value;
-    protected String key;
-    protected String description;
+    protected final Datatype value;
+    protected final String key;
+    protected final String description;
 
     /**
      * Protected empty constructor

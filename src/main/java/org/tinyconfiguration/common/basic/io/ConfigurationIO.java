@@ -23,7 +23,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -308,10 +307,8 @@ public final class ConfigurationIO {
             boolean duplicated = false;
 
             // Now, we look inside "properties" on each node if the current "Property" object exists
-            for (Iterator<JsonValue> iterator = properties.iterator(); iterator.hasNext(); ) {
+            for (JsonValue p : properties) {
                 // Acquiring value
-                JsonValue p = iterator.next();
-
                 try {
                     // So, we pick the first object inside "properties" array
                     JsonObject tmp = p.asJsonObject();
@@ -719,7 +716,7 @@ public final class ConfigurationIO {
             FileInputStream fis = new FileInputStream(instance.getFile());
             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
 
-            JsonObject obj = null;
+            JsonObject obj;
 
             try (BufferedReader br = new BufferedReader(isr);
                  JsonReader reader = Json.createReader(br)) {

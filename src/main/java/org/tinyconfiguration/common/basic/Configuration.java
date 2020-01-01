@@ -228,7 +228,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
 
         private LinkedHashMap<String, Property> properties;
 
-        private boolean isCleanable;
+        private final boolean isCleanable;
 
         /**
          * The {@link Configuration.Builder} constructor

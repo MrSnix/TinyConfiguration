@@ -81,11 +81,7 @@ class ConfigurationIOTest {
     @Order(1)
     void writeJSON() {
 
-        assertDoesNotThrow(() -> {
-
-            ConfigurationIO.JSON.write(this.instance);
-
-        });
+        assertDoesNotThrow(() -> ConfigurationIO.JSON.write(this.instance));
 
     }
 
@@ -113,11 +109,7 @@ class ConfigurationIOTest {
     @Order(3)
     void readJSON() {
 
-        assertDoesNotThrow(() -> {
-
-            ConfigurationIO.JSON.read(this.instance);
-
-        });
+        assertDoesNotThrow(() -> ConfigurationIO.JSON.read(this.instance));
 
     }
 
@@ -145,9 +137,7 @@ class ConfigurationIOTest {
     @Order(5)
     void deleteJSON() {
 
-        assertDoesNotThrow(() -> {
-            ConfigurationIO.JSON.delete(instance);
-        });
+        assertDoesNotThrow(() -> ConfigurationIO.JSON.delete(instance));
     }
 
 }
