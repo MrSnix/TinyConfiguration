@@ -1,14 +1,14 @@
-package org.tinyconfiguration.common.basic.ex;
+package org.tinyconfiguration.common.basic.ex.configuration;
 
 import org.tinyconfiguration.abc.ex.ConfigurationException;
 
-public class InvalidConfigurationNameException extends ConfigurationException {
+public class InvalidConfigurationVersionException extends ConfigurationException {
 
     private String provided;
     private String expected;
 
-    public InvalidConfigurationNameException(String expected, String provided) {
-        super("The configuration name does not match, " +
+    public InvalidConfigurationVersionException(String expected, String provided) {
+        super("The configuration version does not match, " +
                 "expecting \"" + expected + "\" but \"" + provided + "\" was provided");
         this.expected = expected;
         this.provided = provided;

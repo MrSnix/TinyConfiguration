@@ -20,7 +20,7 @@ public interface ObservableConfiguration<T extends AbstractConfiguration> {
      * @param listener The custom function to execute when the event will be fired
      * @return The boolean value representing the outcome on the inserting operation
      */
-     boolean addListener(ConfigurationListener.Type type, ConfigurationListener<T> listener);
+    boolean addListener(ConfigurationListener.Type type, ConfigurationListener<T> listener);
 
     /**
      * Remove listener for any {@link ConfigurationListener.Type} value.

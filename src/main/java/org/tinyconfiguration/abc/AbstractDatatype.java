@@ -41,10 +41,10 @@ public abstract class AbstractDatatype extends AbstractValue {
      * Check if the datatype object is a byte datatype
      * <p></p>
      * <p>More specifically it looks on the following types:
-     *      <ul>
-     *         <li>{@code byte}</li>
-     *          <li>{@code Byte}</li>
-     *      </ul>
+     * <ul>
+     *    <li>{@code byte}</li>
+     *     <li>{@code Byte}</li>
+     * </ul>
      *
      * @return true if any condition is matched otherwise false
      * @see AbstractDatatype#isArray()

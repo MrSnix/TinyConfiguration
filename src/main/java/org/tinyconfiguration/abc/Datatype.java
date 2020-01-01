@@ -1,5 +1,11 @@
 package org.tinyconfiguration.abc;
 
+/**
+ * The {@link Datatype} class should be the foundation class to implement custom datatype
+ *
+ * @author G. Baittiner
+ * @version 0.1
+ */
 public class Datatype extends AbstractDatatype {
 
     /**

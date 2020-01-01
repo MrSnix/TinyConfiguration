@@ -1,8 +1,8 @@
 package org.tinyconfiguration.common.basic;
 
+import org.tinyconfiguration.abc.AbstractBuilder;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.Property;
-import org.tinyconfiguration.abc.builders.Buildable;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 
@@ -37,16 +37,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
     }
 
     /**
-     * Gets the properties.
-     *
-     * @return The properties associated to the container object as {@link List}
-     */
-    @Override
-    public List<Property> getProperties() {
-        return new ArrayList<>(properties.values());
-    }
-
-    /**
      * Private configuration constructor with parameters
      */
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, Property> properties) {
@@ -55,6 +45,16 @@ public final class Configuration extends AbstractConfiguration implements Observ
         this.onRead = new ArrayList<>();
         this.onWrite = new ArrayList<>();
         this.onDelete = new ArrayList<>();
+    }
+
+    /**
+     * Gets the properties.
+     *
+     * @return The properties associated to the container object as {@link List}
+     */
+    @Override
+    public List<Property> getProperties() {
+        return new ArrayList<>(properties.values());
     }
 
     /**
@@ -219,7 +219,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
      * @author G. Baittiner
      * @since 0.1
      */
-    public static final class Builder implements Buildable {
+    public static final class Builder extends AbstractBuilder<Configuration> {
 
         private String name;
         private String version;
@@ -227,6 +227,8 @@ public final class Configuration extends AbstractConfiguration implements Observ
         private String pathname;
 
         private LinkedHashMap<String, Property> properties;
+
+        private boolean isCleanable;
 
         /**
          * The {@link Configuration.Builder} constructor
@@ -237,6 +239,21 @@ public final class Configuration extends AbstractConfiguration implements Observ
             this.filename = null;
             this.pathname = null;
             this.properties = new LinkedHashMap<>();
+            this.isCleanable = true;
+        }
+
+        /**
+         * The {@link Configuration.Builder} constructor
+         *
+         * @param isCleanable If true on {@link Property.Builder#build()} the object will be reusable
+         */
+        public Builder(boolean isCleanable) {
+            this.name = null;
+            this.version = null;
+            this.filename = null;
+            this.pathname = null;
+            this.properties = new LinkedHashMap<>();
+            this.isCleanable = isCleanable;
         }
 
         /**
@@ -348,7 +365,7 @@ public final class Configuration extends AbstractConfiguration implements Observ
          *
          * @param property The property instance to insert
          * @return The {@link Configuration.Builder} current instance
-         * @throws NullPointerException If the property is null
+         * @throws NullPointerException  If the property is null
          * @throws IllegalStateException If the property has been already inserted
          */
         @SuppressWarnings("UnusedReturnValue")
@@ -367,18 +384,15 @@ public final class Configuration extends AbstractConfiguration implements Observ
 
         @Override
         public void clear() {
-
             this.name = null;
             this.version = null;
             this.filename = null;
             this.pathname = null;
-
-            this.properties.clear();
-
+            this.properties = new LinkedHashMap<>();
         }
 
         /**
-         * Create the final object
+         * Create the final object then call {@link AbstractBuilder#clear()} if the builder object is cleanable to make the builder reusable
          *
          * @return The new {@link Configuration} instance
          * @throws NullPointerException If one or more properties are not set
@@ -398,7 +412,12 @@ public final class Configuration extends AbstractConfiguration implements Observ
             if (pathname == null)
                 throw new NullPointerException("The pathname must be set!");
 
-            return new Configuration(name, version, filename, pathname, properties);
+            Configuration e = new Configuration(name, version, filename, pathname, properties);
+
+            if (this.isCleanable)
+                clear();
+
+            return e;
         }
 
     }

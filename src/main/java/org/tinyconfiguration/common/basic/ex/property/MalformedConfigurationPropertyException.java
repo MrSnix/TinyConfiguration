@@ -1,4 +1,4 @@
-package org.tinyconfiguration.common.basic.ex;
+package org.tinyconfiguration.common.basic.ex.property;
 
 import org.tinyconfiguration.abc.Property;
 import org.tinyconfiguration.abc.ex.PropertyException;

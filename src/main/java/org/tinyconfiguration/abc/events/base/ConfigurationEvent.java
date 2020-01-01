@@ -6,12 +6,34 @@ import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 
 import static org.tinyconfiguration.abc.listeners.ConfigurationListener.Type;
 
+
+/**
+ * The {@link ConfigurationEvent} is the foundation class provided to implement any event which affects configurations
+ *
+ * @param <C> It should represent the object caller class
+ * @author G. Baittiner
+ * @version 0.1
+ */
 public class ConfigurationEvent<C extends AbstractConfiguration> implements ObservableEvent {
 
     private final C instance;
     private final Type type;
     private boolean isConsumed;
 
+    /**
+     * Protected empty constructor
+     */
+    protected ConfigurationEvent() {
+        this.instance = null;
+        this.type = null;
+    }
+
+    /**
+     * Constructor with parameters
+     *
+     * @param instance The configuration instance
+     * @param type     The event type
+     */
     public ConfigurationEvent(C instance, Type type) {
         this.instance = instance;
         this.type = type;

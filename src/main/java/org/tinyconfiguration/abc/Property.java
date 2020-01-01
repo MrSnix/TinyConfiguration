@@ -1,7 +1,5 @@
 package org.tinyconfiguration.abc;
 
-import org.tinyconfiguration.abc.builders.Buildable;
-import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.events.ObservableProperty;
 import org.tinyconfiguration.abc.events.base.UpdateEvent;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
@@ -57,7 +55,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(String s) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -72,7 +70,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(boolean b) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -87,7 +85,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(char c) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -102,7 +100,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(byte b) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -117,7 +115,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(short s) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -132,7 +130,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(int i) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -147,7 +145,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(long l) {
 
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -160,7 +158,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(float f) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -173,7 +171,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(double d) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -186,7 +184,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(String[] s) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -199,7 +197,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(boolean[] b) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -212,7 +210,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(char[] c) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -225,7 +223,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(byte[] b) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -238,7 +236,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(short[] s) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -251,7 +249,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(int[] i) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -264,7 +262,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(long[] l) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -277,7 +275,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(float[] f) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -290,7 +288,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(double[] d) {
-        UpdateEvent<Property, Datatype> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
+        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -383,7 +381,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
      * @author G. Baittiner
      * @version 0.1
      */
-    public static final class Builder implements ObservableProperty<Property>, Mutable, Buildable {
+    public static final class Builder extends AbstractBuilder<Property> implements ObservableProperty<Property>, Mutable<Builder> {
 
         private String key;
         private Datatype value;
@@ -391,6 +389,8 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         private boolean isOptional;
         private Predicate<Property> isValid;
         private List<PropertyListener<Property>> listeners;
+
+        private boolean isCleanable;
 
         /**
          * Empty builder constructor
@@ -402,6 +402,22 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
             this.isOptional = false;
             this.isValid = null;
             this.listeners = new ArrayList<>();
+            this.isCleanable = true;
+        }
+
+        /**
+         * Builder constructor with parameters
+         *
+         * @param isCleanable If true on {@link Builder#build()} the object will be reusable
+         */
+        public Builder(boolean isCleanable) {
+            this.key = null;
+            this.value = null;
+            this.description = null;
+            this.isOptional = false;
+            this.isValid = null;
+            this.listeners = new ArrayList<>();
+            this.isCleanable = isCleanable;
         }
 
         /**
@@ -511,12 +527,12 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
             this.isValid = null;
             this.isOptional = false;
 
-            this.listeners.clear();
+            this.listeners = new ArrayList<>();
 
         }
 
         /**
-         * Build the property object
+         * Build the property object then call {@link AbstractBuilder#clear()} to make the builder reusable
          *
          * @return The {@link Property} object
          * @throws NullPointerException If the key, value or description is not set
@@ -533,9 +549,13 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
             if (this.description == null)
                 throw new NullPointerException("The description must be set!");
 
-            return new Property(key, value, description, isOptional, isValid, listeners);
-        }
+            Property e = new Property(key, value, description, isOptional, isValid, listeners);
 
+            if (isCleanable)
+                clear();
+
+            return e;
+        }
 
         /**
          * Sets the value on this property

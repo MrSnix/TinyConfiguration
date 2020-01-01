@@ -1,36 +1,60 @@
 package org.tinyconfiguration.abc.events.base;
 
-import org.tinyconfiguration.abc.AbstractDatatype;
 import org.tinyconfiguration.abc.AbstractProperty;
+import org.tinyconfiguration.abc.Datatype;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
-public class UpdateEvent<P extends AbstractProperty, T extends AbstractDatatype> extends PropertyEvent<P> {
+/**
+ * The {@link UpdateEvent} is the foundation class provided to implement any event which update properties value
+ *
+ * @param <P> It should represent the property object type associated with the event
+ * @author G. Baittiner
+ * @version 0.1
+ */
+public class UpdateEvent<P extends AbstractProperty> extends PropertyEvent<P> {
 
-    private T nextValue;
-    private T currentValue;
+    private final Datatype next;
+    private final Datatype current;
 
-    public UpdateEvent(P property, PropertyListener.Type type, T currentValue, T nextValue) {
-        super(property, type);
-        this.currentValue = currentValue;
-        this.nextValue = nextValue;
+    /**
+     * Protected empty constructor
+     */
+    protected UpdateEvent() {
+        super();
+        this.next = null;
+        this.current = null;
     }
 
     /**
-     * Gets the value which is going to replace the old one
+     * Constructor with parameters
      *
-     * @return The {@link T} value associated with this event
+     * @param property The property instance associated with the event
+     * @param type     The event type
+     * @param current  The current value hold by the property
+     * @param next     The new value which is going to replace the current one
      */
-    public T getNewValue() {
-        return currentValue;
+    public UpdateEvent(P property, PropertyListener.Type type, Datatype current, Datatype next) {
+        super(property, type);
+        this.current = current;
+        this.next = next;
+    }
+
+    /**
+     * Gets the value which is going to replace the current one
+     *
+     * @return The {@link Datatype} value associated with this event
+     */
+    public Datatype getNextValue() {
+        return next;
     }
 
     /**
      * Gets the current property value
      *
-     * @return The {@link T} value associated with this event
+     * @return The {@link Datatype} value associated with this event
      */
-    public T getCurrentValue() {
-        return nextValue;
+    public Datatype getCurrentValue() {
+        return current;
     }
 
 }

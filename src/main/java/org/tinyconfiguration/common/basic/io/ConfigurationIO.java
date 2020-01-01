@@ -8,10 +8,15 @@ import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 import org.tinyconfiguration.common.basic.Configuration;
-import org.tinyconfiguration.common.basic.ex.*;
+import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationNameException;
+import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationVersionException;
+import org.tinyconfiguration.common.basic.ex.configuration.MissingConfigurationIdentifiersException;
+import org.tinyconfiguration.common.basic.ex.io.ParsingProcessException;
+import org.tinyconfiguration.common.basic.ex.property.*;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
+import javax.json.stream.JsonParsingException;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -293,15 +298,17 @@ public final class ConfigurationIO {
         public void decode(Property property) throws
                 MissingConfigurationPropertyException,
                 MalformedConfigurationPropertyException,
-                InvalidConfigurationPropertyException {
+                InvalidConfigurationPropertyException,
+                DuplicatedConfigurationPropertyException {
 
             // This is the intermediate property representation
             JsonObject property0 = null;
             // This flag stop the iteration
             boolean stop = false;
+            boolean duplicated = false;
 
             // Now, we look inside "properties" on each node if the current "Property" object exists
-            for (Iterator<JsonValue> iterator = properties.iterator(); iterator.hasNext() && !stop; ) {
+            for (Iterator<JsonValue> iterator = properties.iterator(); iterator.hasNext(); ) {
                 // Acquiring value
                 JsonValue p = iterator.next();
 
@@ -311,6 +318,11 @@ public final class ConfigurationIO {
 
                     // If there is mapping on the key we are looking for, then we assign it, otherwise stay null
                     if (tmp.get(property.getKey()) != null) {
+
+                        // This means there is another property with the same key definition
+                        if (stop)
+                            throw new DuplicatedConfigurationPropertyException(property);
+
                         // Assign
                         property0 = tmp;
                         // Update flag
@@ -655,18 +667,26 @@ public final class ConfigurationIO {
                 MissingConfigurationPropertyException,
                 MalformedConfigurationPropertyException,
                 InvalidConfigurationPropertyException,
-                UnknownConfigurationPropertyException {
+                UnknownConfigurationPropertyException,
+                ParsingProcessException,
+                MissingConfigurationIdentifiersException, DuplicatedConfigurationPropertyException {
 
             // Acquiring the intermediate representation
             JsonObject configuration = fromFile(instance);
             this.properties = configuration.getJsonArray("properties");
 
             // Acquiring basic info
-            String name = configuration.getString("name");
-            String version = configuration.getString("version");
+            String name = configuration.getString("name", null);
+            String version = configuration.getString("version", null);
 
             int readProperties = this.properties.size();
             int expectedProperties = instance.getProperties().size();
+
+            if (name == null)
+                throw new MissingConfigurationIdentifiersException("name");
+
+            if (version == null)
+                throw new MissingConfigurationIdentifiersException("version");
 
             if (!name.equals(instance.getName()))
                 throw new InvalidConfigurationNameException(instance.getName(), name);
@@ -674,12 +694,12 @@ public final class ConfigurationIO {
             if (!version.equals(instance.getVersion()))
                 throw new InvalidConfigurationVersionException(instance.getVersion(), version);
 
-            if (expectedProperties != readProperties)
-                throw new UnknownConfigurationPropertyException();
-
             for (Property property : instance.getProperties()) {
                 decode(property);
             }
+
+            if (readProperties > expectedProperties)
+                throw new UnknownConfigurationPropertyException();
 
             this.properties = null;
 
@@ -689,22 +709,27 @@ public final class ConfigurationIO {
          * This method generate an intermediate object representation of the configuration from the file
          *
          * @param instance The configuration instance
-         * @throws IOException If an I/O exception of some sort has occurred.
+         * @throws IOException             If an I/O exception of some sort has occurred.
+         * @throws ParsingProcessException If a parsing exception of some sort has occurred.
          */
         @Override
-        public JsonObject fromFile(Configuration instance) throws IOException {
+        public JsonObject fromFile(Configuration instance) throws IOException, ParsingProcessException {
 
             // Creating stream and setting charset
             FileInputStream fis = new FileInputStream(instance.getFile());
             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
 
-            JsonObject obj;
+            JsonObject obj = null;
 
             try (BufferedReader br = new BufferedReader(isr);
                  JsonReader reader = Json.createReader(br)) {
 
                 obj = reader.readObject();
 
+            } catch (JsonParsingException e) {
+                throw new ParsingProcessException(e.getMessage());
+            } catch (JsonException e) {
+                throw new IOException(e);
             }
 
             return obj;
@@ -733,13 +758,16 @@ public final class ConfigurationIO {
          * Reads the configuration file
          *
          * @param instance The configuration instance to read and update
-         * @throws InvalidConfigurationNameException       If the configuration name does not match the one inside the file
-         * @throws InvalidConfigurationVersionException    If the configuration version does not match the one inside the file
-         * @throws MissingConfigurationPropertyException   If any configuration property is missing from the file
-         * @throws MalformedConfigurationPropertyException If any configuration property is not well-formed
-         * @throws InvalidConfigurationPropertyException   If any configuration property fails its own validation test
-         * @throws UnknownConfigurationPropertyException   If there are more properties inside the file than the one declared
-         * @throws IOException                             If an I/O exception of some sort has occurred.
+         * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
+         * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
+         * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
+         * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
+         * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
+         * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
+         * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
+         * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
+         * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
+         * @throws IOException                              If an I/O exception of some sort has occurred.
          */
         @Override
         public synchronized void read(Configuration instance) throws
@@ -748,8 +776,11 @@ public final class ConfigurationIO {
                 InvalidConfigurationVersionException,
                 MalformedConfigurationPropertyException,
                 MissingConfigurationPropertyException,
+                MissingConfigurationIdentifiersException,
                 InvalidConfigurationPropertyException,
-                UnknownConfigurationPropertyException {
+                UnknownConfigurationPropertyException,
+                ParsingProcessException,
+                DuplicatedConfigurationPropertyException {
 
             ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_READ);
 
@@ -778,7 +809,7 @@ public final class ConfigurationIO {
                 try {
                     read(instance);
                 } catch (
-                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException e) {
+                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
                     throw new CompletionException(e);
                 }
                 return null;

@@ -1,7 +1,5 @@
 package org.tinyconfiguration.abc;
 
-import org.tinyconfiguration.abc.builders.Modifiable;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,15 +48,6 @@ public abstract class AbstractProperty implements Modifiable {
      */
     protected Datatype getValue() {
         return value;
-    }
-
-    /**
-     * Gets the description
-     *
-     * @return The description ({@link String}) associated to the property object.
-     */
-    protected String getDescription() {
-        return description;
     }
 
     /**
@@ -275,6 +264,15 @@ public abstract class AbstractProperty implements Modifiable {
     @Override
     public void setValue(double[] d) {
         requireNonNull(this.value, "The value must be set").setValue(d);
+    }
+
+    /**
+     * Gets the description
+     *
+     * @return The description ({@link String}) associated to the property object.
+     */
+    protected String getDescription() {
+        return description;
     }
 
 }
