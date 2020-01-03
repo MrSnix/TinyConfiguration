@@ -6,7 +6,7 @@ import org.tinyconfiguration.abc.io.AbstractReader;
 
 import javax.json.JsonObject;
 
-public interface ReaderJSON<C extends AbstractConfiguration, P extends AbstractProperty> extends AbstractReader<C, P> {
+public interface ReaderJSON<C extends AbstractConfiguration, P extends AbstractProperty<?>> extends AbstractReader<C, P> {
 
     /**
      * This method allow to translate a property object inside an intermediate representation

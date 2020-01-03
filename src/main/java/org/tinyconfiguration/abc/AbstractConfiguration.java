@@ -10,7 +10,7 @@ import java.util.List;
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractConfiguration implements AbstractContainer {
+public abstract class AbstractConfiguration implements AbstractCollection {
 
     protected final String name;
     protected final String filename;
@@ -90,6 +90,6 @@ public abstract class AbstractConfiguration implements AbstractContainer {
      *
      * @return The properties associated to the container object as {@link List}
      */
-    public abstract <T extends AbstractProperty> List<T> getProperties();
+    public abstract <T extends AbstractProperty<?>> List<T> getProperties();
 
 }

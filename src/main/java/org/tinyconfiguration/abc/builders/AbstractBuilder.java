@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.builders;
 
 /**
  * The {@link AbstractBuilder} is the foundation class provided to implement builder objects

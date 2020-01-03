@@ -1,192 +1,237 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.data.base;
 
 /**
- * The {@link Mutable} interface provides methods to modify the implementing class itself
+ * The {@link AbstractValue} is the foundation to represent generic data "as-it-is"
  *
- * @param <T> It should represent the implementing class
  * @author G. Baittiner
  * @version 0.1
  */
-public interface Mutable<T> {
+public abstract class AbstractValue implements Modifiable {
+
+    protected Object value;
+    protected Class<?> type;
+
+    /**
+     * Protected empty constructor
+     */
+    protected AbstractValue() {
+    }
+
+    /**
+     * Protected constructor with parameters
+     *
+     * @param value The data to store as object instance
+     */
+    protected AbstractValue(Object value) {
+        this.value = value;
+        this.type = value.getClass();
+    }
 
     /**
      * Sets the value on this property
      *
      * @param s The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(String s);
+    public final void setValue(String s) {
+        __setValue(s);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param b The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(boolean b);
+    public final void setValue(boolean b) {
+        __setValue(b);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param c The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(char c);
+    public final void setValue(char c) {
+        __setValue(c);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param b The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(byte b);
+    public final void setValue(byte b) {
+        __setValue(b);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param s The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(short s);
+    public final void setValue(short s) {
+        __setValue(s);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param i The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(int i);
+    public final void setValue(int i) {
+        __setValue(i);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param l The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(long l);
+    public final void setValue(long l) {
+        __setValue(l);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param f The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(float f);
+    public final void setValue(float f) {
+        __setValue(f);
+    }
 
     /**
      * Sets the value on this property
      *
      * @param d The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(double d);
+    public final void setValue(double d) {
+        __setValue(d);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param s The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(String[] s);
+    public final void setValue(String[] s) {
+        __setValue(s);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param b The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(boolean[] b);
+    public final void setValue(boolean[] b) {
+        __setValue(b);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param c The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(char[] c);
+    public final void setValue(char[] c) {
+        __setValue(c);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param b The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(byte[] b);
+    public final void setValue(byte[] b) {
+        __setValue(b);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param s The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(short[] s);
+    public final void setValue(short[] s) {
+        __setValue(s);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param i The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(int[] i);
+    public final void setValue(int[] i) {
+        __setValue(i);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param l The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(long[] l);
+    public final void setValue(long[] l) {
+        __setValue(l);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param f The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(float[] f);
+    public final void setValue(float[] f) {
+        __setValue(f);
+    }
 
     /**
      * Sets the array value on this property
      *
      * @param d The new value
-     * @return An object which holds the data
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
-    T setValue(double[] d);
+    public final void setValue(double[] d) {
+        __setValue(d);
+    }
+
+    /**
+     * Sets any generic value on this property
+     *
+     * @param value The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    protected abstract void __setValue(Object value);
 
 }

@@ -1,9 +1,9 @@
 package org.tinyconfiguration.common.basic;
 
-import org.tinyconfiguration.abc.AbstractBuilder;
 import org.tinyconfiguration.abc.AbstractConfiguration;
-import org.tinyconfiguration.abc.Property;
+import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.events.ObservableConfiguration;
+import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 
 import java.util.ArrayList;
@@ -123,14 +123,14 @@ public final class Configuration extends AbstractConfiguration implements Observ
     }
 
     /**
-     * Sets a new listener for any {@link ConfigurationListener.Type} value.
+     * Sets a new listener for any {@link ConfigurationEvent.Type} value.
      *
      * @param type     The event type
      * @param listener The custom function to execute when the event will be fired
      * @return The boolean value representing the outcome on the inserting operation
      */
     @Override
-    public boolean addListener(ConfigurationListener.Type type, ConfigurationListener<Configuration> listener) {
+    public boolean addListener(ConfigurationEvent.Type type, ConfigurationListener<Configuration> listener) {
 
         boolean result = false;
 
@@ -150,14 +150,14 @@ public final class Configuration extends AbstractConfiguration implements Observ
     }
 
     /**
-     * Remove listener for any {@link ConfigurationListener.Type} value.
+     * Remove listener for any {@link ConfigurationEvent.Type} value.
      *
      * @param type     The event type
      * @param listener The custom function reference which was associated to the event
      * @return The boolean value representing the outcome on the removing operation
      */
     @Override
-    public boolean removeListener(ConfigurationListener.Type type, ConfigurationListener<Configuration> listener) {
+    public boolean removeListener(ConfigurationEvent.Type type, ConfigurationListener<Configuration> listener) {
 
         boolean result = false;
 
@@ -177,13 +177,13 @@ public final class Configuration extends AbstractConfiguration implements Observ
     }
 
     /**
-     * Returns {@link List} of listeners for any {@link ConfigurationListener.Type} value.
+     * Returns {@link List} of listeners for any {@link ConfigurationEvent.Type} value.
      *
      * @param type The event type
      * @return The list holding functions references associated to the event
      */
     @Override
-    public List<ConfigurationListener<Configuration>> getListeners(ConfigurationListener.Type type) {
+    public List<ConfigurationListener<Configuration>> getListeners(ConfigurationEvent.Type type) {
 
         ArrayList<ConfigurationListener<Configuration>> e;
 
@@ -368,7 +368,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
          * @throws NullPointerException  If the property is null
          * @throws IllegalStateException If the property has been already inserted
          */
-        @SuppressWarnings("UnusedReturnValue")
         public Configuration.Builder put(Property property) {
 
             if (property == null)

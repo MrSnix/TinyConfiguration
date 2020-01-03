@@ -2,9 +2,6 @@ package org.tinyconfiguration.abc.events.base;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.events.ObservableEvent;
-import org.tinyconfiguration.abc.listeners.ConfigurationListener;
-
-import static org.tinyconfiguration.abc.listeners.ConfigurationListener.Type;
 
 
 /**
@@ -52,7 +49,7 @@ public class ConfigurationEvent<C extends AbstractConfiguration> implements Obse
     /**
      * Gets the event type
      *
-     * @return The {@link ConfigurationListener.Type} instance associated with this event
+     * @return The {@link Type} instance associated with this event
      */
     public Type getType() {
         return type;
@@ -74,4 +71,12 @@ public class ConfigurationEvent<C extends AbstractConfiguration> implements Obse
     public boolean isConsumed() {
         return isConsumed;
     }
+
+    /**
+     * All the events available
+     */
+    public enum Type {
+        ON_CONFIG_READ, ON_CONFIG_WRITE, ON_CONFIG_DELETE
+    }
+
 }

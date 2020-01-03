@@ -1,13 +1,13 @@
 package org.tinyconfiguration.common.basic.io;
 
-import org.tinyconfiguration.abc.Datatype;
-import org.tinyconfiguration.abc.Property;
+import org.tinyconfiguration.abc.data.ImmutableDatatype;
 import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
 import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 import org.tinyconfiguration.common.basic.Configuration;
+import org.tinyconfiguration.common.basic.Property;
 import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationNameException;
 import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationVersionException;
 import org.tinyconfiguration.common.basic.ex.configuration.MissingConfigurationIdentifiersException;
@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
 
 import static javax.json.JsonValue.ValueType;
 import static javax.json.JsonValue.ValueType.ARRAY;
-import static org.tinyconfiguration.abc.listeners.ConfigurationListener.Type.*;
+import static org.tinyconfiguration.abc.events.base.ConfigurationEvent.Type.*;
 
 /**
  * The {@link ConfigurationIO} class contains I/O operations which can be executed on any {@link Configuration} instance
@@ -127,7 +127,7 @@ public final class ConfigurationIO {
             JsonObjectBuilder root = Json.createObjectBuilder();
 
             // Acquiring value
-            Datatype dt = property.getValue();
+            ImmutableDatatype dt = property.getValue();
 
             // Encoding
             if (dt.isArray())
@@ -152,7 +152,7 @@ public final class ConfigurationIO {
         public void __encode_obj(JsonObjectBuilder obj, Property property) {
 
             // Acquiring value
-            Datatype dt = property.getValue();
+            ImmutableDatatype dt = property.getValue();
 
             // Encoding
             if (dt.isText()) {
@@ -199,7 +199,7 @@ public final class ConfigurationIO {
             JsonArrayBuilder values = Json.createArrayBuilder();
 
             // Acquiring value
-            Datatype dt = property.getValue();
+            ImmutableDatatype dt = property.getValue();
 
             if (dt.isNumericArray()) {
 
@@ -364,7 +364,7 @@ public final class ConfigurationIO {
         @Override
         public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
-            Datatype value = property.getValue();
+            ImmutableDatatype value = property.getValue();
 
             ValueType type = obj.get(property.getKey()).getValueType();
 
@@ -466,7 +466,7 @@ public final class ConfigurationIO {
         @Override
         public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
-            Datatype value = property.getValue();
+            ImmutableDatatype value = property.getValue();
 
             JsonArray array = obj.get(property.getKey()).asJsonArray();
 

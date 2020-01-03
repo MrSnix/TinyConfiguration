@@ -20,11 +20,4 @@ public interface ConfigurationListener<C extends AbstractConfiguration> extends 
      */
     void execute(ConfigurationEvent<C> event);
 
-    /**
-     * All the events available
-     */
-    enum Type {
-        ON_CONFIG_READ, ON_CONFIG_WRITE, ON_CONFIG_DELETE
-    }
-
 }

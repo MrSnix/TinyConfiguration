@@ -11,20 +11,13 @@ import java.util.EventListener;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface PropertyListener<P extends AbstractProperty> extends EventListener {
+public interface PropertyListener<P extends AbstractProperty<?>> extends EventListener {
 
     /**
      * Executes a custom function when a specific event fires
      *
      * @param event The event which was fired
      */
-    void onChange(UpdateEvent<P> event);
-
-    /**
-     * All the events available
-     */
-    enum Type {
-        ON_PROPERTY_UPDATE
-    }
+    void onChange(UpdateEvent<P, ?> event);
 
 }

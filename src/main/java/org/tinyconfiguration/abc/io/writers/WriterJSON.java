@@ -13,7 +13,7 @@ import javax.json.JsonObjectBuilder;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface WriterJSON<C extends AbstractConfiguration, P extends AbstractProperty> extends AbstractWriter<C, P> {
+public interface WriterJSON<C extends AbstractConfiguration, P extends AbstractProperty<?>> extends AbstractWriter<C, P> {
 
     /**
      * This method allow to generate an object representation from the configuration instance

@@ -9,7 +9,7 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractReader<C extends AbstractConfiguration, P extends AbstractProperty> {
+public interface AbstractReader<C extends AbstractConfiguration, P extends AbstractProperty<?>> {
 
     /**
      * This method allow to translate a property object inside an intermediate representation

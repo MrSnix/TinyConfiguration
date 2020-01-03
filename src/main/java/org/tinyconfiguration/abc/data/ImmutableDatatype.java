@@ -1,17 +1,19 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.data;
+
+import org.tinyconfiguration.abc.data.base.AbstractDatatype;
 
 /**
- * The {@link Datatype} class should be the foundation class to implement custom datatype
+ * The {@link ImmutableDatatype} class should be the foundation class to implement immutable custom datatype
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public class Datatype extends AbstractDatatype {
+public class ImmutableDatatype extends AbstractDatatype {
 
     /**
      * Private empty constructor
      */
-    private Datatype() {
+    private ImmutableDatatype() {
         super();
     }
 
@@ -20,7 +22,7 @@ public class Datatype extends AbstractDatatype {
      *
      * @param value The data to store as object instance
      */
-    public Datatype(Object value) {
+    public ImmutableDatatype(Object value) {
         super(value);
     }
 

@@ -1,18 +1,13 @@
 package org.tinyconfiguration.common.basic.io;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.tinyconfiguration.abc.Property;
 import org.tinyconfiguration.common.basic.Configuration;
+import org.tinyconfiguration.common.basic.Property;
 
 import java.util.concurrent.Future;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ConfigurationIOTest {
 
     private final Configuration instance;
@@ -78,15 +73,15 @@ class ConfigurationIOTest {
     }
 
     @Test
-    @Order(1)
     void writeJSON() {
 
         assertDoesNotThrow(() -> ConfigurationIO.JSON.write(this.instance));
 
+        assertTrue(ConfigurationIO.JSON.exist(instance));
+
     }
 
     @Test
-    @Order(2)
     void writeAsyncJSON() {
 
         assertDoesNotThrow(() -> {
@@ -103,18 +98,30 @@ class ConfigurationIOTest {
 
         });
 
+        assertTrue(ConfigurationIO.JSON.exist(instance));
+
     }
 
     @Test
-    @Order(3)
     void readJSON() {
 
+        // Does it exists?
+        if (!ConfigurationIO.JSON.exist(instance)) {
+
+            // If so, let's executing the writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.JSON.write(instance));
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.JSON.exist(instance));
+
+        }
+
+        // Now, reading the configuration instance
         assertDoesNotThrow(() -> ConfigurationIO.JSON.read(this.instance));
 
     }
 
     @Test
-    @Order(4)
     void readAsyncJSON() {
 
         assertDoesNotThrow(() -> {
@@ -124,20 +131,55 @@ class ConfigurationIOTest {
             Future<Void> task = ConfigurationIO.JSON.readAsync(this.instance);
 
             while (!task.isDone()) {
+                // Do something
                 ++x;
             }
 
-            assertTrue(x != 0);
-
+            assertTrue(x >= 0);
         });
+
+        assertTrue(ConfigurationIO.JSON.exist(this.instance));
 
     }
 
     @Test
-    @Order(5)
     void deleteJSON() {
 
+        // Does it exists?
+        if (!ConfigurationIO.JSON.exist(instance)) {
+
+            // If so, let's executing the writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.JSON.write(instance));
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.JSON.exist(instance));
+
+        }
+
+        // Executing deleting task, then execute it
         assertDoesNotThrow(() -> ConfigurationIO.JSON.delete(instance));
+        // Asserting does not exists any more
+        assertFalse(ConfigurationIO.JSON.exist(instance));
+
     }
 
+    @Test
+    void deleteAsyncJSON() {
+
+        // Does it exists?
+        if (!ConfigurationIO.JSON.exist(instance)) {
+
+            // If so, let's obtain an a-sync writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.JSON.writeAsync(instance).get());
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.JSON.exist(instance));
+
+        }
+        // Obtaining deleting task, then execute it
+        assertDoesNotThrow(() -> ConfigurationIO.JSON.deleteAsync(instance).get());
+        // Asserting does not exists any more
+        assertFalse(ConfigurationIO.JSON.exist(instance));
+
+    }
 }

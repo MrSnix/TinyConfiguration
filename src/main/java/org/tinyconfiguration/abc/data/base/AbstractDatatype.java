@@ -1,11 +1,12 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.abc.data.base;
 
 import java.util.Arrays;
 
 import static java.lang.String.valueOf;
 
 /**
- * The {@link AbstractDatatype} is the container class which resolve any {@link AbstractValue} cast
+ * The {@link AbstractDatatype} is the container class which resolve any {@link AbstractValue} cast.<br>
+ * The {@link AbstractDatatype} class should be the foundation class to implement custom datatype.
  *
  * @author G. Baittiner
  * @version 0.1

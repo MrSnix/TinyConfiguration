@@ -3,8 +3,6 @@ package org.tinyconfiguration.abc.events.base;
 import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.events.ObservableEvent;
 
-import static org.tinyconfiguration.abc.listeners.PropertyListener.Type;
-
 /**
  * The {@link PropertyEvent} is the foundation class provided to implement any event which affects properties
  *
@@ -12,7 +10,7 @@ import static org.tinyconfiguration.abc.listeners.PropertyListener.Type;
  * @author G. Baittiner
  * @version 0.1
  */
-public class PropertyEvent<P extends AbstractProperty> implements ObservableEvent {
+public class PropertyEvent<P extends AbstractProperty<?>> implements ObservableEvent {
 
     private final P instance;
     private final Type type;
@@ -72,4 +70,12 @@ public class PropertyEvent<P extends AbstractProperty> implements ObservableEven
     public boolean isConsumed() {
         return isConsumed;
     }
+
+    /**
+     * All the events available
+     */
+    public enum Type {
+        ON_PROPERTY_UPDATE
+    }
+
 }

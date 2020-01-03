@@ -1,6 +1,11 @@
-package org.tinyconfiguration.abc;
+package org.tinyconfiguration.common.basic;
 
+import org.tinyconfiguration.abc.AbstractProperty;
+import org.tinyconfiguration.abc.builders.AbstractBuilder;
+import org.tinyconfiguration.abc.builders.Mutable;
+import org.tinyconfiguration.abc.data.ImmutableDatatype;
 import org.tinyconfiguration.abc.events.ObservableProperty;
+import org.tinyconfiguration.abc.events.base.PropertyEvent;
 import org.tinyconfiguration.abc.events.base.UpdateEvent;
 import org.tinyconfiguration.abc.listeners.PropertyListener;
 
@@ -8,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static org.tinyconfiguration.abc.listeners.PropertyListener.Type;
-import static org.tinyconfiguration.abc.listeners.PropertyListener.Type.ON_PROPERTY_UPDATE;
+import static org.tinyconfiguration.abc.events.base.PropertyEvent.Type.ON_PROPERTY_UPDATE;
 
 /**
  * This class represent the properties stored inside the configuration instance
@@ -17,7 +21,7 @@ import static org.tinyconfiguration.abc.listeners.PropertyListener.Type.ON_PROPE
  * @author G. Baittiner
  * @version 0.1
  */
-public class Property extends AbstractProperty implements ObservableProperty<Property> {
+public class Property extends AbstractProperty<ImmutableDatatype> implements ObservableProperty<Property> {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
@@ -35,7 +39,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     /**
      * Private constructor with parameters
      */
-    private Property(String key, Datatype value, String description, boolean isOptional, Predicate<Property> isValid, List<PropertyListener<Property>> listeners) {
+    private Property(String key, ImmutableDatatype value, String description, boolean isOptional, Predicate<Property> isValid, List<PropertyListener<Property>> listeners) {
         super(key, value, description);
         this.isOptional = isOptional;
         this.isValid = isValid;
@@ -48,14 +52,14 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     }
 
     @Override
-    public Datatype getValue() {
+    public ImmutableDatatype getValue() {
         return super.getValue();
     }
 
     @Override
     public void setValue(String s) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -70,7 +74,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(boolean b) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -85,7 +89,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(char c) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(c), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -100,7 +104,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(byte b) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -115,7 +119,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(short s) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -130,7 +134,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(int i) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(i), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -145,7 +149,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     @Override
     public void setValue(long l) {
 
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(l), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -158,7 +162,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(float f) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(f), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -171,7 +175,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(double d) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(d), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -184,7 +188,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(String[] s) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -197,7 +201,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(boolean[] b) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -210,7 +214,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(char[] c) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(c), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(c), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -223,7 +227,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(byte[] b) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(b), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -236,7 +240,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(short[] s) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(s), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -249,7 +253,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(int[] i) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(i), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(i), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -262,7 +266,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(long[] l) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(l), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(l), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -275,7 +279,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(float[] f) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(f), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(f), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -288,7 +292,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
 
     @Override
     public void setValue(double[] d) {
-        UpdateEvent<Property> e = new UpdateEvent<>(this, ON_PROPERTY_UPDATE, new Datatype(d), value);
+        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(d), value);
 
         this.listeners.forEach(listener -> {
             if (!e.isConsumed())
@@ -307,12 +311,12 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     /**
      * Insert new listeners on this property
      *
-     * @param type The {@link Type} which specifies the listener type
+     * @param type The {@link PropertyEvent.Type} which specifies the listener type
      * @param l    The property listener to associate on this property object
      * @return The boolean value representing the outcome on the insert operation
      */
     @Override
-    public boolean addListener(Type type, PropertyListener<Property> l) {
+    public boolean addListener(PropertyEvent.Type type, PropertyListener<Property> l) {
         boolean result = false;
 
         if (type == ON_PROPERTY_UPDATE)
@@ -324,12 +328,12 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     /**
      * Remove listeners from this property
      *
-     * @param type The {@link Type} which specifies the listener type
+     * @param type The {@link PropertyEvent.Type} which specifies the listener type
      * @param l    The property listener to remove from this property object
      * @return The boolean value representing the outcome on the remove operation
      */
     @Override
-    public boolean removeListener(Type type, PropertyListener<Property> l) {
+    public boolean removeListener(PropertyEvent.Type type, PropertyListener<Property> l) {
 
         boolean result = false;
 
@@ -384,7 +388,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
     public static final class Builder extends AbstractBuilder<Property> implements ObservableProperty<Property>, Mutable<Builder> {
 
         private String key;
-        private Datatype value;
+        private ImmutableDatatype value;
         private String description;
         private boolean isOptional;
         private Predicate<Property> isValid;
@@ -494,7 +498,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         }
 
         @Override
-        public boolean addListener(Type type, PropertyListener<Property> l) {
+        public boolean addListener(PropertyEvent.Type type, PropertyListener<Property> l) {
             boolean result = false;
 
             if (type == ON_PROPERTY_UPDATE)
@@ -504,7 +508,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         }
 
         @Override
-        public boolean removeListener(Type type, PropertyListener<Property> l) {
+        public boolean removeListener(PropertyEvent.Type type, PropertyListener<Property> l) {
             boolean result = false;
 
             if (type == ON_PROPERTY_UPDATE)
@@ -569,7 +573,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(String s) {
 
             if (value == null)
-                this.value = new Datatype(s);
+                this.value = new ImmutableDatatype(s);
             else
                 value.setValue(s);
 
@@ -588,7 +592,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(boolean b) {
 
             if (value == null)
-                this.value = new Datatype(b);
+                this.value = new ImmutableDatatype(b);
             else
                 value.setValue(b);
 
@@ -607,7 +611,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(char c) {
 
             if (value == null)
-                this.value = new Datatype(c);
+                this.value = new ImmutableDatatype(c);
             else
                 value.setValue(c);
 
@@ -626,7 +630,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(byte b) {
 
             if (value == null)
-                this.value = new Datatype(b);
+                this.value = new ImmutableDatatype(b);
             else
                 value.setValue(b);
 
@@ -645,7 +649,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(short s) {
 
             if (value == null)
-                this.value = new Datatype(s);
+                this.value = new ImmutableDatatype(s);
             else
                 value.setValue(s);
 
@@ -664,7 +668,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(int i) {
 
             if (value == null)
-                this.value = new Datatype(i);
+                this.value = new ImmutableDatatype(i);
             else
                 value.setValue(i);
 
@@ -683,7 +687,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(long l) {
 
             if (value == null)
-                this.value = new Datatype(l);
+                this.value = new ImmutableDatatype(l);
             else
                 value.setValue(l);
 
@@ -702,7 +706,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(float f) {
 
             if (value == null)
-                this.value = new Datatype(f);
+                this.value = new ImmutableDatatype(f);
             else
                 value.setValue(f);
 
@@ -721,7 +725,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(double d) {
 
             if (value == null)
-                this.value = new Datatype(d);
+                this.value = new ImmutableDatatype(d);
             else
                 value.setValue(d);
 
@@ -740,7 +744,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(String[] s) {
 
             if (value == null)
-                this.value = new Datatype(s);
+                this.value = new ImmutableDatatype(s);
             else
                 value.setValue(s);
 
@@ -759,7 +763,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(boolean[] b) {
 
             if (value == null)
-                this.value = new Datatype(b);
+                this.value = new ImmutableDatatype(b);
             else
                 value.setValue(b);
 
@@ -778,7 +782,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(char[] c) {
 
             if (value == null)
-                this.value = new Datatype(c);
+                this.value = new ImmutableDatatype(c);
             else
                 value.setValue(c);
 
@@ -797,7 +801,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(byte[] b) {
 
             if (value == null)
-                this.value = new Datatype(b);
+                this.value = new ImmutableDatatype(b);
             else
                 value.setValue(b);
 
@@ -816,7 +820,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(short[] s) {
 
             if (value == null)
-                this.value = new Datatype(s);
+                this.value = new ImmutableDatatype(s);
             else
                 value.setValue(s);
 
@@ -835,7 +839,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(int[] i) {
 
             if (value == null)
-                this.value = new Datatype(i);
+                this.value = new ImmutableDatatype(i);
             else
                 value.setValue(i);
 
@@ -854,7 +858,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(long[] l) {
 
             if (value == null)
-                this.value = new Datatype(l);
+                this.value = new ImmutableDatatype(l);
             else
                 value.setValue(l);
 
@@ -873,7 +877,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(float[] f) {
 
             if (value == null)
-                this.value = new Datatype(f);
+                this.value = new ImmutableDatatype(f);
             else
                 value.setValue(f);
 
@@ -892,7 +896,7 @@ public class Property extends AbstractProperty implements ObservableProperty<Pro
         public Property.Builder setValue(double[] d) {
 
             if (value == null)
-                this.value = new Datatype(d);
+                this.value = new ImmutableDatatype(d);
             else
                 value.setValue(d);
 

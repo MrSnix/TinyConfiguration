@@ -1,5 +1,8 @@
 package org.tinyconfiguration.abc;
 
+import org.tinyconfiguration.abc.data.base.AbstractDatatype;
+import org.tinyconfiguration.abc.data.base.Modifiable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -8,9 +11,9 @@ import static java.util.Objects.requireNonNull;
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractProperty implements Modifiable {
+public abstract class AbstractProperty<D extends AbstractDatatype> implements Modifiable {
 
-    protected final Datatype value;
+    protected final D value;
     protected final String key;
     protected final String description;
 
@@ -26,7 +29,7 @@ public abstract class AbstractProperty implements Modifiable {
     /**
      * Protected constructor with parameters
      */
-    protected AbstractProperty(String key, Datatype value, String description) {
+    protected AbstractProperty(String key, D value, String description) {
         this.key = key;
         this.value = value;
         this.description = description;
@@ -44,9 +47,9 @@ public abstract class AbstractProperty implements Modifiable {
     /**
      * Gets the value
      *
-     * @return The {@link Datatype} associated to the property object.
+     * @return The {@link D} associated to the property object.
      */
-    protected Datatype getValue() {
+    protected D getValue() {
         return value;
     }
 

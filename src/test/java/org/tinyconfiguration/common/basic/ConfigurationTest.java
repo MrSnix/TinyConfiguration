@@ -1,7 +1,6 @@
 package org.tinyconfiguration.common.basic;
 
 import org.junit.jupiter.api.Test;
-import org.tinyconfiguration.abc.Property;
 
 import java.util.NoSuchElementException;
 
@@ -73,69 +72,62 @@ class ConfigurationTest {
 
     @Test
     void getProperties() {
-
-        Configuration.Builder b = new Configuration.Builder().
-                setName("ConfigurationTest").
-                setVersion("1.0.0").
-                setPathname("./").
-                setFilename("tiny-configuration.json");
-
-        Configuration e = b.build();
-
-        assertEquals(0, e.getProperties().size());
-
+        // Retrieving properties declared inside constructor
         assertEquals(8, this.instance.getProperties().size());
+
+        // Clearing the configuration
+        this.instance.clear();
+
+        // Checking if it's empty
+        assertEquals(0, this.instance.getProperties().size());
     }
 
     @Test
     void get() {
-
+        // The null property instance is not allowed
         assertThrows(NullPointerException.class, () -> this.instance.get(null));
-
+        // The empty string is not a valid identifier
         assertThrows(IllegalArgumentException.class, () -> this.instance.get(""));
-
+        // Looking for property which does not exists
         assertThrows(NoSuchElementException.class, () -> this.instance.get("unknown"));
-
+        // Checking String value assuming get() returns not-null property
         assertTrue(this.instance.get("password").getValue().asString().equalsIgnoreCase("toor"));
     }
 
     @Test
     void isEmpty() {
-        assertFalse(instance.isEmpty());
+
+        // Checking if empty as declared inside constructor
+        assertFalse(this.instance.isEmpty());
+
+        // Clearing the configuration
+        this.instance.clear();
+
+        // Checking if it's empty
+        assertTrue(this.instance.isEmpty());
     }
 
     @Test
     void clear() {
 
-        Configuration.Builder b = new Configuration.Builder().
-                setName("ConfigurationTest").
-                setVersion("1.0.0").
-                setPathname("./").
-                setFilename("tiny-configuration.json");
+        // Clearing the configuration
+        this.instance.clear();
 
-        b.put(new Property.Builder().
-                setKey("language").
-                setValue("EN").
-                setDescription("Specifies the language environment for the session").
-                build());
-
-        Configuration e = b.build();
-
-        e.clear();
-
-        assertTrue(e.isEmpty());
+        // Checking if it's empty
+        assertTrue(this.instance.isEmpty());
     }
 
     @Test
     void contains() {
 
-        assertDoesNotThrow(() -> {
-            assertTrue(this.instance.contains("language"));
-            assertFalse(this.instance.contains("unknown"));
-        });
+        // Looking for existing property key
+        assertTrue(this.instance.contains("language"));
+        // Looking for not-existing property key
+        assertFalse(this.instance.contains("unknown"));
 
+        // The null String instance is not allowed
         assertThrows(NullPointerException.class, () -> this.instance.contains(null));
-
+        // The empty string is not a valid identifier
         assertThrows(IllegalArgumentException.class, () -> this.instance.contains(""));
 
     }

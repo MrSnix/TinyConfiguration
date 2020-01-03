@@ -3,12 +3,12 @@ package org.tinyconfiguration.abc;
 import java.util.NoSuchElementException;
 
 /**
- * The {@link AbstractContainer} interfaces provides basic methods which should be common on any data container
+ * The {@link AbstractCollection} interfaces provides basic methods which should be common on any data container
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractContainer {
+public interface AbstractCollection {
 
     /**
      * Check if a specific key is stored inside the container instance
@@ -42,7 +42,7 @@ public interface AbstractContainer {
      * @throws IllegalArgumentException If the key is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
-    <T extends AbstractProperty> T get(String key);
+    <T extends AbstractProperty<?>> T get(String key);
 
 
 }
