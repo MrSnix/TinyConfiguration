@@ -2,9 +2,6 @@ package org.tinyconfiguration.common.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
-import org.tinyconfiguration.abc.events.ObservableConfiguration;
-import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
-import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,13 +14,9 @@ import java.util.NoSuchElementException;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Configuration extends AbstractConfiguration implements ObservableConfiguration<Configuration> {
+public final class Configuration extends AbstractConfiguration {
 
     private final LinkedHashMap<String, Property> properties;
-
-    private final ArrayList<ConfigurationListener<Configuration>> onRead;
-    private final ArrayList<ConfigurationListener<Configuration>> onWrite;
-    private final ArrayList<ConfigurationListener<Configuration>> onDelete;
 
     /**
      * Private empty constructor
@@ -31,9 +24,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
     private Configuration() {
         super();
         this.properties = new LinkedHashMap<>();
-        this.onRead = new ArrayList<>();
-        this.onWrite = new ArrayList<>();
-        this.onDelete = new ArrayList<>();
     }
 
     /**
@@ -42,9 +32,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, Property> properties) {
         super(name, version, filename, pathname);
         this.properties = properties;
-        this.onRead = new ArrayList<>();
-        this.onWrite = new ArrayList<>();
-        this.onDelete = new ArrayList<>();
     }
 
     /**
@@ -97,9 +84,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
     @Override
     public void clear() {
         this.properties.clear();
-        this.onRead.clear();
-        this.onWrite.clear();
-        this.onDelete.clear();
     }
 
     /**
@@ -120,97 +104,6 @@ public final class Configuration extends AbstractConfiguration implements Observ
             throw new IllegalArgumentException("The key cannot be empty");
 
         return this.properties.containsKey(key);
-    }
-
-    /**
-     * Sets a new listener for any {@link ConfigurationEvent.Type} value.
-     *
-     * @param type     The event type
-     * @param listener The custom function to execute when the event will be fired
-     * @return The boolean value representing the outcome on the inserting operation
-     */
-    @Override
-    public boolean addListener(ConfigurationEvent.Type type, ConfigurationListener<Configuration> listener) {
-
-        boolean result = false;
-
-        switch (type) {
-            case ON_CONFIG_READ:
-                result = this.onRead.add(listener);
-                break;
-            case ON_CONFIG_WRITE:
-                result = this.onWrite.add(listener);
-                break;
-            case ON_CONFIG_DELETE:
-                result = this.onDelete.add(listener);
-                break;
-        }
-
-        return result;
-    }
-
-    /**
-     * Remove listener for any {@link ConfigurationEvent.Type} value.
-     *
-     * @param type     The event type
-     * @param listener The custom function reference which was associated to the event
-     * @return The boolean value representing the outcome on the removing operation
-     */
-    @Override
-    public boolean removeListener(ConfigurationEvent.Type type, ConfigurationListener<Configuration> listener) {
-
-        boolean result = false;
-
-        switch (type) {
-            case ON_CONFIG_READ:
-                result = this.onRead.remove(listener);
-                break;
-            case ON_CONFIG_WRITE:
-                result = this.onWrite.remove(listener);
-                break;
-            case ON_CONFIG_DELETE:
-                result = this.onDelete.remove(listener);
-                break;
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns {@link List} of listeners for any {@link ConfigurationEvent.Type} value.
-     *
-     * @param type The event type
-     * @return The list holding functions references associated to the event
-     */
-    @Override
-    public List<ConfigurationListener<Configuration>> getListeners(ConfigurationEvent.Type type) {
-
-        ArrayList<ConfigurationListener<Configuration>> e;
-
-        switch (type) {
-            case ON_CONFIG_READ:
-                e = new ArrayList<>(onRead);
-                break;
-            case ON_CONFIG_WRITE:
-                e = new ArrayList<>(onWrite);
-                break;
-            case ON_CONFIG_DELETE:
-                e = new ArrayList<>(onDelete);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
-        }
-
-        return e;
-    }
-
-    /**
-     * Removes all listeners associated to the current configuration object
-     */
-    @Override
-    public void resetListeners() {
-        this.onWrite.clear();
-        this.onDelete.clear();
     }
 
     /**

@@ -1,11 +1,9 @@
 package org.tinyconfiguration.common.basic.io;
 
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.events.base.ConfigurationEvent;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
-import org.tinyconfiguration.abc.listeners.ConfigurationListener;
 import org.tinyconfiguration.common.basic.Configuration;
 import org.tinyconfiguration.common.basic.Property;
 import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationNameException;
@@ -30,7 +28,6 @@ import java.util.concurrent.Future;
 
 import static javax.json.JsonValue.ValueType;
 import static javax.json.JsonValue.ValueType.ARRAY;
-import static org.tinyconfiguration.abc.events.base.ConfigurationEvent.Type.*;
 
 /**
  * The {@link ConfigurationIO} class contains I/O operations which can be executed on any {@link Configuration} instance
@@ -779,16 +776,6 @@ public final class ConfigurationIO {
                 ParsingProcessException,
                 DuplicatedConfigurationPropertyException {
 
-            ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_READ);
-
-            for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_READ)) {
-
-                if (!e.isConsumed())
-                    listener.execute(e);
-
-            }
-
-            if (!e.isConsumed())
                 IMPL_READER_JSON.toObject(instance);
         }
 
@@ -822,16 +809,6 @@ public final class ConfigurationIO {
         @Override
         public synchronized void write(Configuration instance) throws IOException {
 
-            ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_WRITE);
-
-            for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_WRITE)) {
-
-                if (!e.isConsumed())
-                    listener.execute(e);
-
-            }
-
-            if (!e.isConsumed())
                 IMPL_WRITER_JSON.toFile(instance);
         }
 
@@ -861,17 +838,6 @@ public final class ConfigurationIO {
          */
         @Override
         public synchronized void delete(Configuration instance) throws IOException {
-
-            ConfigurationEvent<Configuration> e = new ConfigurationEvent<>(instance, ON_CONFIG_DELETE);
-
-            for (ConfigurationListener<Configuration> listener : instance.getListeners(ON_CONFIG_DELETE)) {
-
-                if (!e.isConsumed())
-                    listener.execute(e);
-
-            }
-
-            if (!e.isConsumed())
                 Files.delete(instance.getFile().toPath());
         }
 

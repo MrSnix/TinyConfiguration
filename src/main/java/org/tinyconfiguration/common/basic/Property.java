@@ -4,16 +4,8 @@ import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.events.ObservableProperty;
-import org.tinyconfiguration.abc.events.base.PropertyEvent;
-import org.tinyconfiguration.abc.events.base.UpdateEvent;
-import org.tinyconfiguration.abc.listeners.PropertyListener;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
-
-import static org.tinyconfiguration.abc.events.base.PropertyEvent.Type.ON_PROPERTY_UPDATE;
 
 /**
  * This class represent the properties stored inside the configuration instance
@@ -21,11 +13,10 @@ import static org.tinyconfiguration.abc.events.base.PropertyEvent.Type.ON_PROPER
  * @author G. Baittiner
  * @version 0.1
  */
-public class Property extends AbstractProperty<ImmutableDatatype> implements ObservableProperty<Property> {
+public class Property extends AbstractProperty<ImmutableDatatype> {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
-    private final List<PropertyListener<Property>> listeners;
 
     /**
      * Private empty constructor
@@ -33,17 +24,15 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
     private Property() {
         this.isOptional = false;
         this.isValid = null;
-        this.listeners = new ArrayList<>();
     }
 
     /**
      * Private constructor with parameters
      */
-    private Property(String key, ImmutableDatatype value, String description, boolean isOptional, Predicate<Property> isValid, List<PropertyListener<Property>> listeners) {
+    private Property(String key, ImmutableDatatype value, String description, boolean isOptional, Predicate<Property> isValid) {
         super(key, value, description);
         this.isOptional = isOptional;
         this.isValid = isValid;
-        this.listeners = new ArrayList<>(listeners);
     }
 
     @Override
@@ -57,298 +46,8 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
     }
 
     @Override
-    public void setValue(String s) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(s);
-
-    }
-
-    @Override
-    public void setValue(boolean b) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(b);
-
-    }
-
-    @Override
-    public void setValue(char c) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(c), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(c);
-
-    }
-
-    @Override
-    public void setValue(byte b) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(b);
-
-    }
-
-    @Override
-    public void setValue(short s) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(s);
-
-    }
-
-    @Override
-    public void setValue(int i) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(i), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(i);
-
-    }
-
-    @Override
-    public void setValue(long l) {
-
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(l), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(l);
-    }
-
-    @Override
-    public void setValue(float f) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(f), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(f);
-    }
-
-    @Override
-    public void setValue(double d) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(d), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(d);
-    }
-
-    @Override
-    public void setValue(String[] s) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(s);
-    }
-
-    @Override
-    public void setValue(boolean[] b) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(b);
-    }
-
-    @Override
-    public void setValue(char[] c) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(c), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(c);
-    }
-
-    @Override
-    public void setValue(byte[] b) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(b), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(b);
-    }
-
-    @Override
-    public void setValue(short[] s) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(s), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(s);
-    }
-
-    @Override
-    public void setValue(int[] i) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(i), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(i);
-    }
-
-    @Override
-    public void setValue(long[] l) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(l), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(l);
-    }
-
-    @Override
-    public void setValue(float[] f) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(f), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(f);
-    }
-
-    @Override
-    public void setValue(double[] d) {
-        UpdateEvent<Property, ImmutableDatatype> e = new UpdateEvent<>(this, new ImmutableDatatype(d), value);
-
-        this.listeners.forEach(listener -> {
-            if (!e.isConsumed())
-                listener.onChange(e);
-        });
-
-        if (!e.isConsumed())
-            super.setValue(d);
-    }
-
-    @Override
     public String getDescription() {
         return super.getDescription();
-    }
-
-    /**
-     * Insert new listeners on this property
-     *
-     * @param type The {@link PropertyEvent.Type} which specifies the listener type
-     * @param l    The property listener to associate on this property object
-     * @return The boolean value representing the outcome on the insert operation
-     */
-    @Override
-    public boolean addListener(PropertyEvent.Type type, PropertyListener<Property> l) {
-        boolean result = false;
-
-        if (type == ON_PROPERTY_UPDATE)
-            result = this.listeners.add(l);
-
-        return result;
-    }
-
-    /**
-     * Remove listeners from this property
-     *
-     * @param type The {@link PropertyEvent.Type} which specifies the listener type
-     * @param l    The property listener to remove from this property object
-     * @return The boolean value representing the outcome on the remove operation
-     */
-    @Override
-    public boolean removeListener(PropertyEvent.Type type, PropertyListener<Property> l) {
-
-        boolean result = false;
-
-        if (type == ON_PROPERTY_UPDATE)
-            result = this.listeners.remove(l);
-
-        return result;
-    }
-
-    /**
-     * Removes all listeners associated to the current property object
-     */
-    @Override
-    public void resetListeners() {
-        this.listeners.clear();
     }
 
     /**
@@ -385,14 +84,13 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
      * @author G. Baittiner
      * @version 0.1
      */
-    public static final class Builder extends AbstractBuilder<Property> implements ObservableProperty<Property>, Mutable<Builder> {
+    public static final class Builder extends AbstractBuilder<Property> implements Mutable<Builder> {
 
         private String key;
         private ImmutableDatatype value;
         private String description;
         private boolean isOptional;
         private Predicate<Property> isValid;
-        private List<PropertyListener<Property>> listeners;
 
         private final boolean isCleanable;
 
@@ -405,7 +103,6 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
             this.description = null;
             this.isOptional = false;
             this.isValid = null;
-            this.listeners = new ArrayList<>();
             this.isCleanable = true;
         }
 
@@ -420,7 +117,6 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
             this.description = null;
             this.isOptional = false;
             this.isValid = null;
-            this.listeners = new ArrayList<>();
             this.isCleanable = isCleanable;
         }
 
@@ -498,31 +194,6 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
         }
 
         @Override
-        public boolean addListener(PropertyEvent.Type type, PropertyListener<Property> l) {
-            boolean result = false;
-
-            if (type == ON_PROPERTY_UPDATE)
-                result = this.listeners.add(l);
-
-            return result;
-        }
-
-        @Override
-        public boolean removeListener(PropertyEvent.Type type, PropertyListener<Property> l) {
-            boolean result = false;
-
-            if (type == ON_PROPERTY_UPDATE)
-                result = this.listeners.remove(l);
-
-            return result;
-        }
-
-        @Override
-        public void resetListeners() {
-            this.listeners.clear();
-        }
-
-        @Override
         public void clear() {
 
             this.key = null;
@@ -530,8 +201,6 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
             this.description = null;
             this.isValid = null;
             this.isOptional = false;
-
-            this.listeners = new ArrayList<>();
 
         }
 
@@ -553,7 +222,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> implements Obs
             if (this.description == null)
                 throw new NullPointerException("The description must be set!");
 
-            Property e = new Property(key, value, description, isOptional, isValid, listeners);
+            Property e = new Property(key, value, description, isOptional, isValid);
 
             if (isCleanable)
                 clear();
