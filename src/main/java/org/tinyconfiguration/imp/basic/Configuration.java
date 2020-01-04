@@ -1,4 +1,4 @@
-package org.tinyconfiguration.common.basic;
+package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;

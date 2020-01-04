@@ -8,7 +8,7 @@ import java.util.EventObject;
 public class Event extends EventObject {
 
     // The root node at head of event hierarchy
-    public static final EventType<Event> ANY = new EventType<>(null, "ANY");
+    public static final EventType<Event> ANY = new EventType<>(null, "EVENT.ANY");
 
     /**
      * Constructs a prototypical Event.

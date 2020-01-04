@@ -1,8 +1,8 @@
-package org.tinyconfiguration.common.basic.io;
+package org.tinyconfiguration.imp.basic.io;
 
 import org.junit.jupiter.api.Test;
-import org.tinyconfiguration.common.basic.Configuration;
-import org.tinyconfiguration.common.basic.Property;
+import org.tinyconfiguration.imp.basic.Configuration;
+import org.tinyconfiguration.imp.basic.Property;
 
 import java.util.concurrent.Future;
 

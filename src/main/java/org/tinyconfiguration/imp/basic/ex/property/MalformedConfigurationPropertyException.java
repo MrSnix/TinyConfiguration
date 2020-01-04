@@ -1,7 +1,7 @@
-package org.tinyconfiguration.common.basic.ex.property;
+package org.tinyconfiguration.imp.basic.ex.property;
 
 import org.tinyconfiguration.abc.ex.PropertyException;
-import org.tinyconfiguration.common.basic.Property;
+import org.tinyconfiguration.imp.basic.Property;
 
 public class MalformedConfigurationPropertyException extends PropertyException {
 

@@ -38,4 +38,5 @@ public class EventType<T extends Event> {
     public String getName() {
         return type;
     }
+
 }

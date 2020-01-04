@@ -1,16 +1,16 @@
-package org.tinyconfiguration.common.basic.io;
+package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
-import org.tinyconfiguration.common.basic.Configuration;
-import org.tinyconfiguration.common.basic.Property;
-import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationNameException;
-import org.tinyconfiguration.common.basic.ex.configuration.InvalidConfigurationVersionException;
-import org.tinyconfiguration.common.basic.ex.configuration.MissingConfigurationIdentifiersException;
-import org.tinyconfiguration.common.basic.ex.io.ParsingProcessException;
-import org.tinyconfiguration.common.basic.ex.property.*;
+import org.tinyconfiguration.imp.basic.Configuration;
+import org.tinyconfiguration.imp.basic.Property;
+import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
+import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
+import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
+import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
+import org.tinyconfiguration.imp.basic.ex.property.*;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
@@ -26,23 +26,128 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
-import static javax.json.JsonValue.ValueType;
 import static javax.json.JsonValue.ValueType.ARRAY;
 
 /**
- * The {@link ConfigurationIO} class contains I/O operations which can be executed on any {@link Configuration} instance
+ * The {@link HandlerJSON} class contains the implementations of I/O operations as JSON format which can be executed on any {@link Configuration} instance
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public final class ConfigurationIO {
+final class HandlerJSON extends AbstractHandlerIO<Configuration> {
 
-    public static final HandlerJSON JSON = new HandlerJSON();
+    private static final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
+    private static final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
 
     /**
-     * Private empty constructor
+     * Reads the configuration file
+     *
+     * @param instance The configuration instance to read and update
+     * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
+     * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
+     * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
+     * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
+     * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
+     * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
+     * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
+     * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
+     * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
+     * @throws IOException                              If an I/O exception of some sort has occurred.
      */
-    private ConfigurationIO() {
+    @Override
+    public synchronized void read(Configuration instance) throws
+            IOException,
+            InvalidConfigurationNameException,
+            InvalidConfigurationVersionException,
+            MalformedConfigurationPropertyException,
+            MissingConfigurationPropertyException,
+            MissingConfigurationIdentifiersException,
+            InvalidConfigurationPropertyException,
+            UnknownConfigurationPropertyException,
+            ParsingProcessException,
+            DuplicatedConfigurationPropertyException {
+
+        IMPL_READER_JSON.toObject(instance);
+    }
+
+    /**
+     * Reads the configuration file asynchronously
+     *
+     * @param instance The configuration instance to read
+     * @return Future object representing the reading task
+     * @throws CompletionException If any exceptions occurs at runtime
+     * @see HandlerJSON#read(Configuration)
+     */
+    @Override
+    public Future<Void> readAsync(Configuration instance) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                read(instance);
+            } catch (
+                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Write the configuration file
+     *
+     * @param instance The configuration instance to write
+     * @throws IOException If an I/O exception of some sort has occurred.
+     */
+    @Override
+    public synchronized void write(Configuration instance) throws IOException {
+
+        IMPL_WRITER_JSON.toFile(instance);
+    }
+
+    /**
+     * Write the configuration file asynchronously
+     *
+     * @param instance The configuration instance to write
+     * @return Future object representing the writing task
+     */
+    @Override
+    public Future<Void> writeAsync(Configuration instance) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                write(instance);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Delete the configuration file
+     *
+     * @param instance The configuration instance to delete
+     * @throws IOException If an I/O exception of some sort has occurred.
+     */
+    @Override
+    public synchronized void delete(Configuration instance) throws IOException {
+        Files.delete(instance.getFile().toPath());
+    }
+
+    /**
+     * Delete the configuration file asynchronously
+     *
+     * @param instance The configuration instance to delete
+     * @return Future object representing the deleting task
+     */
+    @Override
+    public Future<Void> deleteAsync(Configuration instance) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                delete(instance);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
     }
 
     /**
@@ -301,7 +406,6 @@ public final class ConfigurationIO {
             JsonObject property0 = null;
             // This flag stop the iteration
             boolean stop = false;
-            boolean duplicated = false;
 
             // Now, we look inside "properties" on each node if the current "Property" object exists
             for (JsonValue p : properties) {
@@ -333,7 +437,7 @@ public final class ConfigurationIO {
             if (property0 != null) {
 
                 // Now, the property may be an array or an object
-                ValueType type = property0.get(property.getKey()).getValueType();
+                JsonValue.ValueType type = property0.get(property.getKey()).getValueType();
 
                 // Let's handle both cases, checking validity then updating the property value
                 if (type != ARRAY) {
@@ -363,7 +467,7 @@ public final class ConfigurationIO {
 
             ImmutableDatatype value = property.getValue();
 
-            ValueType type = obj.get(property.getKey()).getValueType();
+            JsonValue.ValueType type = obj.get(property.getKey()).getValueType();
 
             switch (type) {
 
@@ -480,7 +584,7 @@ public final class ConfigurationIO {
 
             for (int i = 0; i < array.size(); i++) {
 
-                ValueType type = array.get(i).getValueType();
+                JsonValue.ValueType type = array.get(i).getValueType();
 
                 switch (type) {
 
@@ -731,133 +835,5 @@ public final class ConfigurationIO {
         }
     }
 
-    /**
-     * The {@link HandlerJSON} class contains the implementations of I/O operations which can be executed on any {@link Configuration} instance
-     *
-     * @author G. Baittiner
-     * @version 0.1
-     */
-    public static final class HandlerJSON extends AbstractHandlerIO<Configuration> {
-
-        private static final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
-        private static final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
-
-        /**
-         * Private empty constructor
-         */
-        private HandlerJSON() {
-        }
-
-        /**
-         * Reads the configuration file
-         *
-         * @param instance The configuration instance to read and update
-         * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
-         * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
-         * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
-         * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
-         * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
-         * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
-         * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
-         * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
-         * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
-         * @throws IOException                              If an I/O exception of some sort has occurred.
-         */
-        @Override
-        public synchronized void read(Configuration instance) throws
-                IOException,
-                InvalidConfigurationNameException,
-                InvalidConfigurationVersionException,
-                MalformedConfigurationPropertyException,
-                MissingConfigurationPropertyException,
-                MissingConfigurationIdentifiersException,
-                InvalidConfigurationPropertyException,
-                UnknownConfigurationPropertyException,
-                ParsingProcessException,
-                DuplicatedConfigurationPropertyException {
-
-                IMPL_READER_JSON.toObject(instance);
-        }
-
-        /**
-         * Reads the configuration file asynchronously
-         *
-         * @param instance The configuration instance to read
-         * @return Future object representing the reading task
-         * @throws CompletionException If any exceptions occurs at runtime
-         * @see HandlerJSON#read(Configuration)
-         */
-        @Override
-        public Future<Void> readAsync(Configuration instance) {
-            return CompletableFuture.supplyAsync(() -> {
-                try {
-                    read(instance);
-                } catch (
-                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
-                    throw new CompletionException(e);
-                }
-                return null;
-            });
-        }
-
-        /**
-         * Write the configuration file
-         *
-         * @param instance The configuration instance to write
-         * @throws IOException If an I/O exception of some sort has occurred.
-         */
-        @Override
-        public synchronized void write(Configuration instance) throws IOException {
-
-                IMPL_WRITER_JSON.toFile(instance);
-        }
-
-        /**
-         * Write the configuration file asynchronously
-         *
-         * @param instance The configuration instance to write
-         * @return Future object representing the writing task
-         */
-        @Override
-        public Future<Void> writeAsync(Configuration instance) {
-            return CompletableFuture.supplyAsync(() -> {
-                try {
-                    write(instance);
-                } catch (IOException e) {
-                    throw new CompletionException(e);
-                }
-                return null;
-            });
-        }
-
-        /**
-         * Delete the configuration file
-         *
-         * @param instance The configuration instance to delete
-         * @throws IOException If an I/O exception of some sort has occurred.
-         */
-        @Override
-        public synchronized void delete(Configuration instance) throws IOException {
-                Files.delete(instance.getFile().toPath());
-        }
-
-        /**
-         * Delete the configuration file asynchronously
-         *
-         * @param instance The configuration instance to delete
-         * @return Future object representing the deleting task
-         */
-        @Override
-        public Future<Void> deleteAsync(Configuration instance) {
-            return CompletableFuture.supplyAsync(() -> {
-                try {
-                    delete(instance);
-                } catch (IOException e) {
-                    throw new CompletionException(e);
-                }
-                return null;
-            });
-        }
-    }
 
 }
