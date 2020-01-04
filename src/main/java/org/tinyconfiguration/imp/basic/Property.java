@@ -4,7 +4,14 @@ import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
+import org.tinyconfiguration.abc.events.EventType;
+import org.tinyconfiguration.abc.events.listeners.EventListener;
+import org.tinyconfiguration.abc.events.listeners.EventSource;
+import org.tinyconfiguration.imp.basic.events.base.PropertyEvent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -13,10 +20,11 @@ import java.util.function.Predicate;
  * @author G. Baittiner
  * @version 0.1
  */
-public class Property extends AbstractProperty<ImmutableDatatype> {
+public final class Property extends AbstractProperty<ImmutableDatatype> implements EventSource<PropertyEvent> {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
+    private final HashMap<EventType<PropertyEvent>, List<EventListener<? extends PropertyEvent>>> listeners;
 
     /**
      * Private empty constructor
@@ -24,6 +32,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
     private Property() {
         this.isOptional = false;
         this.isValid = null;
+        this.listeners = new HashMap<>();
     }
 
     /**
@@ -33,6 +42,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
         super(key, value, description);
         this.isOptional = isOptional;
         this.isValid = isValid;
+        this.listeners = new HashMap<>();
     }
 
     @Override
@@ -79,7 +89,91 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
     }
 
     /**
-     * The {@link Property.Builder} class is used to build the {@link Property} object
+     * Sets a new listener for any {@link EventType} value.
+     *
+     * @param type     The event type
+     * @param listener The custom function to execute when the event will be fired
+     * @return The boolean value representing the outcome on the inserting operation
+     * @throws NullPointerException If the EventType is null or EventListener is null
+     */
+    @Override
+    public void addListener(EventType<PropertyEvent> type, EventListener<? extends PropertyEvent> listener) {
+
+        if (type == null)
+            throw new NullPointerException("The EventType cannot be null");
+
+        if (listener == null)
+            throw new NullPointerException("The EventListener cannot be null");
+
+        // Let's create an empty list, just in case
+        ArrayList<EventListener<? extends PropertyEvent>> l = new ArrayList<>();
+        // Adding listener
+        l.add(listener);
+
+        // The key already exists, just add to the List
+        if (this.listeners.containsKey(type))
+            this.listeners.get(type).add(listener);
+        else
+            // The key does not exists, put type and list already filled with listener
+            this.listeners.put(type, l);
+    }
+
+    /**
+     * Remove listener for any {@link EventType} value.
+     *
+     * @param type     The event type
+     * @param listener The custom function reference which was associated to the event
+     * @return The boolean value representing the outcome on the removing operation
+     * @throws NullPointerException If the EventType is null or EventListener is null
+     */
+    @Override
+    public boolean removeListener(EventType<PropertyEvent> type, EventListener<? extends PropertyEvent> listener) {
+
+        boolean removed = false;
+
+        if (type == null)
+            throw new NullPointerException("The EventType cannot be null");
+
+        if (listener == null)
+            throw new NullPointerException("The EventListener cannot be null");
+
+        // The key already exists, just remove from the list
+        if (this.listeners.containsKey(type))
+            removed = this.listeners.get(type).remove(listener);
+
+        return removed;
+    }
+
+    /**
+     * Returns listeners {@link List} for any {@link EventType} value.
+     *
+     * @param type The event type
+     * @return The list holding functions references associated to the event
+     */
+    @Override
+    public List<EventListener<? extends PropertyEvent>> getListeners(EventType<PropertyEvent> type) {
+
+        if (type == null)
+            throw new NullPointerException("The EventType cannot be null");
+
+        List<EventListener<? extends PropertyEvent>> e = new ArrayList<>();
+
+        if (this.listeners.containsKey(type))
+            e.addAll(this.listeners.get(type));
+
+        return e;
+    }
+
+    /**
+     * Removes all listeners associated to the current event source
+     */
+    @Override
+    public void resetListeners() {
+        this.listeners.clear();
+    }
+
+    /**
+     * The {@link Builder} class is used to build the {@link Property} object
      *
      * @author G. Baittiner
      * @version 0.1
@@ -124,7 +218,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the key value
          *
          * @param key The key value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the key is null
          * @throws IllegalArgumentException If the key is empty
          */
@@ -147,7 +241,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the description value
          *
          * @param description The description value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the description is null
          * @throws IllegalArgumentException If the description is empty
          */
@@ -168,7 +262,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the optionality
          *
          * @param optional The optional value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          */
         public Builder setOptional(boolean optional) {
             isOptional = optional;
@@ -179,7 +273,7 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the validator function
          *
          * @param validator The validator function
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException If the validator function is null
          */
         public Builder setValidator(Predicate<Property> validator) {
@@ -234,12 +328,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param s The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(String s) {
+        public Builder setValue(String s) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(s);
@@ -253,12 +347,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param b The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(boolean b) {
+        public Builder setValue(boolean b) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(b);
@@ -272,12 +366,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param c The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(char c) {
+        public Builder setValue(char c) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(c);
@@ -291,12 +385,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param b The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(byte b) {
+        public Builder setValue(byte b) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(b);
@@ -310,12 +404,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param s The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(short s) {
+        public Builder setValue(short s) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(s);
@@ -329,12 +423,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param i The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(int i) {
+        public Builder setValue(int i) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(i);
@@ -348,12 +442,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param l The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(long l) {
+        public Builder setValue(long l) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(l);
@@ -367,12 +461,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param f The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(float f) {
+        public Builder setValue(float f) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(f);
@@ -386,12 +480,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the value on this property
          *
          * @param d The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(double d) {
+        public Builder setValue(double d) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(d);
@@ -405,12 +499,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param s The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(String[] s) {
+        public Builder setValue(String[] s) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(s);
@@ -424,12 +518,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param b The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(boolean[] b) {
+        public Builder setValue(boolean[] b) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(b);
@@ -443,12 +537,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param c The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(char[] c) {
+        public Builder setValue(char[] c) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(c);
@@ -462,12 +556,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param b The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(byte[] b) {
+        public Builder setValue(byte[] b) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(b);
@@ -481,12 +575,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param s The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(short[] s) {
+        public Builder setValue(short[] s) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(s);
@@ -500,12 +594,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param i The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(int[] i) {
+        public Builder setValue(int[] i) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(i);
@@ -519,12 +613,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param l The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(long[] l) {
+        public Builder setValue(long[] l) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(l);
@@ -538,12 +632,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param f The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(float[] f) {
+        public Builder setValue(float[] f) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(f);
@@ -557,12 +651,12 @@ public class Property extends AbstractProperty<ImmutableDatatype> {
          * Sets the array value on this property
          *
          * @param d The new value
-         * @return The {@link Property.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the value is null
          * @throws IllegalArgumentException If the class type is different from the one declared
          */
         @Override
-        public Property.Builder setValue(double[] d) {
+        public Builder setValue(double[] d) {
 
             if (value == null)
                 this.value = new ImmutableDatatype(d);

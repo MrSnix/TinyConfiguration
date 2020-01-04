@@ -40,7 +40,7 @@ public class ImmutableDatatype extends AbstractDatatype {
             throw new NullPointerException("The value cannot be null");
         }
 
-        if (value.getClass() != value.getClass()) {
+        if (this.type != value.getClass()) {
             throw new IllegalArgumentException("The value must be of the same class as the one declared");
         }
 

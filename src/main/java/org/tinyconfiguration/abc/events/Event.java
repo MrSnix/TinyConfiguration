@@ -10,6 +10,8 @@ public class Event extends EventObject {
     // The root node at head of event hierarchy
     public static final EventType<Event> ANY = new EventType<>(null, "EVENT.ANY");
 
+    private boolean isConsumed;
+
     /**
      * Constructs a prototypical Event.
      *
@@ -29,4 +31,19 @@ public class Event extends EventObject {
         return Event.ANY;
     }
 
+    /**
+     * Gets the event state.
+     *
+     * @return True or false
+     */
+    public boolean isConsumed() {
+        return isConsumed;
+    }
+
+    /**
+     * Consume the event
+     */
+    public void consume() {
+        this.isConsumed = true;
+    }
 }

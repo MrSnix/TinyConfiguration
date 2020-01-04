@@ -1,5 +1,6 @@
 package org.tinyconfiguration.abc;
 
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
@@ -17,6 +18,7 @@ public abstract class AbstractConfiguration implements AbstractCollection {
     protected final String pathname;
     protected final File file;
     protected final String version;
+
 
     /**
      * Protected empty constructor

@@ -1,5 +1,6 @@
 package org.tinyconfiguration.abc.events.base;
 
+import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.events.Event;
 import org.tinyconfiguration.abc.events.EventType;
 
@@ -17,9 +18,12 @@ public final class IOEvent extends Event {
      * @param source the object on which the Event initially occurred
      * @throws IllegalArgumentException if source is null
      */
-    public IOEvent(Object source) {
+    public IOEvent(AbstractConfiguration source) {
         super(source);
     }
 
-
+    @Override
+    public AbstractConfiguration getSource() {
+        return (AbstractConfiguration) super.getSource();
+    }
 }

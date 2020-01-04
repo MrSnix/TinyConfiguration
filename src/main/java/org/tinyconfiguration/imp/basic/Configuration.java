@@ -2,11 +2,12 @@ package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
+import org.tinyconfiguration.abc.events.EventType;
+import org.tinyconfiguration.abc.events.base.IOEvent;
+import org.tinyconfiguration.abc.events.listeners.EventListener;
+import org.tinyconfiguration.abc.events.listeners.EventSource;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * The {@link Configuration} class defines all properties included inside the configuration file
@@ -14,9 +15,10 @@ import java.util.NoSuchElementException;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Configuration extends AbstractConfiguration {
+public final class Configuration extends AbstractConfiguration implements EventSource<IOEvent> {
 
     private final LinkedHashMap<String, Property> properties;
+    private final HashMap<EventType<IOEvent>, List<EventListener<? extends IOEvent>>> listeners;
 
     /**
      * Private empty constructor
@@ -24,6 +26,7 @@ public final class Configuration extends AbstractConfiguration {
     private Configuration() {
         super();
         this.properties = new LinkedHashMap<>();
+        this.listeners = null;
     }
 
     /**
@@ -32,6 +35,7 @@ public final class Configuration extends AbstractConfiguration {
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, Property> properties) {
         super(name, version, filename, pathname);
         this.properties = properties;
+        this.listeners = new HashMap<>();
     }
 
     /**
@@ -107,6 +111,92 @@ public final class Configuration extends AbstractConfiguration {
     }
 
     /**
+     * Sets a new listener for any {@link EventType} value.
+     *
+     * @param type     The event type
+     * @param listener The custom function to execute when the event will be fired
+     * @return The boolean value representing the outcome on the inserting operation
+     * @throws NullPointerException If the EventType is null or EventListener is null
+     */
+    @Override
+    public void addListener(EventType<IOEvent> type, EventListener<? extends IOEvent> listener) {
+
+        if (type == null)
+            throw new NullPointerException("The EventType cannot be null");
+
+        if (listener == null)
+            throw new NullPointerException("The EventListener cannot be null");
+
+        // Let's create an empty list, just in case
+        ArrayList<EventListener<? extends IOEvent>> l = new ArrayList<>();
+        // Adding listener
+        l.add(listener);
+
+        // The key already exists, just add to the List
+        if (this.listeners.containsKey(type))
+            this.listeners.get(type).add(listener);
+        else
+            // The key does not exists, put type and list already filled with listener
+            this.listeners.put(type, l);
+
+    }
+
+    /**
+     * Remove listener for any {@link EventType} value.
+     *
+     * @param type     The event type
+     * @param listener The custom function reference which was associated to the event
+     * @return The boolean value representing the outcome on the removing operation
+     * @throws NullPointerException If the EventType is null or EventListener is null
+     */
+    @Override
+    public boolean removeListener(EventType<IOEvent> type, EventListener<? extends IOEvent> listener) {
+
+        boolean removed = false;
+
+        if (type == null)
+            throw new NullPointerException("The EventType cannot be null");
+
+        if (listener == null)
+            throw new NullPointerException("The EventListener cannot be null");
+
+        // The key already exists, just remove from the list
+        if (this.listeners.containsKey(type))
+            removed = this.listeners.get(type).remove(listener);
+
+        return removed;
+    }
+
+    /**
+     * Returns listeners {@link List} for any {@link EventType} value.
+     *
+     * @param type The event type
+     * @return The list holding functions references associated to the event
+     * @throws NullPointerException If the EventType is null
+     */
+    @Override
+    public List<EventListener<? extends IOEvent>> getListeners(EventType<IOEvent> type) {
+
+        if (type == null)
+            throw new NullPointerException("The EventType cannot be null");
+
+        List<EventListener<? extends IOEvent>> e = new ArrayList<>();
+
+        if (this.listeners.containsKey(type))
+            e.addAll(this.listeners.get(type));
+
+        return e;
+    }
+
+    /**
+     * Removes all listeners associated to the current event source
+     */
+    @Override
+    public void resetListeners() {
+        this.listeners.clear();
+    }
+
+    /**
      * The {@link Builder} class allows to generate {@link Configuration} instances
      *
      * @author G. Baittiner
@@ -124,7 +214,7 @@ public final class Configuration extends AbstractConfiguration {
         private final boolean isCleanable;
 
         /**
-         * The {@link Configuration.Builder} constructor
+         * The {@link Builder} constructor
          */
         public Builder() {
             this.name = null;
@@ -136,7 +226,7 @@ public final class Configuration extends AbstractConfiguration {
         }
 
         /**
-         * The {@link Configuration.Builder} constructor
+         * The {@link Builder} constructor
          *
          * @param isCleanable If true on {@link Property.Builder#build()} the object will be reusable
          */
@@ -153,7 +243,7 @@ public final class Configuration extends AbstractConfiguration {
          * Sets the configuration name.
          *
          * @param name The configuration name
-         * @return The {@link Configuration.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the given {@link String} is null
          * @throws IllegalArgumentException If the given {@link String} is empty
          */
@@ -174,7 +264,7 @@ public final class Configuration extends AbstractConfiguration {
          * Sets the configuration version.
          *
          * @param version The configuration version value
-         * @return The {@link Configuration.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the given {@link String} is null
          * @throws IllegalArgumentException If the given {@link String} is empty
          */
@@ -205,11 +295,11 @@ public final class Configuration extends AbstractConfiguration {
          * </ul>
          *
          * @param filename The configuration filename formatted as "filename.ext"
-         * @return The {@link Configuration.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the given {@link String} is null
          * @throws IllegalArgumentException If the given {@link String} is empty
          */
-        public Configuration.Builder setFilename(String filename) {
+        public Builder setFilename(String filename) {
 
             if (filename == null)
                 throw new NullPointerException("The filename cannot be null");
@@ -236,11 +326,11 @@ public final class Configuration extends AbstractConfiguration {
          * </ul>
          *
          * @param pathname The configuration pathname formatted as "../dir/"
-         * @return The {@link Configuration.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException     If the given {@link String} is null
          * @throws IllegalArgumentException If the given {@link String} is empty
          */
-        public Configuration.Builder setPathname(String pathname) {
+        public Builder setPathname(String pathname) {
 
             if (pathname == null)
                 throw new NullPointerException("The pathname cannot be null");
@@ -257,11 +347,12 @@ public final class Configuration extends AbstractConfiguration {
          * Insert a specific property inside the configuration instance
          *
          * @param property The property instance to insert
-         * @return The {@link Configuration.Builder} current instance
+         * @return The {@link Builder} current instance
          * @throws NullPointerException  If the property is null
          * @throws IllegalStateException If the property has been already inserted
          */
-        public Configuration.Builder put(Property property) {
+        @SuppressWarnings("UnusedReturnValue")
+        public Builder put(Property property) {
 
             if (property == null)
                 throw new NullPointerException("The property object cannot be null");
