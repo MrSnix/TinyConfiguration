@@ -6,10 +6,8 @@ import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
 import org.tinyconfiguration.abc.events.EventType;
 import org.tinyconfiguration.abc.events.listeners.EventListener;
-import org.tinyconfiguration.abc.events.listeners.EventSource;
 import org.tinyconfiguration.imp.basic.events.base.PropertyEvent;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -20,7 +18,7 @@ import java.util.function.Predicate;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Property extends AbstractProperty<ImmutableDatatype> implements EventSource<PropertyEvent> {
+public final class Property extends AbstractProperty<ImmutableDatatype> {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
@@ -86,90 +84,6 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
             isValid = this.isValid.test(this);
 
         return isValid;
-    }
-
-    /**
-     * Sets a new listener for any {@link EventType} value.
-     *
-     * @param type     The event type
-     * @param listener The custom function to execute when the event will be fired
-     * @return The boolean value representing the outcome on the inserting operation
-     * @throws NullPointerException If the EventType is null or EventListener is null
-     */
-    @Override
-    public void addListener(EventType<PropertyEvent> type, EventListener<? extends PropertyEvent> listener) {
-
-        if (type == null)
-            throw new NullPointerException("The EventType cannot be null");
-
-        if (listener == null)
-            throw new NullPointerException("The EventListener cannot be null");
-
-        // Let's create an empty list, just in case
-        ArrayList<EventListener<? extends PropertyEvent>> l = new ArrayList<>();
-        // Adding listener
-        l.add(listener);
-
-        // The key already exists, just add to the List
-        if (this.listeners.containsKey(type))
-            this.listeners.get(type).add(listener);
-        else
-            // The key does not exists, put type and list already filled with listener
-            this.listeners.put(type, l);
-    }
-
-    /**
-     * Remove listener for any {@link EventType} value.
-     *
-     * @param type     The event type
-     * @param listener The custom function reference which was associated to the event
-     * @return The boolean value representing the outcome on the removing operation
-     * @throws NullPointerException If the EventType is null or EventListener is null
-     */
-    @Override
-    public boolean removeListener(EventType<PropertyEvent> type, EventListener<? extends PropertyEvent> listener) {
-
-        boolean removed = false;
-
-        if (type == null)
-            throw new NullPointerException("The EventType cannot be null");
-
-        if (listener == null)
-            throw new NullPointerException("The EventListener cannot be null");
-
-        // The key already exists, just remove from the list
-        if (this.listeners.containsKey(type))
-            removed = this.listeners.get(type).remove(listener);
-
-        return removed;
-    }
-
-    /**
-     * Returns listeners {@link List} for any {@link EventType} value.
-     *
-     * @param type The event type
-     * @return The list holding functions references associated to the event
-     */
-    @Override
-    public List<EventListener<? extends PropertyEvent>> getListeners(EventType<PropertyEvent> type) {
-
-        if (type == null)
-            throw new NullPointerException("The EventType cannot be null");
-
-        List<EventListener<? extends PropertyEvent>> e = new ArrayList<>();
-
-        if (this.listeners.containsKey(type))
-            e.addAll(this.listeners.get(type));
-
-        return e;
-    }
-
-    /**
-     * Removes all listeners associated to the current event source
-     */
-    @Override
-    public void resetListeners() {
-        this.listeners.clear();
     }
 
     /**

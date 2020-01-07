@@ -2,10 +2,10 @@ package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
+import org.tinyconfiguration.abc.data.ImmutableDatatype;
 import org.tinyconfiguration.abc.events.EventType;
 import org.tinyconfiguration.abc.events.base.IOEvent;
 import org.tinyconfiguration.abc.events.listeners.EventListener;
-import org.tinyconfiguration.abc.events.listeners.EventSource;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ import java.util.*;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Configuration extends AbstractConfiguration implements EventSource<IOEvent> {
+public final class Configuration extends AbstractConfiguration<Property, ImmutableDatatype> {
 
     private final LinkedHashMap<String, Property> properties;
     private final HashMap<EventType<IOEvent>, List<EventListener<? extends IOEvent>>> listeners;
@@ -45,7 +45,7 @@ public final class Configuration extends AbstractConfiguration implements EventS
      */
     @Override
     public List<Property> getProperties() {
-        return new ArrayList<>(properties.values());
+        return new ArrayList<>(this.properties.values());
     }
 
     /**
@@ -108,92 +108,6 @@ public final class Configuration extends AbstractConfiguration implements EventS
             throw new IllegalArgumentException("The key cannot be empty");
 
         return this.properties.containsKey(key);
-    }
-
-    /**
-     * Sets a new listener for any {@link EventType} value.
-     *
-     * @param type     The event type
-     * @param listener The custom function to execute when the event will be fired
-     * @return The boolean value representing the outcome on the inserting operation
-     * @throws NullPointerException If the EventType is null or EventListener is null
-     */
-    @Override
-    public void addListener(EventType<IOEvent> type, EventListener<? extends IOEvent> listener) {
-
-        if (type == null)
-            throw new NullPointerException("The EventType cannot be null");
-
-        if (listener == null)
-            throw new NullPointerException("The EventListener cannot be null");
-
-        // Let's create an empty list, just in case
-        ArrayList<EventListener<? extends IOEvent>> l = new ArrayList<>();
-        // Adding listener
-        l.add(listener);
-
-        // The key already exists, just add to the List
-        if (this.listeners.containsKey(type))
-            this.listeners.get(type).add(listener);
-        else
-            // The key does not exists, put type and list already filled with listener
-            this.listeners.put(type, l);
-
-    }
-
-    /**
-     * Remove listener for any {@link EventType} value.
-     *
-     * @param type     The event type
-     * @param listener The custom function reference which was associated to the event
-     * @return The boolean value representing the outcome on the removing operation
-     * @throws NullPointerException If the EventType is null or EventListener is null
-     */
-    @Override
-    public boolean removeListener(EventType<IOEvent> type, EventListener<? extends IOEvent> listener) {
-
-        boolean removed = false;
-
-        if (type == null)
-            throw new NullPointerException("The EventType cannot be null");
-
-        if (listener == null)
-            throw new NullPointerException("The EventListener cannot be null");
-
-        // The key already exists, just remove from the list
-        if (this.listeners.containsKey(type))
-            removed = this.listeners.get(type).remove(listener);
-
-        return removed;
-    }
-
-    /**
-     * Returns listeners {@link List} for any {@link EventType} value.
-     *
-     * @param type The event type
-     * @return The list holding functions references associated to the event
-     * @throws NullPointerException If the EventType is null
-     */
-    @Override
-    public List<EventListener<? extends IOEvent>> getListeners(EventType<IOEvent> type) {
-
-        if (type == null)
-            throw new NullPointerException("The EventType cannot be null");
-
-        List<EventListener<? extends IOEvent>> e = new ArrayList<>();
-
-        if (this.listeners.containsKey(type))
-            e.addAll(this.listeners.get(type));
-
-        return e;
-    }
-
-    /**
-     * Removes all listeners associated to the current event source
-     */
-    @Override
-    public void resetListeners() {
-        this.listeners.clear();
     }
 
     /**

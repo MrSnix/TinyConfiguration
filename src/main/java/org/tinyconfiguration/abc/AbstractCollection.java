@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractCollection {
+public interface AbstractCollection<T extends AbstractProperty<?>> {
 
     /**
      * Check if a specific key is stored inside the container instance
@@ -35,14 +35,13 @@ public interface AbstractCollection {
     /**
      * Gets a specific property using the provided key
      *
-     * @param <T> the type parameter
      * @param key The key used to identify the value
      * @return The {@link T} object (property) used to retrieve any known information
      * @throws NullPointerException     If the key is null
      * @throws IllegalArgumentException If the key is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
-    <T extends AbstractProperty<?>> T get(String key);
+    T get(String key);
 
 
 }
