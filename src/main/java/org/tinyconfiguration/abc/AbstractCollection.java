@@ -1,14 +1,12 @@
 package org.tinyconfiguration.abc;
 
-import java.util.NoSuchElementException;
-
 /**
  * The {@link AbstractCollection} interfaces provides basic methods which should be common on any data container
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractCollection<T extends AbstractProperty<?>> {
+public interface AbstractCollection {
 
     /**
      * Check if a specific key is stored inside the container instance
@@ -31,17 +29,5 @@ public interface AbstractCollection<T extends AbstractProperty<?>> {
      * Remove all values stored by the container.
      */
     void clear();
-
-    /**
-     * Gets a specific property using the provided key
-     *
-     * @param key The key used to identify the value
-     * @return The {@link T} object (property) used to retrieve any known information
-     * @throws NullPointerException     If the key is null
-     * @throws IllegalArgumentException If the key is empty
-     * @throws NoSuchElementException   If the key does not match any property
-     */
-    T get(String key);
-
 
 }

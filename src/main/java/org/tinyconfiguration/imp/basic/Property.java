@@ -4,12 +4,9 @@ import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.events.EventType;
-import org.tinyconfiguration.abc.events.listeners.EventListener;
-import org.tinyconfiguration.imp.basic.events.base.PropertyEvent;
+import org.tinyconfiguration.abc.events.ListenersCollection;
+import org.tinyconfiguration.imp.basic.events.property.UpdateEvent;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -22,15 +19,16 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
-    private final HashMap<EventType<PropertyEvent>, List<EventListener<? extends PropertyEvent>>> listeners;
+
+    private final ListenersCollection<UpdateEvent> listeners;
 
     /**
      * Private empty constructor
      */
     private Property() {
+        this.listeners = new ListenersCollection<>();
         this.isOptional = false;
         this.isValid = null;
-        this.listeners = new HashMap<>();
     }
 
     /**
@@ -40,7 +38,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
         super(key, value, description);
         this.isOptional = isOptional;
         this.isValid = isValid;
-        this.listeners = new HashMap<>();
+        this.listeners = new ListenersCollection<>();
     }
 
     @Override
@@ -84,6 +82,10 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
             isValid = this.isValid.test(this);
 
         return isValid;
+    }
+
+    public ListenersCollection<UpdateEvent> onUpdateEvent() {
+        return listeners;
     }
 
     /**

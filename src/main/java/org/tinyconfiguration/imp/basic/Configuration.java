@@ -3,11 +3,13 @@ package org.tinyconfiguration.imp.basic;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.events.EventType;
+import org.tinyconfiguration.abc.events.ListenersCollection;
 import org.tinyconfiguration.abc.events.base.IOEvent;
-import org.tinyconfiguration.abc.events.listeners.EventListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * The {@link Configuration} class defines all properties included inside the configuration file
@@ -18,7 +20,7 @@ import java.util.*;
 public final class Configuration extends AbstractConfiguration<Property, ImmutableDatatype> {
 
     private final LinkedHashMap<String, Property> properties;
-    private final HashMap<EventType<IOEvent>, List<EventListener<? extends IOEvent>>> listeners;
+    private final ListenersCollection<IOEvent> listeners;
 
     /**
      * Private empty constructor
@@ -35,7 +37,7 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, Property> properties) {
         super(name, version, filename, pathname);
         this.properties = properties;
-        this.listeners = new HashMap<>();
+        this.listeners = new ListenersCollection<>();
     }
 
     /**
@@ -45,7 +47,7 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
      */
     @Override
     public List<Property> getProperties() {
-        return new ArrayList<>(this.properties.values());
+        return new ArrayList<>(properties.values());
     }
 
     /**
@@ -57,7 +59,6 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
      * @throws IllegalArgumentException If the key is empty
      * @throws NoSuchElementException   If the key does not match any property
      */
-    @Override
     public Property get(String key) {
 
         if (key == null)
@@ -88,6 +89,7 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
     @Override
     public void clear() {
         this.properties.clear();
+        this.listeners.clear();
     }
 
     /**
@@ -108,6 +110,15 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
             throw new IllegalArgumentException("The key cannot be empty");
 
         return this.properties.containsKey(key);
+    }
+
+    /**
+     * Returns IO events handler
+     *
+     * @return The container holding functions references associated to the event
+     */
+    public ListenersCollection<IOEvent> onIOEvent() {
+        return this.listeners;
     }
 
     /**

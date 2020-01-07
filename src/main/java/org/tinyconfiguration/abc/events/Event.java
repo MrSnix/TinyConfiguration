@@ -36,14 +36,14 @@ public class Event extends EventObject {
      *
      * @return True or false
      */
-    public boolean isConsumed() {
+    public final boolean isConsumed() {
         return isConsumed;
     }
 
     /**
      * Consume the event
      */
-    public void consume() {
+    public final void consume() {
         this.isConsumed = true;
     }
 }

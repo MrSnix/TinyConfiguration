@@ -22,8 +22,4 @@ public final class IOEvent extends Event {
         super(source);
     }
 
-    @Override
-    public AbstractConfiguration getSource() {
-        return (AbstractConfiguration) super.getSource();
-    }
 }

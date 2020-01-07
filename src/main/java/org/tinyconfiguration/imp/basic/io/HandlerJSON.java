@@ -1,6 +1,7 @@
 package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
+import org.tinyconfiguration.abc.events.base.IOEvent;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
@@ -67,7 +68,13 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             ParsingProcessException,
             DuplicatedConfigurationPropertyException {
 
-        IMPL_READER_JSON.toObject(instance);
+        IOEvent event = new IOEvent(instance);
+
+        instance.onIOEvent().getListeners(IOEvent.ANY).execute(event);
+        instance.onIOEvent().getListeners(IOEvent.READ).execute(event);
+
+        if (!event.isConsumed())
+            IMPL_READER_JSON.toObject(instance);
     }
 
     /**
@@ -100,7 +107,13 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
     @Override
     public synchronized void write(Configuration instance) throws IOException {
 
-        IMPL_WRITER_JSON.toFile(instance);
+        IOEvent event = new IOEvent(instance);
+
+        instance.onIOEvent().getListeners(IOEvent.ANY).execute(event);
+        instance.onIOEvent().getListeners(IOEvent.WRITE).execute(event);
+
+        if (!event.isConsumed())
+            IMPL_WRITER_JSON.toFile(instance);
     }
 
     /**
@@ -129,7 +142,14 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public synchronized void delete(Configuration instance) throws IOException {
-        Files.delete(instance.getFile().toPath());
+
+        IOEvent event = new IOEvent(instance);
+
+        instance.onIOEvent().getListeners(IOEvent.ANY).execute(event);
+        instance.onIOEvent().getListeners(IOEvent.DELETE).execute(event);
+
+        if (!event.isConsumed())
+            Files.delete(instance.getFile().toPath());
     }
 
     /**

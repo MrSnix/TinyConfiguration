@@ -1,6 +1,8 @@
 package org.tinyconfiguration.imp.basic;
 
 import org.junit.jupiter.api.Test;
+import org.tinyconfiguration.abc.events.base.IOEvent;
+import org.tinyconfiguration.abc.events.listeners.EventListener;
 
 import java.util.NoSuchElementException;
 
@@ -131,4 +133,69 @@ class ConfigurationTest {
         assertThrows(IllegalArgumentException.class, () -> this.instance.contains(""));
 
     }
+
+    @Test
+    void addListener() {
+
+        EventListener<IOEvent> e = event -> {
+            // Do something
+        };
+
+        instance.onIOEvent().addListener(IOEvent.WRITE, e);
+        instance.onIOEvent().addListener(IOEvent.WRITE, e);
+
+        assertEquals(2, instance.onIOEvent().size(IOEvent.WRITE));
+
+        instance.onIOEvent().addListener(IOEvent.READ, e);
+
+        assertEquals(1, instance.onIOEvent().size(IOEvent.READ));
+
+        instance.onIOEvent().addListener(IOEvent.DELETE, e);
+        instance.onIOEvent().addListener(IOEvent.DELETE, e);
+        instance.onIOEvent().addListener(IOEvent.DELETE, e);
+
+        assertEquals(3, instance.onIOEvent().size(IOEvent.DELETE));
+
+    }
+
+    @Test
+    void removeListener() {
+
+        EventListener<IOEvent> e0 = event -> {
+        };
+        EventListener<IOEvent> e1 = event -> {
+        };
+        EventListener<IOEvent> e2 = event -> {
+        };
+
+        instance.onIOEvent().addListener(IOEvent.WRITE, e0);
+        instance.onIOEvent().addListener(IOEvent.WRITE, e1);
+
+        assertEquals(2, instance.onIOEvent().size(IOEvent.WRITE));
+
+        instance.onIOEvent().addListener(IOEvent.READ, e0);
+
+        assertEquals(1, instance.onIOEvent().size(IOEvent.READ));
+
+        instance.onIOEvent().addListener(IOEvent.DELETE, e0);
+        instance.onIOEvent().addListener(IOEvent.DELETE, e1);
+        instance.onIOEvent().addListener(IOEvent.DELETE, e2);
+
+        assertEquals(3, instance.onIOEvent().size(IOEvent.DELETE));
+
+        assertTrue(instance.onIOEvent().removeListener(IOEvent.DELETE, e0));
+        assertTrue(instance.onIOEvent().removeListener(IOEvent.DELETE, e1));
+
+        assertEquals(1, instance.onIOEvent().size(IOEvent.DELETE));
+
+        assertTrue(instance.onIOEvent().removeListener(IOEvent.WRITE, e0));
+
+        assertEquals(1, instance.onIOEvent().size(IOEvent.WRITE));
+
+        assertTrue(instance.onIOEvent().removeListener(IOEvent.READ, e0));
+
+        assertTrue(instance.onIOEvent().isEmpty(IOEvent.READ));
+
+    }
+
 }

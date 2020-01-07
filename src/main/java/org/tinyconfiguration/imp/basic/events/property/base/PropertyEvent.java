@@ -1,4 +1,4 @@
-package org.tinyconfiguration.imp.basic.events.base;
+package org.tinyconfiguration.imp.basic.events.property.base;
 
 import org.tinyconfiguration.abc.events.Event;
 import org.tinyconfiguration.abc.events.EventType;

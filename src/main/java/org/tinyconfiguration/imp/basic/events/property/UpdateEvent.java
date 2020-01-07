@@ -2,7 +2,7 @@ package org.tinyconfiguration.imp.basic.events.property;
 
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
 import org.tinyconfiguration.imp.basic.Property;
-import org.tinyconfiguration.imp.basic.events.base.PropertyEvent;
+import org.tinyconfiguration.imp.basic.events.property.base.PropertyEvent;
 
 public class UpdateEvent extends PropertyEvent {
 
