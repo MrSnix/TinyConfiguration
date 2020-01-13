@@ -1,19 +1,25 @@
-package org.tinyconfiguration.abc.events;
+package org.tinyconfiguration.abc.events.collection;
 
+import org.tinyconfiguration.abc.events.Event;
+import org.tinyconfiguration.abc.events.EventType;
 import org.tinyconfiguration.abc.events.listeners.EventListener;
-import org.tinyconfiguration.abc.events.listeners.ExecutableListeners;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The {@link ListenersCollection} is a container used to handle any type of listeners
+ *
+ * @param <T> The event type
+ */
 public final class ListenersCollection<T extends Event> {
 
-    private Map<EventType<? super T>, List<EventListener<T>>> listeners;
+    private Map<EventType<T>, List<EventListener<T>>> listeners;
 
     public ListenersCollection() {
-        this.listeners = new HashMap<>();
+        this.listeners = new ConcurrentHashMap<>();
     }
 
     /**
@@ -23,7 +29,7 @@ public final class ListenersCollection<T extends Event> {
      * @param listener The custom function to execute when the event will be fired
      * @throws NullPointerException If the EventType is null or EventListener is null
      */
-    public void addListener(EventType<? super T> type, EventListener<T> listener) {
+    public void addListener(EventType<T> type, EventListener<T> listener) {
 
         if (type == null) {
             throw new NullPointerException("The event type cannot be null");
@@ -58,7 +64,7 @@ public final class ListenersCollection<T extends Event> {
      * @return The boolean value representing the outcome on the removing operation
      * @throws NullPointerException If the EventType is null or EventListener is null
      */
-    public boolean removeListener(EventType<? super T> type, EventListener<T> listener) {
+    public boolean removeListener(EventType<T> type, EventListener<? extends T> listener) {
 
         boolean result = false;
 
@@ -83,19 +89,20 @@ public final class ListenersCollection<T extends Event> {
     }
 
     /**
-     * Returns {@link ExecutableListeners} for any {@link EventType} value.
+     * Returns {@link ExecutableCollection} for any {@link EventType} value.
      *
      * @param type The event type
-     * @return The {@link ExecutableListeners} holding functions references associated to the event
+     * @return The {@link ExecutableCollection} holding functions references associated to the event
      */
-    public ExecutableListeners<T> getListeners(EventType<? super T> type) {
+    public ExecutableCollection<T> getListeners(EventType<T> type) {
 
         if (type == null) {
             throw new NullPointerException("The event type cannot be null");
         }
 
-        return new ExecutableListeners<T>(this.listeners.getOrDefault(type, new ArrayList<>())) {
-        };
+        List<EventListener<T>> list = this.listeners.getOrDefault(type, new ArrayList<>());
+
+        return new ExecutableCollection<>(list);
     }
 
     /**
@@ -103,7 +110,7 @@ public final class ListenersCollection<T extends Event> {
      *
      * @return the number of listeners on a specific event type.
      */
-    public int size(EventType<? super T> type) {
+    public int size(EventType<T> type) {
 
         if (type == null) {
             throw new NullPointerException("The event type cannot be null");
@@ -117,7 +124,7 @@ public final class ListenersCollection<T extends Event> {
      *
      * @return <tt>true</tt> if this list contains no listeners
      */
-    public boolean isEmpty(EventType<? super T> type) {
+    public boolean isEmpty(EventType<T> type) {
 
         if (type == null) {
             throw new NullPointerException("The event type cannot be null");
@@ -127,18 +134,11 @@ public final class ListenersCollection<T extends Event> {
     }
 
     /**
-     * Removes all listeners associated to the current event source
-     */
-    public void clear() {
-        this.listeners.clear();
-    }
-
-    /**
      * Removes all listeners on a specific type associated to the current event source
      *
      * @param type The event type
      */
-    public void clear(EventType<? super T> type) {
+    public void clear(EventType<T> type) {
 
         if (type == null) {
             throw new NullPointerException("The event type cannot be null");
@@ -148,6 +148,11 @@ public final class ListenersCollection<T extends Event> {
 
     }
 
+    /**
+     * Removes all listeners associated to the current event source
+     */
+    public void clear() {
+        this.listeners.clear();
+    }
+
 }
-
-

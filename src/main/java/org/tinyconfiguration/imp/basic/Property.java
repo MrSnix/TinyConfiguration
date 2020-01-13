@@ -4,10 +4,11 @@ import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.builders.Mutable;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.events.ListenersCollection;
-import org.tinyconfiguration.imp.basic.events.property.UpdateEvent;
+import org.tinyconfiguration.abc.data.base.Modifiable;
 
 import java.util.function.Predicate;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class represent the properties stored inside the configuration instance
@@ -15,18 +16,15 @@ import java.util.function.Predicate;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Property extends AbstractProperty<ImmutableDatatype> {
+public final class Property extends AbstractProperty<ImmutableDatatype> implements Modifiable {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
-
-    private final ListenersCollection<UpdateEvent> listeners;
 
     /**
      * Private empty constructor
      */
     private Property() {
-        this.listeners = new ListenersCollection<>();
         this.isOptional = false;
         this.isValid = null;
     }
@@ -38,7 +36,6 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
         super(key, value, description);
         this.isOptional = isOptional;
         this.isValid = isValid;
-        this.listeners = new ListenersCollection<>();
     }
 
     @Override
@@ -49,6 +46,245 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
     @Override
     public ImmutableDatatype getValue() {
         return super.getValue();
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(String s) {
+
+        requireNonNull(this.value, "The value must be set").setValue(s);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(boolean b) {
+        requireNonNull(this.value, "The value must be set").setValue(b);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param c The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(char c) {
+
+        requireNonNull(this.value, "The value must be set").setValue(c);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(byte b) {
+
+        requireNonNull(this.value, "The value must be set").setValue(b);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(short s) {
+
+        requireNonNull(this.value, "The value must be set").setValue(s);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param i The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(int i) {
+
+        requireNonNull(this.value, "The value must be set").setValue(i);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param l The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(long l) {
+
+        requireNonNull(this.value, "The value must be set").setValue(l);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param f The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(float f) {
+
+        requireNonNull(this.value, "The value must be set").setValue(f);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param d The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(double d) {
+
+        requireNonNull(this.value, "The value must be set").setValue(d);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(String[] s) {
+
+
+        requireNonNull(this.value, "The value must be set").setValue(s);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(boolean[] b) {
+
+
+        requireNonNull(this.value, "The value must be set").setValue(b);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param c The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(char[] c) {
+
+
+        requireNonNull(this.value, "The value must be set").setValue(c);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(byte[] b) {
+
+
+        requireNonNull(this.value, "The value must be set").setValue(b);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(short[] s) {
+
+
+        requireNonNull(this.value, "The value must be set").setValue(s);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param i The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(int[] i) {
+
+        requireNonNull(this.value, "The value must be set").setValue(i);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param l The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(long[] l) {
+
+
+        requireNonNull(this.value, "The value must be set").setValue(l);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param f The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(float[] f) {
+
+        requireNonNull(this.value, "The value must be set").setValue(f);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param d The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public void setValue(double[] d) {
+
+        requireNonNull(this.value, "The value must be set").setValue(d);
     }
 
     @Override
@@ -84,10 +320,6 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
         return isValid;
     }
 
-    public ListenersCollection<UpdateEvent> onUpdateEvent() {
-        return listeners;
-    }
-
     /**
      * The {@link Builder} class is used to build the {@link Property} object
      *
@@ -96,13 +328,12 @@ public final class Property extends AbstractProperty<ImmutableDatatype> {
      */
     public static final class Builder extends AbstractBuilder<Property> implements Mutable<Builder> {
 
+        private final boolean isCleanable;
         private String key;
         private ImmutableDatatype value;
         private String description;
         private boolean isOptional;
         private Predicate<Property> isValid;
-
-        private final boolean isCleanable;
 
         /**
          * Empty builder constructor

@@ -5,7 +5,7 @@ package org.tinyconfiguration.abc.events;
  *
  * @param <T>
  */
-public class EventType<T extends Event> {
+public final class EventType<T extends Event> {
 
     private final EventType<?> parent;
     private final String type;

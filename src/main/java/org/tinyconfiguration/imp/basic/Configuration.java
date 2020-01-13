@@ -3,8 +3,6 @@ package org.tinyconfiguration.imp.basic;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.events.ListenersCollection;
-import org.tinyconfiguration.abc.events.base.IOEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,7 +18,7 @@ import java.util.NoSuchElementException;
 public final class Configuration extends AbstractConfiguration<Property, ImmutableDatatype> {
 
     private final LinkedHashMap<String, Property> properties;
-    private final ListenersCollection<IOEvent> listeners;
+
 
     /**
      * Private empty constructor
@@ -28,7 +26,6 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
     private Configuration() {
         super();
         this.properties = new LinkedHashMap<>();
-        this.listeners = null;
     }
 
     /**
@@ -37,7 +34,6 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
     private Configuration(String name, String version, String filename, String pathname, LinkedHashMap<String, Property> properties) {
         super(name, version, filename, pathname);
         this.properties = properties;
-        this.listeners = new ListenersCollection<>();
     }
 
     /**
@@ -89,7 +85,6 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
     @Override
     public void clear() {
         this.properties.clear();
-        this.listeners.clear();
     }
 
     /**
@@ -113,15 +108,6 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
     }
 
     /**
-     * Returns IO events handler
-     *
-     * @return The container holding functions references associated to the event
-     */
-    public ListenersCollection<IOEvent> onIOEvent() {
-        return this.listeners;
-    }
-
-    /**
      * The {@link Builder} class allows to generate {@link Configuration} instances
      *
      * @author G. Baittiner
@@ -129,14 +115,12 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
      */
     public static final class Builder extends AbstractBuilder<Configuration> {
 
+        private final boolean isCleanable;
         private String name;
         private String version;
         private String filename;
         private String pathname;
-
         private LinkedHashMap<String, Property> properties;
-
-        private final boolean isCleanable;
 
         /**
          * The {@link Builder} constructor

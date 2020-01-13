@@ -1,34 +1,52 @@
 package org.tinyconfiguration.abc.events;
 
-import java.util.EventObject;
-
 /**
- * The {@link Event} class is the foundation provided to build custom event types on custom configurations
+ * The {@link Event} class is the foundation provided to build custom events on custom configurations
  */
-public class Event extends EventObject {
+public abstract class Event {
 
-    // The root node at head of event hierarchy
     public static final EventType<Event> ANY = new EventType<>(null, "EVENT.ANY");
+
+    protected final Object source;
+    private final EventType<? extends Event> type;
 
     private boolean isConsumed;
 
+    private Event() {
+        this.source = null;
+        this.type = null;
+    }
+
     /**
-     * Constructs a prototypical Event.
+     * Constructs a new event.
      *
      * @param source the object on which the Event initially occurred
      * @throws IllegalArgumentException if source is null
      */
-    public Event(Object source) {
-        super(source);
+    public Event(EventType<? extends Event> type, Object source) {
+
+        if (source == null) {
+            throw new IllegalArgumentException("The source cannot be null");
+        }
+
+        this.source = source;
+        this.type = type;
     }
+
+    /**
+     * Returns the source from which the event was created by
+     *
+     * @return The event source
+     */
+    public abstract Object getSource();
 
     /**
      * Gets the type of this event
      *
      * @return The event type
      */
-    public EventType<? extends Event> getEventType() {
-        return Event.ANY;
+    public final EventType<? extends Event> getType() {
+        return this.type;
     }
 
     /**

@@ -32,6 +32,7 @@ public class ImmutableDatatype extends AbstractDatatype {
      * @param value The new value
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
+     * @throws IllegalStateException    If the value is an {@link ImmutableDatatype} itself
      */
     @Override
     protected final void __setValue(Object value) {
@@ -42,6 +43,10 @@ public class ImmutableDatatype extends AbstractDatatype {
 
         if (this.type != value.getClass()) {
             throw new IllegalArgumentException("The value must be of the same class as the one declared");
+        }
+
+        if (this.type.isAssignableFrom(this.getClass())) {
+            throw new IllegalStateException("The value cannot be an ImmutableDatatype object");
         }
 
         this.value = value;
