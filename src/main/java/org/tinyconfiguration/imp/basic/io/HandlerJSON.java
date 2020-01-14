@@ -1,6 +1,7 @@
 package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.ImmutableDatatype;
+import org.tinyconfiguration.abc.events.base.IOEvent;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
@@ -67,6 +68,12 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             ParsingProcessException,
             DuplicatedConfigurationPropertyException {
 
+        IOEvent event = new IOEvent(instance);
+
+        instance.onIOEvent().getListeners(IOEvent.ANY).execute(event);
+        instance.onIOEvent().getListeners(IOEvent.READ).execute(event);
+
+        if (!event.isConsumed())
             IMPL_READER_JSON.toObject(instance);
     }
 
@@ -100,6 +107,12 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
     @Override
     public synchronized void write(Configuration instance) throws IOException {
 
+        IOEvent event = new IOEvent(instance);
+
+        instance.onIOEvent().getListeners(IOEvent.ANY).execute(event);
+        instance.onIOEvent().getListeners(IOEvent.WRITE).execute(event);
+
+        if (!event.isConsumed())
             IMPL_WRITER_JSON.toFile(instance);
     }
 
@@ -129,6 +142,13 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public synchronized void delete(Configuration instance) throws IOException {
+
+        IOEvent event = new IOEvent(instance);
+
+        instance.onIOEvent().getListeners(IOEvent.ANY).execute(event);
+        instance.onIOEvent().getListeners(IOEvent.DELETE).execute(event);
+
+        if (!event.isConsumed())
             Files.delete(instance.getFile().toPath());
     }
 
@@ -247,6 +267,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          * This method encode object-only property
          *
          * @param property The property instance
+         * @return The new representation
          * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
          */
         @Override
@@ -290,6 +311,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          * This method encode array-only property
          *
          * @param property The property instance
+         * @return The new representation
          * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
          */
         @Override
@@ -458,6 +480,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          *
          * @param property The property instance
          * @param obj      The intermediate object
+         * @return The new representation
          */
         @Override
         public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
@@ -559,6 +582,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          *
          * @param property The property instance
          * @param obj      The intermediate array
+         * @return The new representation
          */
         @Override
         public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
