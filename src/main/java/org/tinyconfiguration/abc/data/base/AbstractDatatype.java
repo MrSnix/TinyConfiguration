@@ -3,6 +3,7 @@ package org.tinyconfiguration.abc.data.base;
 import java.util.Arrays;
 
 import static java.lang.String.valueOf;
+import static org.tinyconfiguration.abc.data.base.Datatype.*;
 
 /**
  * The {@link AbstractDatatype} is the container class which resolve any {@link AbstractValue} cast.<br>
@@ -12,6 +13,8 @@ import static java.lang.String.valueOf;
  * @version 0.1
  */
 public abstract class AbstractDatatype extends AbstractValue {
+
+    private Datatype datatype;
 
     /**
      * Protected empty constructor
@@ -27,6 +30,9 @@ public abstract class AbstractDatatype extends AbstractValue {
      */
     protected AbstractDatatype(Object value) {
         super(value);
+
+        __verify_datatype();
+
     }
 
     /**
@@ -726,4 +732,70 @@ public abstract class AbstractDatatype extends AbstractValue {
         return (double[]) value;
     }
 
+    /**
+     * Returns the current datatype value
+     *
+     * @return The {@link Datatype} value contained by the property
+     */
+    public Datatype getDatatype() {
+        return datatype;
+    }
+
+    private void __verify_datatype() {
+        if (!isArray()) {
+
+            if (isNumeric()) {
+                if (isByte()) {
+                    this.datatype = BYTE;
+                } else if (isShort()) {
+                    this.datatype = SHORT;
+                } else if (isInteger()) {
+                    this.datatype = INT;
+                } else if (isLong()) {
+                    this.datatype = LONG;
+                } else if (isFloat()) {
+                    this.datatype = FLOAT;
+                } else if (isDouble()) {
+                    this.datatype = DOUBLE;
+                }
+            } else if (isText()) {
+                if (isString()) {
+                    this.datatype = STRING;
+                } else if (isCharacter()) {
+                    this.datatype = CHAR;
+                }
+            } else if (isBoolean()) {
+                this.datatype = BOOLEAN;
+            } else {
+                this.datatype = UNKNOWN;
+            }
+
+        } else {
+            if (isNumericArray()) {
+                if (isByteArray()) {
+                    this.datatype = ARR_BYTE;
+                } else if (isShortArray()) {
+                    this.datatype = ARR_SHORT;
+                } else if (isIntegerArray()) {
+                    this.datatype = ARR_INT;
+                } else if (isLongArray()) {
+                    this.datatype = ARR_LONG;
+                } else if (isFloatArray()) {
+                    this.datatype = ARR_FLOAT;
+                } else if (isDoubleArray()) {
+                    this.datatype = ARR_DOUBLE;
+                }
+            } else if (isTextArray()) {
+                if (isStringArray()) {
+                    this.datatype = ARR_STRING;
+                } else if (isCharacterArray()) {
+                    this.datatype = ARR_CHAR;
+                }
+            } else if (isBooleanArray()) {
+                this.datatype = ARR_BOOLEAN;
+            } else {
+                this.datatype = ARR_UNKNOWN;
+            }
+        }
+    }
 }

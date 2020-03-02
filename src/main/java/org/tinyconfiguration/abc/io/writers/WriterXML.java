@@ -3,17 +3,16 @@ package org.tinyconfiguration.abc.io.writers;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.io.AbstractWriter;
-
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
- * The {@link WriterJSON} provides methods to convert the underlying data representation as JSON
+ * The {@link WriterXML} provides methods to convert the underlying data representation as XML
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public interface WriterJSON<C extends AbstractConfiguration<P, ?>, P extends AbstractProperty<?>> extends AbstractWriter<C, P> {
+public interface WriterXML<C extends AbstractConfiguration<P, ?>, P extends AbstractProperty<?>> extends AbstractWriter<C, P> {
 
     /**
      * This method allow to generate an object representation from the configuration instance
@@ -23,7 +22,7 @@ public interface WriterJSON<C extends AbstractConfiguration<P, ?>, P extends Abs
      * @throws Exception If something goes wrong during the process
      */
     @Override
-    JsonObject toObject(C instance) throws Exception;
+    Document toObject(C instance) throws Exception;
 
     /**
      * This method allow to generate a file given any object representation of the configuration instance
@@ -42,7 +41,7 @@ public interface WriterJSON<C extends AbstractConfiguration<P, ?>, P extends Abs
      * @return The new representation
      */
     @Override
-    JsonObject encode(P property);
+    Element encode(P property);
 
     /**
      * This method encode object-only property
@@ -50,7 +49,7 @@ public interface WriterJSON<C extends AbstractConfiguration<P, ?>, P extends Abs
      * @param property The property instance
      * @param root     The root object
      */
-    void __encode_obj(JsonObjectBuilder root, P property);
+    void __encode_obj(Element root, P property);
 
     /**
      * This method encode array-only property
@@ -58,6 +57,6 @@ public interface WriterJSON<C extends AbstractConfiguration<P, ?>, P extends Abs
      * @param property The property instance
      * @param root     The root object
      */
-    void __encode_array(JsonObjectBuilder root, P property);
+    void __encode_array(Element root, P property);
 
 }

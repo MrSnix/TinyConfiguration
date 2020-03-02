@@ -19,7 +19,6 @@ public final class Configuration extends AbstractConfiguration<Property, Immutab
 
     private final LinkedHashMap<String, Property> properties;
 
-
     /**
      * Private empty constructor
      */

@@ -3,10 +3,9 @@ package org.tinyconfiguration.abc.io.readers;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.io.AbstractReader;
+import org.w3c.dom.Element;
 
-import javax.json.JsonObject;
-
-public interface ReaderJSON<C extends AbstractConfiguration<P, ?>, P extends AbstractProperty<?>> extends AbstractReader<C, P> {
+public interface ReaderXML<C extends AbstractConfiguration<P, ?>, P extends AbstractProperty<?>> extends AbstractReader<C, P> {
 
     /**
      * This method allow to translate a property object inside an intermediate representation
@@ -22,7 +21,7 @@ public interface ReaderJSON<C extends AbstractConfiguration<P, ?>, P extends Abs
      * @param property The property instance
      * @param obj      The intermediate object
      */
-    void __decode_obj(P property, JsonObject obj) throws Exception;
+    void __decode_obj(P property, Element obj) throws Exception;
 
     /**
      * This method decode array-only property
@@ -30,7 +29,7 @@ public interface ReaderJSON<C extends AbstractConfiguration<P, ?>, P extends Abs
      * @param property The property instance
      * @param obj      The intermediate array
      */
-    void __decode_array(P property, JsonObject obj) throws Exception;
+    void __decode_array(P property, Element obj) throws Exception;
 
     /**
      * This method generate the final representation of the configuration

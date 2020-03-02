@@ -12,5 +12,6 @@ import org.tinyconfiguration.imp.basic.Configuration;
 public final class ConfigurationIO {
 
     public static final HandlerJSON JSON = new HandlerJSON();
+    public static final HandlerXML XML = new HandlerXML();
 
 }

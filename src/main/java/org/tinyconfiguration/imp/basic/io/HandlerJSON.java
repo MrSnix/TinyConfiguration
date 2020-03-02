@@ -27,6 +27,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
 import static javax.json.JsonValue.ValueType.ARRAY;
+import static org.tinyconfiguration.imp.basic.io.UtilsHandler.asEmptyArray;
+import static org.tinyconfiguration.imp.basic.io.UtilsHandler.isQualified;
 
 /**
  * The {@link HandlerJSON} class contains the implementations of I/O operations as JSON format which can be executed on any {@link Configuration} instance
@@ -67,7 +69,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             ParsingProcessException,
             DuplicatedConfigurationPropertyException {
 
-            IMPL_READER_JSON.toObject(instance);
+        IMPL_READER_JSON.toObject(instance);
     }
 
     /**
@@ -99,7 +101,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public synchronized void write(Configuration instance) throws IOException {
-            IMPL_WRITER_JSON.toFile(instance);
+        IMPL_WRITER_JSON.toFile(instance);
     }
 
     /**
@@ -128,8 +130,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public synchronized void delete(Configuration instance) throws IOException {
-
-            Files.delete(instance.getFile().toPath());
+        Files.delete(instance.getFile().toPath());
     }
 
     /**
@@ -237,9 +238,6 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             else
                 __encode_obj(root, property);
 
-            // Inserting description
-            root.add("description", property.getDescription());
-
             return root.build();
         }
 
@@ -247,7 +245,6 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          * This method encode object-only property
          *
          * @param property The property instance
-         * @return The new representation
          * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
          */
         @Override
@@ -285,13 +282,15 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                 throw new IllegalStateException("Unknown datatype");
             }
 
+            // Inserting description
+            obj.add("description", property.getDescription());
+
         }
 
         /**
          * This method encode array-only property
          *
          * @param property The property instance
-         * @return The new representation
          * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
          */
         @Override
@@ -377,6 +376,9 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
 
             obj.add(property.getKey(), values);
 
+            // Inserting description
+            obj.add("description", property.getDescription());
+
         }
     }
 
@@ -460,7 +462,6 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          *
          * @param property The property instance
          * @param obj      The intermediate object
-         * @return The new representation
          */
         @Override
         public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
@@ -509,7 +510,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                         try {
                             value.setValue(integral.shortValueExact());
                         } catch (ArithmeticException ex) {
-                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            throw new MalformedConfigurationPropertyException("The value is out of short range", property);
                         }
 
                     } else if (value.isInteger()) {
@@ -517,7 +518,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                         try {
                             value.setValue(integral.intValueExact());
                         } catch (ArithmeticException ex) {
-                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            throw new MalformedConfigurationPropertyException("The value is out of int range", property);
                         }
 
                     } else if (value.isLong()) {
@@ -525,7 +526,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                         try {
                             value.setValue(integral.longValueExact());
                         } catch (ArithmeticException ex) {
-                            throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                            throw new MalformedConfigurationPropertyException("The value is out of long range", property);
                         }
 
                     } else if (value.isFloat()) {
@@ -562,7 +563,6 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          *
          * @param property The property instance
          * @param obj      The intermediate array
-         * @return The new representation
          */
         @Override
         public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
@@ -582,167 +582,174 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             double[] arrDouble = null;
             boolean[] arrBoolean = null;
 
-            for (int i = 0; i < array.size(); i++) {
+            // If the array is empty...
+            if (array.size() == 0) {
 
-                JsonValue.ValueType type = array.get(i).getValueType();
+                // Just assigning empty arrays
+                asEmptyArray(property);
 
-                switch (type) {
+            } else {
 
-                    case STRING:
+                for (int i = 0; i < array.size(); i++) {
 
-                        String s = array.getString(i);
+                    JsonValue.ValueType type = array.get(i).getValueType();
 
-                        if (value.isStringArray()) {
+                    switch (type) {
 
-                            if (arrString == null)
-                                arrString = new String[array.size()];
+                        case STRING:
 
-                            arrString[i] = s;
+                            String s = array.getString(i);
 
-                            value.setValue(arrString);
+                            if (value.isStringArray()) {
 
-                        } else if (value.isCharacterArray()) {
+                                if (arrString == null)
+                                    arrString = new String[array.size()];
 
-                            if (arrChars == null)
-                                arrChars = new char[array.size()];
+                                arrString[i] = s;
 
-                            if (s.length() > 1) {
+                                value.setValue(arrString);
+
+                            } else if (value.isCharacterArray()) {
+
+                                if (arrChars == null)
+                                    arrChars = new char[array.size()];
+
+                                if (s.length() > 1) {
+                                    throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                                }
+
+                                arrChars[i] = s.charAt(0);
+
+                                property.setValue(arrChars);
+
+                            } else {
                                 throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
                             }
 
-                            arrChars[i] = s.charAt(0);
+                            break;
+                        case NUMBER:
 
-                            property.setValue(arrChars);
-
-                        } else {
-                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
-                        }
-
-                        break;
-                    case NUMBER:
-
-                        BigInteger integral = array.getJsonNumber(i).bigIntegerValueExact();
-                        BigDecimal decimal = array.getJsonNumber(i).bigDecimalValue();
+                            BigInteger integral = array.getJsonNumber(i).bigIntegerValueExact();
+                            BigDecimal decimal = array.getJsonNumber(i).bigDecimalValue();
 
 
-                        if (value.isByteArray()) {
+                            if (value.isByteArray()) {
 
-                            byte b;
+                                byte b;
 
-                            if (arrBytes == null)
-                                arrBytes = new byte[array.size()];
+                                if (arrBytes == null)
+                                    arrBytes = new byte[array.size()];
 
-                            try {
-                                b = integral.byteValueExact();
-                            } catch (ArithmeticException ex) {
-                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                                try {
+                                    b = integral.byteValueExact();
+                                } catch (ArithmeticException ex) {
+                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                                }
+
+                                arrBytes[i] = b;
+
+                                value.setValue(arrBytes);
+
+                            } else if (value.isShortArray()) {
+
+                                short b;
+
+                                if (arrShort == null)
+                                    arrShort = new short[array.size()];
+
+                                try {
+                                    b = integral.shortValueExact();
+                                } catch (ArithmeticException ex) {
+                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                                }
+
+                                arrShort[i] = b;
+
+                                value.setValue(arrShort);
+
+                            } else if (value.isIntegerArray()) {
+
+                                int b;
+
+                                if (arrInt == null)
+                                    arrInt = new int[array.size()];
+
+                                try {
+                                    b = integral.intValueExact();
+                                } catch (ArithmeticException ex) {
+                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                                }
+
+                                arrInt[i] = b;
+
+                                value.setValue(arrInt);
+
+                            } else if (value.isLongArray()) {
+
+                                long b;
+
+                                if (arrLong == null)
+                                    arrLong = new long[array.size()];
+
+                                try {
+                                    b = integral.longValueExact();
+                                } catch (ArithmeticException ex) {
+                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
+                                }
+
+                                arrLong[i] = b;
+
+                                value.setValue(arrLong);
+
+                            } else if (value.isFloat()) {
+
+                                if (arrFloat == null)
+                                    arrFloat = new float[array.size()];
+
+                                float b = decimal.floatValue();
+
+                                arrFloat[i] = b;
+
+                                value.setValue(arrFloat);
+                            } else if (value.isDouble()) {
+
+                                if (arrDouble == null)
+                                    arrDouble = new double[array.size()];
+
+                                double b = decimal.doubleValue();
+
+                                arrDouble[i] = b;
+
+                                value.setValue(arrDouble);
+                            } else {
+                                throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                            }
+                            break;
+                        case TRUE:
+                        case FALSE:
+
+                            if (value.isBooleanArray()) {
+
+                                if (arrBoolean == null)
+                                    arrBoolean = new boolean[array.size()];
+
+                                boolean b = array.getBoolean(i);
+
+                                arrBoolean[i] = b;
+
+                                value.setValue(arrBoolean);
+
+                            } else {
+                                throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
                             }
 
-                            arrBytes[i] = b;
-
-                            value.setValue(arrBytes);
-
-                        } else if (value.isShortArray()) {
-
-                            short b;
-
-                            if (arrShort == null)
-                                arrShort = new short[array.size()];
-
-                            try {
-                                b = integral.shortValueExact();
-                            } catch (ArithmeticException ex) {
-                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                            }
-
-                            arrShort[i] = b;
-
-                            value.setValue(arrShort);
-
-                        } else if (value.isIntegerArray()) {
-
-                            int b;
-
-                            if (arrInt == null)
-                                arrInt = new int[array.size()];
-
-                            try {
-                                b = integral.intValueExact();
-                            } catch (ArithmeticException ex) {
-                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                            }
-
-                            arrInt[i] = b;
-
-                            value.setValue(arrInt);
-
-                        } else if (value.isLongArray()) {
-
-                            long b;
-
-                            if (arrLong == null)
-                                arrLong = new long[array.size()];
-
-                            try {
-                                b = integral.longValueExact();
-                            } catch (ArithmeticException ex) {
-                                throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                            }
-
-                            arrLong[i] = b;
-
-                            value.setValue(arrLong);
-
-                        } else if (value.isFloat()) {
-
-                            if (arrFloat == null)
-                                arrFloat = new float[array.size()];
-
-                            float b = decimal.floatValue();
-
-                            arrFloat[i] = b;
-
-                            value.setValue(arrFloat);
-                        } else if (value.isDouble()) {
-
-                            if (arrDouble == null)
-                                arrDouble = new double[array.size()];
-
-                            double b = decimal.doubleValue();
-
-                            arrDouble[i] = b;
-
-                            value.setValue(arrDouble);
-                        } else {
-                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
-                        }
-                        break;
-                    case TRUE:
-                    case FALSE:
-
-                        if (value.isBooleanArray()) {
-
-                            if (arrBoolean == null)
-                                arrBoolean = new boolean[array.size()];
-
-                            boolean b = array.getBoolean(i);
-
-                            arrBoolean[i] = b;
-
-                            value.setValue(arrBoolean);
-
-                        } else {
-                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
-                        }
-
-                        break;
-                    case NULL:
-                        throw new MalformedConfigurationPropertyException("The value was NULL", property);
-                    default:
-                        throw new MalformedConfigurationPropertyException("Unexpected value: " + obj.getValueType(), property);
+                            break;
+                        case NULL:
+                            throw new MalformedConfigurationPropertyException("The value was NULL", property);
+                        default:
+                            throw new MalformedConfigurationPropertyException("Unexpected value: " + obj.getValueType(), property);
+                    }
                 }
-
-
             }
 
             // Final check
@@ -771,36 +778,31 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
 
             // Acquiring the intermediate representation
             JsonObject configuration = fromFile(instance);
-            this.properties = configuration.getJsonArray("properties");
 
             // Acquiring basic info
             String name = configuration.getString("name", null);
             String version = configuration.getString("version", null);
 
-            int readProperties = this.properties.size();
-            int expectedProperties = instance.getProperties().size();
+            // Basic check to verify file header integrity
+            isQualified(instance, name, version);
 
-            if (name == null)
-                throw new MissingConfigurationIdentifiersException("name");
+            this.properties = configuration.getJsonArray("properties");
 
-            if (version == null)
-                throw new MissingConfigurationIdentifiersException("version");
+            if (this.properties == null) {
+                throw new ParsingProcessException("The 'properties' array is missing");
+            }
 
-            if (!name.equals(instance.getName()))
-                throw new InvalidConfigurationNameException(instance.getName(), name);
+            int read = this.properties.size();
+            int expected = instance.getProperties().size();
 
-            if (!version.equals(instance.getVersion()))
-                throw new InvalidConfigurationVersionException(instance.getVersion(), version);
+            if (read > expected)
+                throw new UnknownConfigurationPropertyException();
 
             for (Property property : instance.getProperties()) {
                 decode(property);
             }
 
-            if (readProperties > expectedProperties)
-                throw new UnknownConfigurationPropertyException();
-
             this.properties = null;
-
         }
 
         /**
@@ -827,7 +829,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             } catch (JsonParsingException e) {
                 throw new ParsingProcessException(e.getMessage());
             } catch (JsonException e) {
-                throw new IOException(e);
+                throw new IOException(e.getMessage());
             }
 
             return obj;

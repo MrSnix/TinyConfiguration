@@ -9,7 +9,7 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractWriter<C extends AbstractConfiguration, P extends AbstractProperty<?>> {
+public interface AbstractWriter<C extends AbstractConfiguration<?, ?>, P extends AbstractProperty<?>> {
 
     /**
      * This method allow to insert a property object inside an intermediate representation
