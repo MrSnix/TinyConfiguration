@@ -8,6 +8,9 @@ import org.tinyconfiguration.abc.io.readers.ReaderXML;
 import org.tinyconfiguration.abc.io.writers.WriterXML;
 import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
+import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
+import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
+import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
 import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
 import org.tinyconfiguration.imp.basic.ex.property.*;
 import org.w3c.dom.*;
@@ -27,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
-import static org.tinyconfiguration.imp.basic.io.UtilsHandler.asEmptyArray;
+import static org.tinyconfiguration.imp.basic.io.UtilsHandler.__empty_array;
 import static org.tinyconfiguration.imp.basic.io.UtilsHandler.isQualified;
 
 /**
@@ -90,7 +93,17 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public Future<Void> readAsync(Configuration instance) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                read(instance);
+            } catch (
+                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
+                throw new CompletionException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
     }
 
     /**
@@ -501,6 +514,8 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
         @Override
         public void __decode_array(Property property, Element obj) throws Exception {
 
+            ImmutableDatatype value = property.getValue();
+
             // Obtaining "value" element
             NodeList obj0 = obj.getElementsByTagName("values");
 
@@ -518,7 +533,136 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
             // If it's empty, well done, we can move on
             if (values0 == null || values0.getLength() == 0) {
                 // Just assigning empty arrays
-                asEmptyArray(property);
+                __empty_array(property);
+            } else {
+
+                List<Element> values = new ArrayList<>();
+
+                // Acquiring all values node
+                for (int i = 0; i < values0.getLength(); ++i) {
+
+                    if (values0.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                        // Fast cast to verify if element is right type
+                        Element value1 = (Element) values0.item(i);
+                        // Adding only if it's a value
+                        if (value1.getTagName().equals("value"))
+                            values.add((Element) values0.item(i));
+                    }
+
+                }
+
+                switch (value.getDatatype()) {
+                    case ARR_BOOLEAN:
+                        try {
+                            boolean[] booleans = new boolean[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                booleans[i] = Boolean.parseBoolean(values.get(i).getTextContent());
+                            }
+                            property.setValue(booleans);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as boolean array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_BYTE:
+                        try {
+                            byte[] bytes = new byte[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                bytes[i] = Byte.parseByte(values.get(i).getTextContent());
+                            }
+                            property.setValue(bytes);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as byte array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_SHORT:
+                        try {
+                            short[] shorts = new short[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                shorts[i] = Short.parseShort(values.get(i).getTextContent());
+                            }
+                            property.setValue(shorts);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as short array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_INT:
+                        try {
+                            int[] integers = new int[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                integers[i] = Integer.parseInt(values.get(i).getTextContent());
+                            }
+                            property.setValue(integers);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as int array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_LONG:
+                        try {
+                            long[] longs = new long[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                longs[i] = Long.parseLong(values.get(i).getTextContent());
+                            }
+                            property.setValue(longs);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as long array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_FLOAT:
+                        try {
+                            float[] floats = new float[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                floats[i] = Float.parseFloat(values.get(i).getTextContent());
+                            }
+                            property.setValue(floats);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as float array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_DOUBLE:
+                        try {
+                            double[] doubles = new double[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                doubles[i] = Double.parseDouble(values.get(i).getTextContent());
+                            }
+                            property.setValue(doubles);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as double array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_STRING:
+                        try {
+                            String[] strings = new String[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+                                strings[i] = values.get(i).getTextContent();
+                            }
+                            property.setValue(strings);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as string array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_CHAR:
+                        try {
+                            char[] characters = new char[values.size()];
+                            for (int i = 0; i < values.size(); ++i) {
+
+                                if (values.get(i).getTextContent().length() > 1) {
+                                    throw new IllegalArgumentException("One of the values cannot be decoded as char");
+                                }
+
+                                characters[i] = values.get(i).getTextContent().charAt(0);
+                            }
+                            property.setValue(characters);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as chars array: " + e.getMessage(), property);
+                        }
+                        break;
+                }
+
+                // Final check
+                if (!property.isValid()) {
+                    throw new InvalidConfigurationPropertyException("The validation test failed", property);
+                }
+
             }
 
         }

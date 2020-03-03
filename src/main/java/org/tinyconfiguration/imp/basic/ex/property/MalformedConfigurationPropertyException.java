@@ -12,7 +12,7 @@ public class MalformedConfigurationPropertyException extends PropertyException {
         this.malformed = malformed;
     }
 
-    public Property getMissingProperty() {
+    public Property getMalformedProperty() {
         return malformed;
     }
 }

@@ -8,7 +8,7 @@ public class MissingConfigurationPropertyException extends PropertyException {
     private final Property missing;
 
     public MissingConfigurationPropertyException(Property missing) {
-        super("The following property is missed: " + missing.getKey());
+        super("The following property is missing: " + missing.getKey());
         this.missing = missing;
     }
 

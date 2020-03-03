@@ -6,9 +6,11 @@ import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationName
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
 import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
 
+import java.util.List;
+
 final class UtilsHandler {
 
-    public static void asEmptyArray(Property property) {
+    public static void __empty_array(Property property) {
         switch (property.getValue().getDatatype()) {
             case ARR_BOOLEAN:
                 property.setValue(new boolean[0]);
@@ -40,7 +42,14 @@ final class UtilsHandler {
         }
     }
 
-    public static void isQualified(Configuration instance, String name, String version) throws MissingConfigurationIdentifiersException, InvalidConfigurationNameException, InvalidConfigurationVersionException {
+    public static void __fill_array(Property property, List<?> values) {
+
+    }
+
+    public static void isQualified(Configuration instance, String name, String version) throws
+            MissingConfigurationIdentifiersException,
+            InvalidConfigurationNameException,
+            InvalidConfigurationVersionException {
         if (name == null)
             throw new MissingConfigurationIdentifiersException("name");
 

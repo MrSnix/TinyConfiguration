@@ -27,7 +27,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
 import static javax.json.JsonValue.ValueType.ARRAY;
-import static org.tinyconfiguration.imp.basic.io.UtilsHandler.asEmptyArray;
+import static org.tinyconfiguration.imp.basic.io.UtilsHandler.__empty_array;
 import static org.tinyconfiguration.imp.basic.io.UtilsHandler.isQualified;
 
 /**
@@ -454,7 +454,6 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                 throw new MissingConfigurationPropertyException(property);
             }
 
-
         }
 
         /**
@@ -571,192 +570,127 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
 
             JsonArray array = obj.get(property.getKey()).asJsonArray();
 
-            // Temp arrays
-            String[] arrString = null;
-            char[] arrChars = null;
-            byte[] arrBytes = null;
-            short[] arrShort = null;
-            int[] arrInt = null;
-            long[] arrLong = null;
-            float[] arrFloat = null;
-            double[] arrDouble = null;
-            boolean[] arrBoolean = null;
-
             // If the array is empty...
             if (array.size() == 0) {
 
                 // Just assigning empty arrays
-                asEmptyArray(property);
+                __empty_array(property);
 
             } else {
 
-                for (int i = 0; i < array.size(); i++) {
-
-                    JsonValue.ValueType type = array.get(i).getValueType();
-
-                    switch (type) {
-
-                        case STRING:
-
-                            String s = array.getString(i);
-
-                            if (value.isStringArray()) {
-
-                                if (arrString == null)
-                                    arrString = new String[array.size()];
-
-                                arrString[i] = s;
-
-                                value.setValue(arrString);
-
-                            } else if (value.isCharacterArray()) {
-
-                                if (arrChars == null)
-                                    arrChars = new char[array.size()];
-
-                                if (s.length() > 1) {
-                                    throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
-                                }
-
-                                arrChars[i] = s.charAt(0);
-
-                                property.setValue(arrChars);
-
-                            } else {
-                                throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                switch (value.getDatatype()) {
+                    case ARR_BOOLEAN:
+                        try {
+                            boolean[] booleans = new boolean[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                booleans[i] = array.getBoolean(i);
                             }
-
-                            break;
-                        case NUMBER:
-
-                            BigInteger integral = array.getJsonNumber(i).bigIntegerValueExact();
-                            BigDecimal decimal = array.getJsonNumber(i).bigDecimalValue();
-
-
-                            if (value.isByteArray()) {
-
-                                byte b;
-
-                                if (arrBytes == null)
-                                    arrBytes = new byte[array.size()];
-
-                                try {
-                                    b = integral.byteValueExact();
-                                } catch (ArithmeticException ex) {
-                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                                }
-
-                                arrBytes[i] = b;
-
-                                value.setValue(arrBytes);
-
-                            } else if (value.isShortArray()) {
-
-                                short b;
-
-                                if (arrShort == null)
-                                    arrShort = new short[array.size()];
-
-                                try {
-                                    b = integral.shortValueExact();
-                                } catch (ArithmeticException ex) {
-                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                                }
-
-                                arrShort[i] = b;
-
-                                value.setValue(arrShort);
-
-                            } else if (value.isIntegerArray()) {
-
-                                int b;
-
-                                if (arrInt == null)
-                                    arrInt = new int[array.size()];
-
-                                try {
-                                    b = integral.intValueExact();
-                                } catch (ArithmeticException ex) {
-                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                                }
-
-                                arrInt[i] = b;
-
-                                value.setValue(arrInt);
-
-                            } else if (value.isLongArray()) {
-
-                                long b;
-
-                                if (arrLong == null)
-                                    arrLong = new long[array.size()];
-
-                                try {
-                                    b = integral.longValueExact();
-                                } catch (ArithmeticException ex) {
-                                    throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
-                                }
-
-                                arrLong[i] = b;
-
-                                value.setValue(arrLong);
-
-                            } else if (value.isFloat()) {
-
-                                if (arrFloat == null)
-                                    arrFloat = new float[array.size()];
-
-                                float b = decimal.floatValue();
-
-                                arrFloat[i] = b;
-
-                                value.setValue(arrFloat);
-                            } else if (value.isDouble()) {
-
-                                if (arrDouble == null)
-                                    arrDouble = new double[array.size()];
-
-                                double b = decimal.doubleValue();
-
-                                arrDouble[i] = b;
-
-                                value.setValue(arrDouble);
-                            } else {
-                                throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                            property.setValue(booleans);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as boolean array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_BYTE:
+                        try {
+                            byte[] bytes = new byte[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                bytes[i] = Byte.parseByte(array.getInt(i) + "");
                             }
-                            break;
-                        case TRUE:
-                        case FALSE:
-
-                            if (value.isBooleanArray()) {
-
-                                if (arrBoolean == null)
-                                    arrBoolean = new boolean[array.size()];
-
-                                boolean b = array.getBoolean(i);
-
-                                arrBoolean[i] = b;
-
-                                value.setValue(arrBoolean);
-
-                            } else {
-                                throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
+                            property.setValue(bytes);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as byte array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_SHORT:
+                        try {
+                            short[] shorts = new short[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                shorts[i] = Short.parseShort(array.getInt(i) + "");
                             }
+                            property.setValue(shorts);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as short array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_INT:
+                        try {
+                            int[] integers = new int[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                integers[i] = Integer.parseInt(array.getInt(i) + "");
+                            }
+                            property.setValue(integers);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as int array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_LONG:
+                        try {
+                            long[] longs = new long[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                longs[i] = Long.parseLong(array.getInt(i) + "");
+                            }
+                            property.setValue(longs);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as long array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_FLOAT:
+                        try {
+                            float[] floats = new float[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                floats[i] = array.getJsonNumber(i).bigDecimalValue().floatValue();
+                            }
+                            property.setValue(floats);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as float array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_DOUBLE:
+                        try {
+                            double[] doubles = new double[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                doubles[i] = array.getJsonNumber(i).bigDecimalValue().doubleValue();
+                            }
+                            property.setValue(doubles);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as double array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_STRING:
+                        try {
+                            String[] strings = new String[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
+                                strings[i] = array.getString(i);
+                            }
+                            property.setValue(strings);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as string array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_CHAR:
+                        try {
+                            char[] characters = new char[array.size()];
+                            for (int i = 0; i < array.size(); ++i) {
 
-                            break;
-                        case NULL:
-                            throw new MalformedConfigurationPropertyException("The value was NULL", property);
-                        default:
-                            throw new MalformedConfigurationPropertyException("Unexpected value: " + obj.getValueType(), property);
-                    }
+                                if (array.getString(i).length() > 1) {
+                                    throw new IllegalArgumentException("One of the values cannot be decoded as char");
+                                }
+
+                                characters[i] = array.getString(i).charAt(0);
+                            }
+                            property.setValue(characters);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as chars array: " + e.getMessage(), property);
+                        }
+                        break;
                 }
-            }
 
-            // Final check
-            if (!property.isValid()) {
-                throw new InvalidConfigurationPropertyException("The validation test failed", property);
-            }
+                // Final check
+                if (!property.isValid()) {
+                    throw new InvalidConfigurationPropertyException("The validation test failed", property);
+                }
 
+            }
         }
 
         /**
@@ -774,7 +708,8 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                 InvalidConfigurationPropertyException,
                 UnknownConfigurationPropertyException,
                 ParsingProcessException,
-                MissingConfigurationIdentifiersException, DuplicatedConfigurationPropertyException {
+                MissingConfigurationIdentifiersException,
+                DuplicatedConfigurationPropertyException {
 
             // Acquiring the intermediate representation
             JsonObject configuration = fromFile(instance);
