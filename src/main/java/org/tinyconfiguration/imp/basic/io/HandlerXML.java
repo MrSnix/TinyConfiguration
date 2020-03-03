@@ -78,10 +78,19 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
      * Reads the configuration file
      *
      * @param instance The configuration instance to read and update
-     * @throws IOException If anything goes wrong while processing the file
+     * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
+     * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
+     * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
+     * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
+     * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
+     * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
+     * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
+     * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
+     * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
+     * @throws IOException                              If an I/O exception of some sort has occurred.
      */
     @Override
-    public synchronized void read(Configuration instance) throws Exception {
+    public synchronized void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MissingConfigurationIdentifiersException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MalformedConfigurationPropertyException {
         IMPL_READER_XML.toObject(instance);
     }
 
@@ -90,6 +99,8 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
      *
      * @param instance The configuration instance to read
      * @return Future object representing the reading task
+     * @throws CompletionException If any exceptions occurs at runtime
+     * @see HandlerXML#read(Configuration)
      */
     @Override
     public Future<Void> readAsync(Configuration instance) {
@@ -283,10 +294,9 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
          * This method generate the final representation of the configuration
          *
          * @param instance The configuration instance
-         * @throws Exception If something goes wrong during the process
          */
         @Override
-        public void toObject(Configuration instance) throws Exception {
+        public void toObject(Configuration instance) throws ParsingProcessException, IOException, MissingConfigurationIdentifiersException, InvalidConfigurationNameException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationPropertyException, InvalidConfigurationPropertyException, MalformedConfigurationPropertyException {
             // Acquiring the intermediate representation
             Element configuration = fromFile(instance).getDocumentElement();
 
@@ -366,7 +376,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
          * @param property The property instance
          */
         @Override
-        public void decode(Property property) throws Exception {
+        public void decode(Property property) throws DuplicatedConfigurationPropertyException, MissingConfigurationPropertyException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
             // The node we are looking for
             Element property0 = null;
@@ -512,7 +522,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
          * @param obj      The intermediate array
          */
         @Override
-        public void __decode_array(Property property, Element obj) throws Exception {
+        public void __decode_array(Property property, Element obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
             ImmutableDatatype value = property.getValue();
 

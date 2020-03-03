@@ -11,7 +11,7 @@ import org.tinyconfiguration.abc.io.handlers.Writable;
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractHandlerIO<C extends AbstractConfiguration> implements Readable<C>, Writable<C>, Deletable<C> {
+public abstract class AbstractHandlerIO<C extends AbstractConfiguration<?, ?>> implements Readable<C>, Writable<C>, Deletable<C> {
 
     /**
      * Check if the configuration file exists

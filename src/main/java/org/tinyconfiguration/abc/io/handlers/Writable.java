@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface Writable<C extends AbstractConfiguration> {
+public interface Writable<C extends AbstractConfiguration<?, ?>> {
 
     /**
      * Write the configuration file
