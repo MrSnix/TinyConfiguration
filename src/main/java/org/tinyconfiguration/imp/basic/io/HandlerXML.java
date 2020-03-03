@@ -2,7 +2,7 @@ package org.tinyconfiguration.imp.basic.io;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import org.tinyconfiguration.abc.data.ImmutableDatatype;
+import org.tinyconfiguration.abc.data.Value;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderXML;
 import org.tinyconfiguration.abc.io.writers.WriterXML;
@@ -229,7 +229,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
             // Creating object
             Element root = xml.createElement(property.getKey());
             // Acquiring value
-            ImmutableDatatype dt = property.getValue();
+            Value dt = property.getValue();
 
             // Encoding
             if (dt.isArray())
@@ -524,7 +524,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
         @Override
         public void __decode_array(Property property, Element obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
-            ImmutableDatatype value = property.getValue();
+            Value value = property.getValue();
 
             // Obtaining "value" element
             NodeList obj0 = obj.getElementsByTagName("values");

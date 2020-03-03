@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface Deletable<C extends AbstractConfiguration<?, ?>> {
+public interface Deletable<C extends AbstractConfiguration<?>> {
 
     /**
      * Delete the configuration file

@@ -3,12 +3,9 @@ package org.tinyconfiguration.imp.basic;
 import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.builders.Mutable;
-import org.tinyconfiguration.abc.data.ImmutableDatatype;
-import org.tinyconfiguration.abc.data.base.Modifiable;
+import org.tinyconfiguration.abc.data.Value;
 
 import java.util.function.Predicate;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * This class represent the properties stored inside the configuration instance
@@ -16,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Property extends AbstractProperty<ImmutableDatatype> implements Modifiable {
+public final class Property extends AbstractProperty {
 
     private final boolean isOptional;
     private final Predicate<Property> isValid;
@@ -32,264 +29,31 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
     /**
      * Private constructor with parameters
      */
-    private Property(String key, ImmutableDatatype value, String description, boolean isOptional, Predicate<Property> isValid) {
+    private Property(String key, Value value, String description, boolean isOptional, Predicate<Property> isValid) {
         super(key, value, description);
         this.isOptional = isOptional;
         this.isValid = isValid;
     }
 
-    @Override
-    public String getKey() {
-        return super.getKey();
-    }
-
-    @Override
-    public ImmutableDatatype getValue() {
-        return super.getValue();
-    }
-
     /**
-     * Sets the value on this property
+     * Sets any generic value on this property
      *
-     * @param s The new value
+     * @param value The new value
      * @throws NullPointerException     If the value is null
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
     @Override
-    public void setValue(String s) {
+    protected final void set(Object value) {
 
-        requireNonNull(this.value, "The value must be set").setValue(s);
-    }
+        if (value == null) {
+            throw new NullPointerException("The value cannot be null");
+        }
 
-    /**
-     * Sets the value on this property
-     *
-     * @param b The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(boolean b) {
-        requireNonNull(this.value, "The value must be set").setValue(b);
-    }
+        if (this.value.getType() != value.getClass()) {
+            throw new IllegalArgumentException("The value must be of the same class as the one declared");
+        }
 
-    /**
-     * Sets the value on this property
-     *
-     * @param c The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(char c) {
-
-        requireNonNull(this.value, "The value must be set").setValue(c);
-    }
-
-    /**
-     * Sets the value on this property
-     *
-     * @param b The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(byte b) {
-
-        requireNonNull(this.value, "The value must be set").setValue(b);
-    }
-
-    /**
-     * Sets the value on this property
-     *
-     * @param s The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(short s) {
-
-        requireNonNull(this.value, "The value must be set").setValue(s);
-    }
-
-    /**
-     * Sets the value on this property
-     *
-     * @param i The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(int i) {
-
-        requireNonNull(this.value, "The value must be set").setValue(i);
-    }
-
-    /**
-     * Sets the value on this property
-     *
-     * @param l The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(long l) {
-
-        requireNonNull(this.value, "The value must be set").setValue(l);
-    }
-
-    /**
-     * Sets the value on this property
-     *
-     * @param f The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(float f) {
-
-        requireNonNull(this.value, "The value must be set").setValue(f);
-    }
-
-    /**
-     * Sets the value on this property
-     *
-     * @param d The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(double d) {
-
-        requireNonNull(this.value, "The value must be set").setValue(d);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param s The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(String[] s) {
-
-
-        requireNonNull(this.value, "The value must be set").setValue(s);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param b The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(boolean[] b) {
-
-
-        requireNonNull(this.value, "The value must be set").setValue(b);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param c The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(char[] c) {
-
-
-        requireNonNull(this.value, "The value must be set").setValue(c);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param b The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(byte[] b) {
-
-
-        requireNonNull(this.value, "The value must be set").setValue(b);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param s The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(short[] s) {
-
-
-        requireNonNull(this.value, "The value must be set").setValue(s);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param i The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(int[] i) {
-
-        requireNonNull(this.value, "The value must be set").setValue(i);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param l The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(long[] l) {
-
-
-        requireNonNull(this.value, "The value must be set").setValue(l);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param f The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(float[] f) {
-
-        requireNonNull(this.value, "The value must be set").setValue(f);
-    }
-
-    /**
-     * Sets the array value on this property
-     *
-     * @param d The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
-     */
-    @Override
-    public void setValue(double[] d) {
-
-        requireNonNull(this.value, "The value must be set").setValue(d);
-    }
-
-    @Override
-    public String getDescription() {
-        return super.getDescription();
+        this.value = new Value(value);
     }
 
     /**
@@ -330,7 +94,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
 
         private final boolean isCleanable;
         private String key;
-        private ImmutableDatatype value;
+        private Value value;
         private String description;
         private boolean isOptional;
         private Predicate<Property> isValid;
@@ -481,12 +245,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(String s) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(s);
-            else
-                value.setValue(s);
-
+            this.value = new Value(s);
             return this;
         }
 
@@ -500,12 +259,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(boolean b) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(b);
-            else
-                value.setValue(b);
-
+            this.value = new Value(b);
             return this;
         }
 
@@ -519,12 +273,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(char c) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(c);
-            else
-                value.setValue(c);
-
+            this.value = new Value(c);
             return this;
         }
 
@@ -538,12 +287,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(byte b) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(b);
-            else
-                value.setValue(b);
-
+            this.value = new Value(b);
             return this;
         }
 
@@ -557,12 +301,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(short s) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(s);
-            else
-                value.setValue(s);
-
+            this.value = new Value(s);
             return this;
         }
 
@@ -576,12 +315,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(int i) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(i);
-            else
-                value.setValue(i);
-
+            this.value = new Value(i);
             return this;
         }
 
@@ -595,12 +329,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(long l) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(l);
-            else
-                value.setValue(l);
-
+            this.value = new Value(l);
             return this;
         }
 
@@ -614,12 +343,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(float f) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(f);
-            else
-                value.setValue(f);
-
+            this.value = new Value(f);
             return this;
         }
 
@@ -633,12 +357,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(double d) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(d);
-            else
-                value.setValue(d);
-
+            this.value = new Value(d);
             return this;
         }
 
@@ -652,12 +371,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(String[] s) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(s);
-            else
-                value.setValue(s);
-
+            this.value = new Value(s);
             return this;
         }
 
@@ -671,12 +385,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(boolean[] b) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(b);
-            else
-                value.setValue(b);
-
+            this.value = new Value(b);
             return this;
         }
 
@@ -690,12 +399,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(char[] c) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(c);
-            else
-                value.setValue(c);
-
+            this.value = new Value(c);
             return this;
         }
 
@@ -709,12 +413,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(byte[] b) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(b);
-            else
-                value.setValue(b);
-
+            this.value = new Value(b);
             return this;
         }
 
@@ -728,12 +427,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(short[] s) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(s);
-            else
-                value.setValue(s);
-
+            this.value = new Value(s);
             return this;
         }
 
@@ -747,12 +441,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(int[] i) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(i);
-            else
-                value.setValue(i);
-
+            this.value = new Value(i);
             return this;
         }
 
@@ -766,12 +455,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(long[] l) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(l);
-            else
-                value.setValue(l);
-
+            this.value = new Value(l);
             return this;
         }
 
@@ -785,12 +469,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(float[] f) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(f);
-            else
-                value.setValue(f);
-
+            this.value = new Value(f);
             return this;
         }
 
@@ -804,12 +483,7 @@ public final class Property extends AbstractProperty<ImmutableDatatype> implemen
          */
         @Override
         public Builder setValue(double[] d) {
-
-            if (value == null)
-                this.value = new ImmutableDatatype(d);
-            else
-                value.setValue(d);
-
+            this.value = new Value(d);
             return this;
         }
     }

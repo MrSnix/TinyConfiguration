@@ -1,6 +1,6 @@
 package org.tinyconfiguration.imp.basic.io;
 
-import org.tinyconfiguration.abc.data.ImmutableDatatype;
+import org.tinyconfiguration.abc.data.Value;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderJSON;
 import org.tinyconfiguration.abc.io.writers.WriterJSON;
@@ -230,7 +230,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             JsonObjectBuilder root = Json.createObjectBuilder();
 
             // Acquiring value
-            ImmutableDatatype dt = property.getValue();
+            Value dt = property.getValue();
 
             // Encoding
             if (dt.isArray())
@@ -251,7 +251,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
         public void __encode_obj(JsonObjectBuilder obj, Property property) {
 
             // Acquiring value
-            ImmutableDatatype dt = property.getValue();
+            Value dt = property.getValue();
 
             // Encoding
             if (dt.isText()) {
@@ -300,7 +300,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             JsonArrayBuilder values = Json.createArrayBuilder();
 
             // Acquiring value
-            ImmutableDatatype dt = property.getValue();
+            Value dt = property.getValue();
 
             if (dt.isNumericArray()) {
 
@@ -465,7 +465,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
         @Override
         public void __decode_obj(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
-            ImmutableDatatype value = property.getValue();
+            Value value = property.getValue();
 
             JsonValue.ValueType type = obj.get(property.getKey()).getValueType();
 
@@ -499,7 +499,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                     if (value.isByte()) {
 
                         try {
-                            value.setValue(integral.byteValueExact());
+                            property.setValue(integral.byteValueExact());
                         } catch (ArithmeticException ex) {
                             throw new MalformedConfigurationPropertyException("The value is out of byte range", property);
                         }
@@ -507,7 +507,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                     } else if (value.isShort()) {
 
                         try {
-                            value.setValue(integral.shortValueExact());
+                            property.setValue(integral.shortValueExact());
                         } catch (ArithmeticException ex) {
                             throw new MalformedConfigurationPropertyException("The value is out of short range", property);
                         }
@@ -515,7 +515,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                     } else if (value.isInteger()) {
 
                         try {
-                            value.setValue(integral.intValueExact());
+                            property.setValue(integral.intValueExact());
                         } catch (ArithmeticException ex) {
                             throw new MalformedConfigurationPropertyException("The value is out of int range", property);
                         }
@@ -523,15 +523,15 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
                     } else if (value.isLong()) {
 
                         try {
-                            value.setValue(integral.longValueExact());
+                            property.setValue(integral.longValueExact());
                         } catch (ArithmeticException ex) {
                             throw new MalformedConfigurationPropertyException("The value is out of long range", property);
                         }
 
                     } else if (value.isFloat()) {
-                        value.setValue(decimal.floatValue());
+                        property.setValue(decimal.floatValue());
                     } else if (value.isDouble()) {
-                        value.setValue(decimal.doubleValue());
+                        property.setValue(decimal.doubleValue());
                     } else {
                         throw new MalformedConfigurationPropertyException("The value cannot be decoded as: " + value.getClass(), property);
                     }
@@ -566,7 +566,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
         @Override
         public void __decode_array(Property property, JsonObject obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
 
-            ImmutableDatatype value = property.getValue();
+            Value value = property.getValue();
 
             JsonArray array = obj.get(property.getKey()).asJsonArray();
 

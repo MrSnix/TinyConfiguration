@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface WriterXML<C extends AbstractConfiguration<P, ?>, P extends AbstractProperty<?>> extends AbstractWriter<C, P> {
+public interface WriterXML<C extends AbstractConfiguration<P>, P extends AbstractProperty> extends AbstractWriter<C, P> {
 
     /**
      * This method allow to generate an object representation from the configuration instance

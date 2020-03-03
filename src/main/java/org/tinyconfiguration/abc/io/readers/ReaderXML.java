@@ -5,7 +5,7 @@ import org.tinyconfiguration.abc.AbstractProperty;
 import org.tinyconfiguration.abc.io.AbstractReader;
 import org.w3c.dom.Element;
 
-public interface ReaderXML<C extends AbstractConfiguration<P, ?>, P extends AbstractProperty<?>> extends AbstractReader<C, P> {
+public interface ReaderXML<C extends AbstractConfiguration<P>, P extends AbstractProperty> extends AbstractReader<C, P> {
 
     /**
      * This method allow to translate a property object inside an intermediate representation

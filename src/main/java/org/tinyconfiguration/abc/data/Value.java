@@ -1,25 +1,27 @@
-package org.tinyconfiguration.abc.data.base;
+package org.tinyconfiguration.abc.data;
+
+import org.tinyconfiguration.abc.data.base.AbstractValue;
 
 import java.util.Arrays;
 
 import static java.lang.String.valueOf;
-import static org.tinyconfiguration.abc.data.base.Datatype.*;
+import static org.tinyconfiguration.abc.data.Datatype.*;
 
 /**
- * The {@link AbstractDatatype} is the container class which resolve any {@link AbstractValue} cast.<br>
- * The {@link AbstractDatatype} class should be the foundation class to implement custom datatype.
+ * The {@link Value} is the container class which resolve any {@link AbstractValue} cast.<br>
+ * The {@link Value} class should be the foundation class to implement custom datatype.
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractDatatype extends AbstractValue {
+public final class Value extends AbstractValue {
 
     private Datatype datatype;
 
     /**
      * Protected empty constructor
      */
-    protected AbstractDatatype() {
+    protected Value() {
         super();
     }
 
@@ -28,11 +30,18 @@ public abstract class AbstractDatatype extends AbstractValue {
      *
      * @param value The data to store as object instance
      */
-    protected AbstractDatatype(Object value) {
+    public Value(Object value) {
         super(value);
+        evaluate();
+    }
 
-        __verify_datatype();
-
+    /**
+     * Returns the object class
+     *
+     * @return The object class
+     */
+    public final Class<?> getType() {
+        return super.type;
     }
 
     /**
@@ -54,7 +63,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isByte() {
         return byte.class.isAssignableFrom(this.type) || Byte.class.isAssignableFrom(this.type);
@@ -70,8 +79,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isByte()
+     * @see Value#isArray()
+     * @see Value#isByte()
      */
     public final boolean isByteArray() {
         return byte[].class.isAssignableFrom(this.type) ||
@@ -88,7 +97,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isShort() {
         return
@@ -106,8 +115,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isShort()
+     * @see Value#isArray()
+     * @see Value#isShort()
      */
     public final boolean isShortArray() {
         return short[].class.isAssignableFrom(this.type) || Short[].class.isAssignableFrom(this.type);
@@ -123,7 +132,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isInteger() {
         return int.class.isAssignableFrom(this.type) || Integer.class.isAssignableFrom(this.type);
@@ -139,8 +148,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isInteger()
+     * @see Value#isArray()
+     * @see Value#isInteger()
      */
     public final boolean isIntegerArray() {
         return int[].class.isAssignableFrom(this.type) || Integer[].class.isAssignableFrom(this.type);
@@ -156,7 +165,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isLong() {
         return long.class.isAssignableFrom(this.type) || Long.class.isAssignableFrom(this.type);
@@ -172,8 +181,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isLong()
+     * @see Value#isArray()
+     * @see Value#isLong()
      */
     public final boolean isLongArray() {
         return long[].class.isAssignableFrom(this.type) || Long[].class.isAssignableFrom(this.type);
@@ -189,7 +198,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isFloat() {
         return float.class.isAssignableFrom(this.type) || Float.class.isAssignableFrom(this.type);
@@ -205,8 +214,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isFloat()
+     * @see Value#isArray()
+     * @see Value#isFloat()
      */
     public final boolean isFloatArray() {
         return float[].class.isAssignableFrom(this.type) || Float[].class.isAssignableFrom(this.type);
@@ -222,7 +231,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isDouble() {
         return double.class.isAssignableFrom(this.type) || Double.class.isAssignableFrom(this.type);
@@ -238,8 +247,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isDouble()
+     * @see Value#isArray()
+     * @see Value#isDouble()
      */
     public final boolean isDoubleArray() {
         return double[].class.isAssignableFrom(this.type) || Double[].class.isAssignableFrom(this.type);
@@ -255,7 +264,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isBoolean() {
         return boolean.class.isAssignableFrom(this.type) || Boolean.class.isAssignableFrom(this.type);
@@ -271,8 +280,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isBoolean()
+     * @see Value#isArray()
+     * @see Value#isBoolean()
      */
     public final boolean isBooleanArray() {
         return boolean[].class.isAssignableFrom(this.type) || Boolean[].class.isAssignableFrom(this.type);
@@ -288,7 +297,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isCharacter() {
         return char.class.isAssignableFrom(this.type) || Character.class.isAssignableFrom(this.type);
@@ -304,8 +313,8 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isCharacter()
+     * @see Value#isArray()
+     * @see Value#isCharacter()
      */
     public final boolean isCharacterArray() {
         return char[].class.isAssignableFrom(this.type) || Character[].class.isAssignableFrom(this.type);
@@ -321,10 +330,10 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isString() {
-        return String.class.isAssignableFrom(this.type) || this.value instanceof CharSequence;
+        return String.class.isAssignableFrom(this.type) || this.object instanceof CharSequence;
     }
 
     /**
@@ -337,11 +346,11 @@ public abstract class AbstractDatatype extends AbstractValue {
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isString()
+     * @see Value#isArray()
+     * @see Value#isString()
      */
     public final boolean isStringArray() {
-        return String[].class.isAssignableFrom(this.type) || this.value instanceof CharSequence[];
+        return String[].class.isAssignableFrom(this.type) || this.object instanceof CharSequence[];
     }
 
     /**
@@ -349,16 +358,16 @@ public abstract class AbstractDatatype extends AbstractValue {
      * <p></p>
      * More it performs the following tests:
      * <ul>
-     *    <li>{@link AbstractDatatype#isByte()} </li>
-     *    <li>{@link AbstractDatatype#isShort()}</li>
-     *    <li>{@link AbstractDatatype#isInteger()}</li>
-     *    <li>{@link AbstractDatatype#isLong()}</li>
-     *    <li>{@link AbstractDatatype#isFloat()}</li>
-     *    <li>{@link AbstractDatatype#isDouble()}</li>
+     *    <li>{@link Value#isByte()} </li>
+     *    <li>{@link Value#isShort()}</li>
+     *    <li>{@link Value#isInteger()}</li>
+     *    <li>{@link Value#isLong()}</li>
+     *    <li>{@link Value#isFloat()}</li>
+     *    <li>{@link Value#isDouble()}</li>
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isNumeric() {
         return isByte() || isShort() || isInteger() || isLong() || isFloat() || isDouble();
@@ -370,18 +379,18 @@ public abstract class AbstractDatatype extends AbstractValue {
      * More specifically, it performs the following tests:
      *
      * <ul>
-     *    <li>{@link AbstractDatatype#isArray()} </li>
-     *    <li>{@link AbstractDatatype#isByte()} </li>
-     *    <li>{@link AbstractDatatype#isShort()}</li>
-     *    <li>{@link AbstractDatatype#isInteger()}</li>
-     *    <li>{@link AbstractDatatype#isLong()}</li>
-     *    <li>{@link AbstractDatatype#isFloat()}</li>
-     *    <li>{@link AbstractDatatype#isDouble()}</li>
+     *    <li>{@link Value#isArray()} </li>
+     *    <li>{@link Value#isByte()} </li>
+     *    <li>{@link Value#isShort()}</li>
+     *    <li>{@link Value#isInteger()}</li>
+     *    <li>{@link Value#isLong()}</li>
+     *    <li>{@link Value#isFloat()}</li>
+     *    <li>{@link Value#isDouble()}</li>
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isNumeric()
+     * @see Value#isArray()
+     * @see Value#isNumeric()
      */
     public final boolean isNumericArray() {
         return isByteArray() || isShortArray() || isIntegerArray() || isLongArray() || isFloatArray() || isDoubleArray();
@@ -392,12 +401,12 @@ public abstract class AbstractDatatype extends AbstractValue {
      * <p></p>
      * More it performs the following tests:
      * <ul>
-     *    <li>{@link AbstractDatatype#isCharacter()} </li>
-     *    <li>{@link AbstractDatatype#isString()} </li>
+     *    <li>{@link Value#isCharacter()} </li>
+     *    <li>{@link Value#isString()} </li>
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
+     * @see Value#isArray()
      */
     public final boolean isText() {
         return isCharacter() || isString();
@@ -408,14 +417,14 @@ public abstract class AbstractDatatype extends AbstractValue {
      * <p></p>
      * More it performs the following tests:
      * <ul>
-     *     <li>{@link AbstractDatatype#isArray()} </li>
-     *    <li>{@link AbstractDatatype#isCharacter()} </li>
-     *    <li>{@link AbstractDatatype#isString()} </li>
+     *     <li>{@link Value#isArray()} </li>
+     *    <li>{@link Value#isCharacter()} </li>
+     *    <li>{@link Value#isString()} </li>
      * </ul>
      *
      * @return true if any condition is matched otherwise false
-     * @see AbstractDatatype#isArray()
-     * @see AbstractDatatype#isText()
+     * @see Value#isArray()
+     * @see Value#isText()
      */
     public final boolean isTextArray() {
         return isCharacterArray() || isStringArray();
@@ -427,7 +436,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The {@link Character} value contained by the property
      */
     public char asCharacter() {
-        return (char) value;
+        return (char) object;
     }
 
     /**
@@ -439,7 +448,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         String s = null;
 
-        if (type == String.class) s = (String) value;
+        if (type == String.class) s = (String) object;
         else if (type == Character.class) s = valueOf(asCharacter());
         else if (type == Boolean.class) s = valueOf(asBoolean());
         else if (type == Byte.class) s = valueOf(asByte());
@@ -468,7 +477,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The boolean value contained by the property
      */
     public boolean asBoolean() {
-        return (boolean) value;
+        return (boolean) object;
     }
 
     /**
@@ -477,7 +486,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The byte value contained by the property
      */
     public byte asByte() {
-        return (byte) value;
+        return (byte) object;
     }
 
     /**
@@ -486,7 +495,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The short value contained by the property
      */
     public short asShort() {
-        return (short) value;
+        return (short) object;
     }
 
     /**
@@ -495,7 +504,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The integer value contained by the property
      */
     public int asInt() {
-        return (int) value;
+        return (int) object;
     }
 
     /**
@@ -504,7 +513,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The long value contained by the property
      */
     public long asLong() {
-        return (long) value;
+        return (long) object;
     }
 
     /**
@@ -513,7 +522,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The float value contained by the property
      */
     public float asFloat() {
-        return (float) value;
+        return (float) object;
     }
 
     /**
@@ -522,7 +531,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The double value contained by the property
      */
     public double asDouble() {
-        return (double) value;
+        return (double) object;
     }
 
     /**
@@ -531,7 +540,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The char array contained by the property
      */
     public char[] asCharacterArray() {
-        return (char[]) value;
+        return (char[]) object;
     }
 
     /**
@@ -545,15 +554,15 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         if (isStringArray()) {
 
-            s = (String[]) value;
+            s = (String[]) object;
 
         } else if (isString()) {
 
-            s = new String[]{(String) value};
+            s = new String[]{(String) object};
 
         } else if (isCharacter()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isCharacterArray()) {
 
@@ -567,7 +576,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isBoolean()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isBooleanArray()) {
 
@@ -581,7 +590,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isByte()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isByteArray()) {
 
@@ -595,7 +604,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isShort()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isShortArray()) {
 
@@ -609,7 +618,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isInteger()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isIntegerArray()) {
 
@@ -623,7 +632,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isLong()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isLongArray()) {
 
@@ -637,7 +646,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isFloat()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isFloatArray()) {
 
@@ -651,7 +660,7 @@ public abstract class AbstractDatatype extends AbstractValue {
 
         } else if (isDouble()) {
 
-            s = new String[]{valueOf(value)};
+            s = new String[]{valueOf(object)};
 
         } else if (isDoubleArray()) {
 
@@ -675,7 +684,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The boolean array contained by the property
      */
     public boolean[] asBooleanArray() {
-        return (boolean[]) value;
+        return (boolean[]) object;
     }
 
     /**
@@ -684,7 +693,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The byte array contained by the property
      */
     public byte[] asByteArray() {
-        return (byte[]) value;
+        return (byte[]) object;
     }
 
     /**
@@ -693,7 +702,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The short array contained by the property
      */
     public short[] asShortArray() {
-        return (short[]) value;
+        return (short[]) object;
     }
 
     /**
@@ -702,7 +711,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The integer array contained by the property
      */
     public int[] asIntArray() {
-        return (int[]) value;
+        return (int[]) object;
     }
 
     /**
@@ -711,7 +720,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The long array contained by the property
      */
     public long[] asLongArray() {
-        return (long[]) value;
+        return (long[]) object;
     }
 
     /**
@@ -720,7 +729,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The float array contained by the property
      */
     public float[] asFloatArray() {
-        return (float[]) value;
+        return (float[]) object;
     }
 
     /**
@@ -729,7 +738,7 @@ public abstract class AbstractDatatype extends AbstractValue {
      * @return The double array contained by the property
      */
     public double[] asDoubleArray() {
-        return (double[]) value;
+        return (double[]) object;
     }
 
     /**
@@ -741,7 +750,10 @@ public abstract class AbstractDatatype extends AbstractValue {
         return datatype;
     }
 
-    private void __verify_datatype() {
+    /**
+     * Identifies and set the datatype
+     */
+    private void evaluate() {
         if (!isArray()) {
 
             if (isNumeric()) {

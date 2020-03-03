@@ -169,5 +169,4 @@ public interface Modifiable {
      * @throws IllegalArgumentException If the class type is different from the one declared
      */
     void setValue(double[] d);
-
 }

@@ -122,8 +122,24 @@ class JsonTest {
 
         }
 
+        // Modifying the instance
+        instance.get("user").setValue("ruut");
+        instance.get("password").setValue("toor007");
+        instance.get("sex").setValue('F');
+        instance.get("special-digits").setValue(new int[]{10, 15});
+
+        assertEquals("ruut", instance.get("user").getValue().asString());
+        assertEquals("toor007", instance.get("password").getValue().asString());
+        assertEquals('F', instance.get("sex").getValue().asCharacter());
+        assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
+
         // Now, reading the configuration instance
         assertDoesNotThrow(() -> ConfigurationIO.JSON.read(this.instance));
+
+        assertEquals("root", instance.get("user").getValue().asString());
+        assertEquals("toor", instance.get("password").getValue().asString());
+        assertEquals('M', instance.get("sex").getValue().asCharacter());
+        assertArrayEquals(new int[0], instance.get("special-digits").getValue().asIntArray());
 
     }
 

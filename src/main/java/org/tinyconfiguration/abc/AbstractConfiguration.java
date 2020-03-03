@@ -1,8 +1,6 @@
 package org.tinyconfiguration.abc;
 
 
-import org.tinyconfiguration.abc.data.base.AbstractDatatype;
-
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.List;
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractConfiguration<T extends AbstractProperty<D>, D extends AbstractDatatype> implements AbstractCollection {
+public abstract class AbstractConfiguration<T extends AbstractProperty> implements AbstractCollection {
 
     protected final String name;
     protected final String filename;

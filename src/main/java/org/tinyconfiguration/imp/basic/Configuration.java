@@ -2,7 +2,6 @@ package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
-import org.tinyconfiguration.abc.data.ImmutableDatatype;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,7 +14,7 @@ import java.util.NoSuchElementException;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Configuration extends AbstractConfiguration<Property, ImmutableDatatype> {
+public final class Configuration extends AbstractConfiguration<Property> {
 
     private final LinkedHashMap<String, Property> properties;
 

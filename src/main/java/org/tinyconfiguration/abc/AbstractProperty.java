@@ -1,6 +1,7 @@
 package org.tinyconfiguration.abc;
 
-import org.tinyconfiguration.abc.data.base.AbstractDatatype;
+import org.tinyconfiguration.abc.data.Value;
+import org.tinyconfiguration.abc.data.base.Modifiable;
 
 /**
  * This class represent generic properties stored inside configuration instances
@@ -8,10 +9,10 @@ import org.tinyconfiguration.abc.data.base.AbstractDatatype;
  * @author G. Baittiner
  * @version 0.1
  */
-public abstract class AbstractProperty<D extends AbstractDatatype> {
+public abstract class AbstractProperty implements Modifiable {
 
-    protected final D value;
     protected final String key;
+    protected Value value;
     protected final String description;
 
     /**
@@ -26,7 +27,7 @@ public abstract class AbstractProperty<D extends AbstractDatatype> {
     /**
      * Protected constructor with parameters
      */
-    protected AbstractProperty(String key, D value, String description) {
+    protected AbstractProperty(String key, Value value, String description) {
         this.key = key;
         this.value = value;
         this.description = description;
@@ -37,17 +38,233 @@ public abstract class AbstractProperty<D extends AbstractDatatype> {
      *
      * @return The key ({@link String}) associated to the property object.
      */
-    protected String getKey() {
+    public String getKey() {
         return key;
     }
 
     /**
      * Gets the value
      *
-     * @return The {@link D} associated to the property object.
+     * @return The {@link Value} associated to the property object.
      */
-    protected D getValue() {
-        return value;
+    public Value getValue() {
+        return this.value;
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(String s) {
+        set(s);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(boolean b) {
+        set(b);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param c The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(char c) {
+        set(c);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(byte b) {
+        set(b);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(short s) {
+        set(s);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param i The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(int i) {
+        set(i);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param l The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(long l) {
+        set(l);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param f The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(float f) {
+        set(f);
+    }
+
+    /**
+     * Sets the value on this property
+     *
+     * @param d The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(double d) {
+        set(d);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(String[] s) {
+        set(s);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(boolean[] b) {
+        set(b);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param c The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(char[] c) {
+        set(c);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param b The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(byte[] b) {
+        set(b);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param s The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(short[] s) {
+        set(s);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param i The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(int[] i) {
+        set(i);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param l The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(long[] l) {
+        set(l);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param f The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(float[] f) {
+        set(f);
+    }
+
+    /**
+     * Sets the array value on this property
+     *
+     * @param d The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    @Override
+    public final void setValue(double[] d) {
+        set(d);
     }
 
     /**
@@ -55,8 +272,17 @@ public abstract class AbstractProperty<D extends AbstractDatatype> {
      *
      * @return The description ({@link String}) associated to the property object.
      */
-    protected String getDescription() {
+    public String getDescription() {
         return description;
     }
+
+    /**
+     * Sets any generic value on this property
+     *
+     * @param value The new value
+     * @throws NullPointerException     If the value is null
+     * @throws IllegalArgumentException If the class type is different from the one declared
+     */
+    abstract protected void set(Object value);
 
 }

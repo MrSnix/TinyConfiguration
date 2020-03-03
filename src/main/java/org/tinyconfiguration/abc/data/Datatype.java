@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.data.base;
+package org.tinyconfiguration.abc.data;
 
 public enum Datatype {
 
@@ -11,6 +11,6 @@ public enum Datatype {
     FLOAT, ARR_FLOAT,
     DOUBLE, ARR_DOUBLE,
     STRING, ARR_STRING,
-    CHAR, ARR_CHAR;
+    CHAR, ARR_CHAR
 
 }

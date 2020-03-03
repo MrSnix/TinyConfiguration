@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface Readable<C extends AbstractConfiguration<?, ?>> {
+public interface Readable<C extends AbstractConfiguration<?>> {
 
     /**
      * Reads the configuration file
