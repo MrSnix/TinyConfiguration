@@ -18,7 +18,7 @@ public final class ConfigurationIO {
      * @param format The format type as specified on {@link ExportType}
      * @return The {@link AbstractHandlerIO} implementation
      */
-    public static AbstractHandlerIO<Configuration> export(ExportType format) {
+    public static AbstractHandlerIO<Configuration> as(ExportType format) {
 
         if (format == null)
             throw new NullPointerException("The export format cannot be null");
@@ -27,10 +27,10 @@ public final class ConfigurationIO {
 
         switch (format) {
             case XML:
-                e = Handler.as(ExportType.XML);
+                e = Handler.get(ExportType.XML);
                 break;
             case JSON:
-                e = Handler.as(ExportType.JSON);
+                e = Handler.get(ExportType.JSON);
                 break;
             default:
                 throw new IllegalArgumentException("The following format is not supported");

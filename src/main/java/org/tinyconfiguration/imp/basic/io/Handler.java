@@ -19,7 +19,7 @@ public final class Handler {
     private Handler() {
     }
 
-    public static AbstractHandlerIO<Configuration> as(ExportType format) {
+    public static AbstractHandlerIO<Configuration> get(ExportType format) {
 
         AbstractHandlerIO<Configuration> e;
 
