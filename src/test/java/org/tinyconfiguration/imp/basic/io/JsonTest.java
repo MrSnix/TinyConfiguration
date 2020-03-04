@@ -83,9 +83,9 @@ class JsonTest {
     @Test
     void writeJSON() {
 
-        assertDoesNotThrow(() -> ConfigurationIO.export(JSON).write(this.instance));
+        assertDoesNotThrow(() -> ConfigurationIO.as(JSON).write(this.instance));
 
-        assertTrue(ConfigurationIO.export(JSON).exist(instance));
+        assertTrue(ConfigurationIO.as(JSON).exist(instance));
 
     }
 
@@ -96,7 +96,7 @@ class JsonTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.export(JSON).writeAsync(this.instance);
+            Future<Void> task = ConfigurationIO.as(JSON).writeAsync(this.instance);
 
             while (!task.isDone()) {
                 ++x;
@@ -106,7 +106,7 @@ class JsonTest {
 
         });
 
-        assertTrue(ConfigurationIO.export(JSON).exist(instance));
+        assertTrue(ConfigurationIO.as(JSON).exist(instance));
 
     }
 
@@ -114,13 +114,13 @@ class JsonTest {
     void readJSON() {
 
         // Does it exists?
-        if (!ConfigurationIO.export(JSON).exist(instance)) {
+        if (!ConfigurationIO.as(JSON).exist(instance)) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.export(JSON).write(instance));
+            assertDoesNotThrow(() -> ConfigurationIO.as(JSON).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.export(JSON).exist(instance));
+            assertTrue(ConfigurationIO.as(JSON).exist(instance));
 
         }
 
@@ -136,7 +136,7 @@ class JsonTest {
         assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
 
         // Now, reading the configuration instance
-        assertDoesNotThrow(() -> ConfigurationIO.export(JSON).read(this.instance));
+        assertDoesNotThrow(() -> ConfigurationIO.as(JSON).read(this.instance));
 
         assertEquals("root", instance.get("user").getValue().asString());
         assertEquals("toor", instance.get("password").getValue().asString());
@@ -152,7 +152,7 @@ class JsonTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.export(JSON).readAsync(this.instance);
+            Future<Void> task = ConfigurationIO.as(JSON).readAsync(this.instance);
 
             while (!task.isDone()) {
                 // Do something
@@ -162,7 +162,7 @@ class JsonTest {
             assertTrue(x >= 0);
         });
 
-        assertTrue(ConfigurationIO.export(JSON).exist(this.instance));
+        assertTrue(ConfigurationIO.as(JSON).exist(this.instance));
 
     }
 
@@ -170,20 +170,20 @@ class JsonTest {
     void deleteJSON() {
 
         // Does it exists?
-        if (!ConfigurationIO.export(JSON).exist(instance)) {
+        if (!ConfigurationIO.as(JSON).exist(instance)) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.export(JSON).write(instance));
+            assertDoesNotThrow(() -> ConfigurationIO.as(JSON).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.export(JSON).exist(instance));
+            assertTrue(ConfigurationIO.as(JSON).exist(instance));
 
         }
 
         // Executing deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.export(JSON).delete(instance));
+        assertDoesNotThrow(() -> ConfigurationIO.as(JSON).delete(instance));
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.export(JSON).exist(instance));
+        assertFalse(ConfigurationIO.as(JSON).exist(instance));
 
     }
 
@@ -191,19 +191,19 @@ class JsonTest {
     void deleteAsyncJSON() {
 
         // Does it exists?
-        if (!ConfigurationIO.export(JSON).exist(instance)) {
+        if (!ConfigurationIO.as(JSON).exist(instance)) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.export(JSON).writeAsync(instance).get());
+            assertDoesNotThrow(() -> ConfigurationIO.as(JSON).writeAsync(instance).get());
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.export(JSON).exist(instance));
+            assertTrue(ConfigurationIO.as(JSON).exist(instance));
 
         }
         // Obtaining deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.export(JSON).deleteAsync(instance).get());
+        assertDoesNotThrow(() -> ConfigurationIO.as(JSON).deleteAsync(instance).get());
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.export(JSON).exist(instance));
+        assertFalse(ConfigurationIO.as(JSON).exist(instance));
 
     }
 }
