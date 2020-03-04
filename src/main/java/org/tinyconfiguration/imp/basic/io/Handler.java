@@ -11,10 +11,13 @@ import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIden
 /**
  * This class is the handler manager
  */
-public abstract class Handler {
+public final class Handler {
 
     private static final HandlerJSON handlerJSON = new HandlerJSON();
     private static final HandlerXML handlerXML = new HandlerXML();
+
+    private Handler() {
+    }
 
     public static AbstractHandlerIO<Configuration> as(ExportType format) {
 
