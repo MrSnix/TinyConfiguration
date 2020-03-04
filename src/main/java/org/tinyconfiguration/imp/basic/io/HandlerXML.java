@@ -3,8 +3,8 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.Value;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
-import org.tinyconfiguration.abc.io.readers.ReaderXML;
-import org.tinyconfiguration.abc.io.writers.WriterXML;
+import org.tinyconfiguration.abc.io.handlers.AbstractReader;
+import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
@@ -145,7 +145,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
         });
     }
 
-    private static final class ImplWriterXML implements WriterXML<Configuration, Property> {
+    private static final class ImplWriterXML implements AbstractWriter<Configuration, Property, Element> {
 
         private Document xml;
 
@@ -295,7 +295,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
         }
     }
 
-    private static final class ImplReaderXML implements ReaderXML<Configuration, Property> {
+    private static final class ImplReaderXML implements AbstractReader<Configuration, Property, Element> {
 
         private List<Element> properties;
 

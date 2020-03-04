@@ -1,9 +1,9 @@
 package org.tinyconfiguration.abc.io;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
-import org.tinyconfiguration.abc.io.handlers.Deletable;
-import org.tinyconfiguration.abc.io.handlers.Readable;
-import org.tinyconfiguration.abc.io.handlers.Writable;
+import org.tinyconfiguration.abc.io.handlers.utils.Deletable;
+import org.tinyconfiguration.abc.io.handlers.utils.Readable;
+import org.tinyconfiguration.abc.io.handlers.utils.Writable;
 
 /**
  * The {@link AbstractHandlerIO} interface provides common methods to perform I/O operations

@@ -2,8 +2,8 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.Value;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
-import org.tinyconfiguration.abc.io.readers.ReaderJSON;
-import org.tinyconfiguration.abc.io.writers.WriterJSON;
+import org.tinyconfiguration.abc.io.handlers.AbstractReader;
+import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
@@ -155,7 +155,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      * @author G. Baittiner
      * @version 0.1
      */
-    private static final class ImplWriterJSON implements WriterJSON<Configuration, Property> {
+    private static final class ImplWriterJSON implements AbstractWriter<Configuration, Property, JsonObjectBuilder> {
 
         /**
          * This method allow to generate an object representation from the configuration instance
@@ -405,7 +405,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      * @author G. Baittiner
      * @version 0.1
      */
-    private static final class ImplReaderJSON implements ReaderJSON<Configuration, Property> {
+    private static final class ImplReaderJSON implements AbstractReader<Configuration, Property, JsonObject> {
 
         private JsonArray properties;
 

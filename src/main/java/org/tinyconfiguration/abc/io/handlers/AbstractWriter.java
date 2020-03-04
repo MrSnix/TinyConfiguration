@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.io;
+package org.tinyconfiguration.abc.io.handlers;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;
@@ -9,7 +9,7 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface AbstractWriter<C extends AbstractConfiguration<?>, P extends AbstractProperty> {
+public interface AbstractWriter<C extends AbstractConfiguration<?>, P extends AbstractProperty, I> {
 
     /**
      * This method allow to insert a property object inside an intermediate representation
@@ -37,4 +37,19 @@ public interface AbstractWriter<C extends AbstractConfiguration<?>, P extends Ab
      */
     void toFile(C instance) throws Exception;
 
+    /**
+     * This method encode object-only property
+     *
+     * @param property The property instance
+     * @param root     The root object
+     */
+    void __encode_obj(I root, P property);
+
+    /**
+     * This method encode array-only property
+     *
+     * @param property The property instance
+     * @param root     The root object
+     */
+    void __encode_array(I root, P property);
 }

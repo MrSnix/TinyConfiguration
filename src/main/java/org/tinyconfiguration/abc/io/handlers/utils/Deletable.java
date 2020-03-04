@@ -1,4 +1,4 @@
-package org.tinyconfiguration.abc.io.handlers;
+package org.tinyconfiguration.abc.io.handlers.utils;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 
