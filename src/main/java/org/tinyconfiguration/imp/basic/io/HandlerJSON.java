@@ -199,20 +199,39 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             // Creating factory
             JsonWriterFactory writerFactory = Json.createWriterFactory(options);
 
-            // Obtaining object representation
+            // Obtaining object representation (#001)
             JsonObject obj = this.toObject(instance);
 
-            // Creating stream and setting charset
-            FileOutputStream fos = new FileOutputStream(instance.getFile());
-            OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+            // Creating stream-like string
+            String data;
 
-            // Buffering and streaming
-            try (BufferedWriter bw = new BufferedWriter(osw);
-                 javax.json.JsonWriter writer = writerFactory.createWriter(bw)) {
-
-                // Writing on disk
+            try (StringWriter sw = new StringWriter();
+                 javax.json.JsonWriter writer = writerFactory.createWriter(sw)) {
+                // Writing on stream
                 writer.writeObject(obj);
+                // Obtaining data
+                data = sw.toString();
+            }
 
+            //TODO: Fix this
+
+            /* Removing annoying new-line char
+            /* If there is '\n\r' or '\n' it removes it,
+            /* otherwise leave as it is
+            /* This bug comes from javax.json implementation (i think(?))
+            /* Stuff, i found on internet related: "https://github.com/eclipse-ee4j/yasson/issues/289"
+            /* Even if it talks about 'yasson', i got the same issue on (#001)
+            /* I have tried different javax.json implementation, but it keeps staying there...*/
+
+            data = data.
+                    substring(data.indexOf("\n\r") + 1).
+                    substring(data.indexOf('\n') + 1);
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()))) {
+                // Writing on disk
+                bw.write(data);
+                // Say good-bye!
+                bw.flush();
             }
         }
 
