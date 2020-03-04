@@ -1,7 +1,7 @@
 package org.tinyconfiguration.abc.utils;
 
 /**
- * This enum defines a common gateway to escape or unescape all the special characters inside the properties
+ * This enum defines a common gateway to encode or decode all the special characters inside the properties
  *
  * @author G. Baittiner
  * @version 0.1
@@ -20,7 +20,7 @@ public enum SpecialCharacters {
     public static String substitute(Type type, String value) {
 
         switch (type) {
-            case UNESCAPE:
+            case DECODE:
                 value = value.
                         replace("\\n", "\n").
                         replace("\\r", "\r").
@@ -37,7 +37,7 @@ public enum SpecialCharacters {
                 value = value.replace("\\\\", "\\");
                 break;
 
-            case ESCAPE:
+            case ENCODE:
                 value = value.
                         replace("\\", "\\\\").
                         replace("\n", "\\n").
@@ -54,7 +54,7 @@ public enum SpecialCharacters {
      * All the processing operations available
      */
     public enum Type {
-        UNESCAPE, ESCAPE
+        ENCODE, DECODE
     }
 
 }

@@ -32,9 +32,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
-import static org.tinyconfiguration.imp.basic.io.HandlerUtils.__empty_array;
-import static org.tinyconfiguration.imp.basic.io.HandlerUtils.isQualified;
-
 /**
  * The {@link HandlerXML} provides methods to convert the underlying data representation as XML
  *
@@ -320,7 +317,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
             this.properties = new ArrayList<>();
 
             // Basic check to verify file header integrity
-            isQualified(instance, name, version);
+            Handler.Internal.isQualified(instance, name, version);
 
             NodeList properties = configuration.getElementsByTagName("properties");
 
@@ -555,7 +552,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
             // If it's empty, well done, we can move on
             if (values0 == null || values0.getLength() == 0) {
                 // Just assigning empty arrays
-                __empty_array(property);
+                Handler.Internal.__empty_array(property);
             } else {
 
                 List<Element> values = new ArrayList<>();

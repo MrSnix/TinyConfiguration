@@ -27,8 +27,6 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
 import static javax.json.JsonValue.ValueType.ARRAY;
-import static org.tinyconfiguration.imp.basic.io.HandlerUtils.__empty_array;
-import static org.tinyconfiguration.imp.basic.io.HandlerUtils.isQualified;
 
 /**
  * The {@link HandlerJSON} class contains the implementations of I/O operations as JSON format which can be executed on any {@link Configuration} instance
@@ -593,7 +591,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             if (array.size() == 0) {
 
                 // Just assigning empty arrays
-                __empty_array(property);
+                Handler.Internal.__empty_array(property);
 
             } else {
 
@@ -738,7 +736,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             String version = configuration.getString("version", null);
 
             // Basic check to verify file header integrity
-            isQualified(instance, name, version);
+            Handler.Internal.isQualified(instance, name, version);
 
             this.properties = configuration.getJsonArray("properties");
 

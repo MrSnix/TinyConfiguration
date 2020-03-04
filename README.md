@@ -5,7 +5,7 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
-- [Example](#example)
+- [Tutorials](#tutorials)
 - [Build, download & changelog](#build-download--changelog)
 - [What's next?](#whats-next)
 - [Feedback](#feedback)
@@ -37,28 +37,9 @@ A few of the things you can do with TinyConfiguration:
 * Set **listeners** on configuration reading, saving and deleting
 * Export configuration as **JSON** and **XML**
 
-## Example
+## Tutorials
 
-This tutorial covers most of the methods available in the library, 
-for further information check the javadoc.
-
-````java
-
-    public class Main {
-        public static void main(String[] args){
-        
-      // Creating a new instance
-        Configuration cfg = new Configuration.Builder().
-                setFilename("setting.cfg"). // FILE-NAME + .EXT
-                setPathname("./"). // PATH-NAME ONLY, NO FILE-NAME
-                build();
-
-
-        // For further information check the javadoc
-
-        }
-    }
-````
+You can check on the [wiki](https://github.com/MrSnix/TinyConfiguration/wiki) everything related to this library.
 
 ## Build, download & changelog
 

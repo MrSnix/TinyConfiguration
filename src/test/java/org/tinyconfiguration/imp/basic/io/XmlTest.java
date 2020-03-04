@@ -2,11 +2,13 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.junit.jupiter.api.Test;
 import org.tinyconfiguration.imp.basic.Configuration;
+import org.tinyconfiguration.imp.basic.ConfigurationIO;
 import org.tinyconfiguration.imp.basic.Property;
 
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.tinyconfiguration.abc.utils.ExportType.XML;
 
 class XmlTest {
 
@@ -81,13 +83,13 @@ class XmlTest {
     @Test
     void readXML() {
         // Does it exists?
-        if (!ConfigurationIO.XML.exist(instance)) {
+        if (!ConfigurationIO.export(XML).exist(instance)) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.XML.write(instance));
+            assertDoesNotThrow(() -> ConfigurationIO.export(XML).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.XML.exist(instance));
+            assertTrue(ConfigurationIO.export(XML).exist(instance));
 
         }
 
@@ -103,7 +105,7 @@ class XmlTest {
         assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
 
         // Now, reading the configuration instance
-        assertDoesNotThrow(() -> ConfigurationIO.XML.read(this.instance));
+        assertDoesNotThrow(() -> ConfigurationIO.export(XML).read(this.instance));
 
         assertEquals("root", instance.get("user").getValue().asString());
         assertEquals("toor", instance.get("password").getValue().asString());
@@ -115,9 +117,9 @@ class XmlTest {
     @Test
     void writeXML() {
 
-        assertDoesNotThrow(() -> ConfigurationIO.XML.write(this.instance));
+        assertDoesNotThrow(() -> ConfigurationIO.export(XML).write(this.instance));
 
-        assertTrue(ConfigurationIO.XML.exist(instance));
+        assertTrue(ConfigurationIO.export(XML).exist(instance));
     }
 
     @Test
@@ -127,7 +129,7 @@ class XmlTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.XML.writeAsync(this.instance);
+            Future<Void> task = ConfigurationIO.export(XML).writeAsync(this.instance);
 
             while (!task.isDone()) {
                 ++x;
@@ -137,7 +139,7 @@ class XmlTest {
 
         });
 
-        assertTrue(ConfigurationIO.XML.exist(instance));
+        assertTrue(ConfigurationIO.export(XML).exist(instance));
 
     }
 
@@ -145,20 +147,20 @@ class XmlTest {
     void deleteXML() {
 
         // Does it exists?
-        if (!ConfigurationIO.XML.exist(instance)) {
+        if (!ConfigurationIO.export(XML).exist(instance)) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.XML.write(instance));
+            assertDoesNotThrow(() -> ConfigurationIO.export(XML).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.XML.exist(instance));
+            assertTrue(ConfigurationIO.export(XML).exist(instance));
 
         }
 
         // Executing deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.XML.delete(instance));
+        assertDoesNotThrow(() -> ConfigurationIO.export(XML).delete(instance));
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.XML.exist(instance));
+        assertFalse(ConfigurationIO.export(XML).exist(instance));
 
     }
 
@@ -166,19 +168,19 @@ class XmlTest {
     void deleteAsyncXML() {
 
         // Does it exists?
-        if (!ConfigurationIO.XML.exist(instance)) {
+        if (!ConfigurationIO.export(XML).exist(instance)) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.XML.writeAsync(instance).get());
+            assertDoesNotThrow(() -> ConfigurationIO.export(XML).writeAsync(instance).get());
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.XML.exist(instance));
+            assertTrue(ConfigurationIO.export(XML).exist(instance));
 
         }
         // Obtaining deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.XML.deleteAsync(instance).get());
+        assertDoesNotThrow(() -> ConfigurationIO.export(XML).deleteAsync(instance).get());
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.XML.exist(instance));
+        assertFalse(ConfigurationIO.export(XML).exist(instance));
 
     }
 }
