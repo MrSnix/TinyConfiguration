@@ -1,7 +1,6 @@
 package org.tinyconfiguration.imp.basic.io;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+
 import org.tinyconfiguration.abc.data.Value;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.readers.ReaderXML;
@@ -19,10 +18,13 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,14 +157,21 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
          *
          * @param instance The configuration instance
          * @return The object representation of the following instance
-         * @throws Exception If something goes wrong during the process
+         * @throws IOException If something goes wrong during the process
          */
         @Override
-        public Document toObject(Configuration instance) throws Exception {
+        public Document toObject(Configuration instance) throws IOException {
 
             DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
             // Using factory to get an instance of document builder
-            DocumentBuilder db = builder.newDocumentBuilder();
+            DocumentBuilder db;
+
+            try {
+                db = builder.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                throw new IOException(e);
+            }
+
             // Creating the doc representation
             this.xml = db.newDocument();
 
@@ -197,25 +206,28 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
         @Override
         public void toFile(Configuration instance) throws IOException {
 
-            Document obj;
-
             try {
-                obj = this.toObject(instance);
-            } catch (Exception e) {
+                // Getting document
+                Document obj = this.toObject(instance);
+
+                // Generating xml writer
+                TransformerFactory factory = TransformerFactory.newInstance();
+                Transformer transformer = factory.newTransformer();
+
+                // Applying output property
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+                // Creating output stream
+                DOMSource source = new DOMSource(obj);
+                StreamResult stream = new StreamResult(instance.getFile());
+
+                // Writing
+                transformer.transform(source, stream);
+            } catch (TransformerException e) {
                 throw new IOException(e);
             }
 
-            OutputFormat format = new OutputFormat();
-
-            format.setLineWidth(120);
-            format.setIndenting(true);
-            format.setIndent(4);
-            format.setEncoding(StandardCharsets.UTF_8.name());
-
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()))) {
-                XMLSerializer srx = new XMLSerializer(bw, format);
-                srx.serialize(obj);
-            }
         }
 
         /**
