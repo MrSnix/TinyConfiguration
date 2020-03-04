@@ -85,7 +85,6 @@ and all JARs will be available at the root directory.
 
 To use the package, you need to use following Maven dependency:
 
-
 ````
 <dependency>
   <groupId>io.github.mrsnix</groupId>
@@ -93,7 +92,6 @@ To use the package, you need to use following Maven dependency:
   <version>0.0.2</version>
 </dependency>
 ````
-Package has no external dependencies, except for testing (which uses JUnit).
 
 ##### Non-Maven
 
@@ -137,7 +135,7 @@ you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com),
 ***feature requests are always welcome***.
 
 ## License
-Copyright 2019 Giuseppe Baittiner
+Copyright 2020 Giuseppe Baittiner
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
