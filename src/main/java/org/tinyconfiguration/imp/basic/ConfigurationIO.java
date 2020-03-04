@@ -12,7 +12,16 @@ import org.tinyconfiguration.imp.basic.io.Handler;
  */
 public final class ConfigurationIO {
 
+    /**
+     * Returns an {@link AbstractHandlerIO} implementation for the specified type
+     *
+     * @param format The format type as specified on {@link ExportType}
+     * @return The {@link AbstractHandlerIO} implementation
+     */
     public static AbstractHandlerIO<Configuration> export(ExportType format) {
+
+        if (format == null)
+            throw new NullPointerException("The export format cannot be null");
 
         AbstractHandlerIO<Configuration> e;
 
