@@ -30,8 +30,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
-import static org.tinyconfiguration.imp.basic.io.UtilsHandler.__empty_array;
-import static org.tinyconfiguration.imp.basic.io.UtilsHandler.isQualified;
+import static org.tinyconfiguration.imp.basic.io.HandlerUtils.__empty_array;
+import static org.tinyconfiguration.imp.basic.io.HandlerUtils.isQualified;
 
 /**
  * The {@link HandlerXML} provides methods to convert the underlying data representation as XML

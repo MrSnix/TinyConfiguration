@@ -27,8 +27,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 
 import static javax.json.JsonValue.ValueType.ARRAY;
-import static org.tinyconfiguration.imp.basic.io.UtilsHandler.__empty_array;
-import static org.tinyconfiguration.imp.basic.io.UtilsHandler.isQualified;
+import static org.tinyconfiguration.imp.basic.io.HandlerUtils.__empty_array;
+import static org.tinyconfiguration.imp.basic.io.HandlerUtils.isQualified;
 
 /**
  * The {@link HandlerJSON} class contains the implementations of I/O operations as JSON format which can be executed on any {@link Configuration} instance

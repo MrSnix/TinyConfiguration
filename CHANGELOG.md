@@ -3,6 +3,11 @@ All notable changes to TinyConfiguration will be documented in this file.
 
 ## Unreleased
 
+_This is what I would like to implement, but it could change  
+depending on the time I have available to work on this library_
+
+___
+
 **Release date:** [ *???* ]
 
 **New**
@@ -16,23 +21,27 @@ All notable changes to TinyConfiguration will be documented in this file.
 
 ## 0.0.2
 
-**Release date:** [ *30 / 12 / 2019* ]
+**Release date:** [ *05 / 03 / 2020* ]
 
 **New**
 
-- Insert, edit and retrieve **property groups**
 - Insert and retrieve **arrays**
 - Import and export as **JSON**
 - Import and export as **XML**
 
 **Changed**
 - Overhauled the entire class and package hierarchy
-- Overhauled event management system
+- Rewritten configuration class
+- Rewritten property class
 - Rewritten documentation
 
 **Removed**
 - Reading mode: strict and tolerant
-- A lot of useless stuff
+- No more internal representation
+
+___
+**Important** - This update break backward compatibility
+___
 
 ## 0.0.1
 

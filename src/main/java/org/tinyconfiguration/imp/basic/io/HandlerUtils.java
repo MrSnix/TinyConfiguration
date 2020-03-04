@@ -6,9 +6,10 @@ import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationName
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
 import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
 
-import java.util.List;
-
-final class UtilsHandler {
+/**
+ * This class contains common code shared between handlers implementations
+ */
+final class HandlerUtils {
 
     public static void __empty_array(Property property) {
         switch (property.getValue().getDatatype()) {
@@ -40,10 +41,6 @@ final class UtilsHandler {
                 property.setValue(new char[0]);
                 break;
         }
-    }
-
-    public static void __fill_array(Property property, List<?> values) {
-
     }
 
     public static void isQualified(Configuration instance, String name, String version) throws

@@ -34,9 +34,8 @@ A few of the things you can do with TinyConfiguration:
 
 * **Read**, **write** and **delete** custom configuration file (even async)
 * Easily **search and retrieve** values
-* Sort by **group** every property
-* Set **listeners** on properties changes, configuration saving and deleting
-* Escape **special characters**
+* Set **listeners** on configuration reading, saving and deleting
+* Export configuration as **JSON** and **XML**
 
 ## Example
 
@@ -64,8 +63,8 @@ for further information check the javadoc.
 ## Build, download & changelog
 
 >This library **should not** be used in a production environment.  
->TinyConfiguration is currently in an ++***alpha state***++ and any new update may break backward compatibility
-
+>TinyConfiguration is currently in an ++***alpha state***++,  
+>it's unstable and any new update may break backward compatibility
 
 #### Building the library
 TinyConfiguration requires Maven 3 and JDK 8.<br>
@@ -91,7 +90,7 @@ To use the package, you need to use following Maven dependency:
 <dependency>
   <groupId>io.github.mrsnix</groupId>
   <artifactId>tiny-configuration</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ````
 Package has no external dependencies, except for testing (which uses JUnit).
@@ -113,9 +112,8 @@ release.
 | Version |                      Changelog                           |
 |:-------:|:--------------------------------------------------------:|
 |   0.1   |                   Initial release                        |
-|   0.2   |   New arrays methods, property groups and exports mode   |
+|   0.2   |         New arrays methods and export format             |
 |         |    Overhauled the entire class and package hierarchy     |
-|         |           Overhauled event management system             |
 |         |                Rewritten documentation                   |
 
 ## What's next?
@@ -134,8 +132,8 @@ The full changelog is available at [CHANGELOG.md](CHANGELOG.md)
 
 ## Feedback
 If there's anything you'd like to chat about or 
-you want to send me feedback about this project,
-<br>you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com), 
+you want to send me feedback about this project,  
+you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com), 
 ***feature requests are always welcome***.
 
 ## License
