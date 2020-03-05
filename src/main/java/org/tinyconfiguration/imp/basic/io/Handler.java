@@ -7,6 +7,11 @@ import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
 import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
+import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
+import org.yaml.snakeyaml.events.Event;
+import org.yaml.snakeyaml.events.ScalarEvent;
+
+import java.util.ArrayDeque;
 
 /**
  * This class is the handler manager
@@ -95,6 +100,98 @@ public final class Handler {
 
             if (!version.equals(instance.getVersion()))
                 throw new InvalidConfigurationVersionException(instance.getVersion(), version);
+        }
+
+        static final class YAML {
+
+            /**
+             * This method is specific __encode_header() YAML implementation
+             *
+             * @param graph The intermediate representation
+             * @see Handler.Internal#__decode_header(Configuration, String, String)
+             */
+            public static void __decode_header(Configuration instance, ArrayDeque<Event> graph) throws
+                    MissingConfigurationIdentifiersException,
+                    InvalidConfigurationNameException,
+                    InvalidConfigurationVersionException, ParsingProcessException {
+
+                // These values must be declared as 'null'
+                String name = null;
+                String version = null;
+
+                boolean stop = false;
+
+                while (!graph.isEmpty() && !stop) {
+
+                    Event e = graph.poll();
+
+                    if (e.getEventId() == Event.ID.Scalar) {
+                        // Creating property key
+                        ScalarEvent key = (ScalarEvent) e;
+
+                        // If the property key is any of these field, we can go on
+                        if (key.getValue().equals("name") && graph.peek() != null) {
+
+                            // Obtaining next token
+                            Event e0 = graph.poll();
+
+                            if (e0.getEventId() == Event.ID.Scalar) {
+                                // It's the property value
+                                ScalarEvent value = (ScalarEvent) e0;
+                                // Assigning
+                                name = value.getValue();
+                            }
+
+                        } else if (key.getValue().equals("version") && graph.peek() != null) {
+
+                            // Obtaining next token
+                            Event e0 = graph.poll();
+
+                            if (e0.getEventId() == Event.ID.Scalar) {
+                                // It's the property value
+                                ScalarEvent value = (ScalarEvent) e0;
+                                // Assigning
+                                version = value.getValue();
+                            }
+
+                        } else if (key.getValue().equals("properties") && graph.peek() != null) {
+
+                            // Obtaining next token
+                            Event e0 = graph.poll();
+
+                            // Now if properties is followed by a sequence start (properties list)
+                            if (e0.getEventId() == Event.ID.SequenceStart) {
+                                // We can stop there, honestly it may be more accurate but i will fix that later
+                                stop = true;
+                            }
+
+                        }
+                    }
+                }
+
+                // Calling default implementation
+                Internal.__decode_header(instance, name, version);
+
+                // If it didn't stop, 'properties' is missing from the configuration
+                if (!stop) {
+                    throw new ParsingProcessException("The 'properties' array is missing");
+                }
+
+                /* Now, removing the last four tag, which are:
+                 *  - SequenceEndEvent => Means the properties list has finished
+                 *  - MappingEndEvent  => Means the configuration object mapping has finished
+                 *  - DocumentEndEvent => Means the document has been parsed
+                 *  - StreamEndEvent   => Means the stream is going to close now
+                 * _____________________________________________
+                 *  This operation will simplify the parsing process,
+                 *  those tag are not really that useful...
+                 */
+
+                for (int i = 0; i < 4; ++i) {
+                    graph.removeLast();
+                }
+
+            }
         }
 
     }

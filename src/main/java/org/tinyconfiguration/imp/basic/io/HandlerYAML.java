@@ -17,10 +17,7 @@ import org.yaml.snakeyaml.events.Event;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
@@ -363,8 +360,13 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
          * @throws IOException If something goes wrong during the process
          */
         @Override
-        public void toObject(Configuration instance) throws IOException {
+        public void toObject(Configuration instance) throws IOException, MissingConfigurationIdentifiersException, InvalidConfigurationNameException, InvalidConfigurationVersionException, ParsingProcessException {
 
+            // Acquiring intermediate representation
+            ArrayDeque<Event> graph = fromFile(instance);
+
+            // Decoding header
+            Handler.Internal.YAML.__decode_header(instance, graph);
 
         }
 
@@ -375,19 +377,19 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
          * @throws IOException If something goes wrong during the process
          */
         @Override
-        public List<Event> fromFile(Configuration instance) throws IOException {
+        public ArrayDeque<Event> fromFile(Configuration instance) throws IOException {
 
             Yaml reader = new Yaml();
 
-            List<Event> events;
+            ArrayDeque<Event> events;
 
             try (BufferedReader br = new BufferedReader(new FileReader(instance.getFile()))) {
                 // Acquiring all nodes
                 Iterable<Event> iterator = reader.parse(br);
                 // Creating a simple stream
-                events = StreamSupport.stream(iterator.spliterator(), false).collect(Collectors.toList());
+                events = StreamSupport.stream(iterator.spliterator(), false).
+                        collect(Collectors.toCollection(ArrayDeque::new));
             }
-            ;
 
             return events;
         }
@@ -414,14 +416,5 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
 
         }
 
-        /**
-         * This method is specific YAML implementation
-         *
-         * @param graph The intermediate representation
-         * @see Handler.Internal#__decode_header(Configuration, String, String)
-         */
-        void __decode_header(List<Event> graph) {
-
-        }
     }
 }
