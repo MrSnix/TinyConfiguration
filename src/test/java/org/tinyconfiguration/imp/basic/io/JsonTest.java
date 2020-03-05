@@ -143,7 +143,7 @@ class JsonTest {
         assertEquals('M', instance.get("sex").getValue().asCharacter());
         assertArrayEquals(new int[0], instance.get("special-digits").getValue().asIntArray());
 
-    }
+}
 
     @Test
     void readAsyncJSON() {

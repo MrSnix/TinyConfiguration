@@ -238,7 +238,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          *
          * @param property The property instance
          * @return The new representation
-         * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
+         * @throws IllegalStateException If the data-type cannot be encoded as JSON-like value
          */
         @Override
         public JsonObject encode(Property property) {
@@ -262,7 +262,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          * This method encode object-only property
          *
          * @param property The property instance
-         * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
+         * @throws IllegalStateException If the data-type cannot be encoded as JSON-like value
          */
         @Override
         public void __encode_obj(JsonObjectBuilder obj, Property property) {
@@ -308,7 +308,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
          * This method encode array-only property
          *
          * @param property The property instance
-         * @throws IllegalStateException If the datatype cannot be encoded as JSON-like value
+         * @throws IllegalStateException If the data-type cannot be encoded as JSON-like value
          */
         @Override
         public void __encode_array(JsonObjectBuilder obj, Property property) {
@@ -736,7 +736,7 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
             String version = configuration.getString("version", null);
 
             // Basic check to verify file header integrity
-            Handler.Internal.isQualified(instance, name, version);
+            Handler.Internal.__decode_header(instance, name, version);
 
             this.properties = configuration.getJsonArray("properties");
 

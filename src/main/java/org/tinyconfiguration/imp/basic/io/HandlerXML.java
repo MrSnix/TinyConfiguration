@@ -317,7 +317,7 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
             this.properties = new ArrayList<>();
 
             // Basic check to verify file header integrity
-            Handler.Internal.isQualified(instance, name, version);
+            Handler.Internal.__decode_header(instance, name, version);
 
             NodeList properties = configuration.getElementsByTagName("properties");
 

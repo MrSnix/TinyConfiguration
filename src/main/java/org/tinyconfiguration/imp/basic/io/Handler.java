@@ -80,7 +80,7 @@ public final class Handler {
             }
         }
 
-        public static void isQualified(Configuration instance, String name, String version) throws
+        public static void __decode_header(Configuration instance, String name, String version) throws
                 MissingConfigurationIdentifiersException,
                 InvalidConfigurationNameException,
                 InvalidConfigurationVersionException {

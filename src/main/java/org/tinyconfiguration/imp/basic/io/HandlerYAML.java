@@ -2,15 +2,20 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.Value;
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
+import org.tinyconfiguration.abc.io.handlers.AbstractReader;
 import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
+import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
+import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
+import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
+import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
+import org.tinyconfiguration.imp.basic.ex.property.*;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.events.Event;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,6 +24,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * The {@link HandlerYAML} class contains the implementations of I/O operations as YAML format which can be executed on any {@link Configuration} instance
@@ -29,6 +36,7 @@ import java.util.concurrent.Future;
 final class HandlerYAML extends AbstractHandlerIO<Configuration> {
 
     private static final ImplWriterYAML IMPL_WRITER_YAML = new ImplWriterYAML();
+    private static final ImplReaderYAML IMPL_READER_YAML = new ImplReaderYAML();
 
     /**
      * Delete the configuration file
@@ -67,7 +75,7 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public void read(Configuration instance) throws Exception {
-
+        IMPL_READER_YAML.toObject(instance);
     }
 
     /**
@@ -78,7 +86,16 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public Future<Void> readAsync(Configuration instance) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                read(instance);
+            } catch (
+                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
+                throw new CompletionException(e);
+            } catch (Exception ignored) {
+            }
+            return null;
+        });
     }
 
     /**
@@ -321,4 +338,90 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
         }
     }
 
+    /**
+     * The {@link ImplReaderYAML} class contains the implementations of I/O operations which can be executed on any {@link Configuration} instance
+     *
+     * @author G. Baittiner
+     * @version 0.1
+     */
+    static final class ImplReaderYAML implements AbstractReader<Configuration, Property, Event> {
+
+        /**
+         * This method allow to translate a property object inside an intermediate representation
+         *
+         * @param property The property instance
+         */
+        @Override
+        public void decode(Property property) throws Exception {
+
+        }
+
+        /**
+         * This method generate the final representation of the configuration
+         *
+         * @param instance The configuration instance
+         * @throws IOException If something goes wrong during the process
+         */
+        @Override
+        public void toObject(Configuration instance) throws IOException {
+
+
+        }
+
+        /**
+         * This method generate an intermediate object representation of the configuration from the file
+         *
+         * @param instance The configuration instance
+         * @throws IOException If something goes wrong during the process
+         */
+        @Override
+        public List<Event> fromFile(Configuration instance) throws IOException {
+
+            Yaml reader = new Yaml();
+
+            List<Event> events;
+
+            try (BufferedReader br = new BufferedReader(new FileReader(instance.getFile()))) {
+                // Acquiring all nodes
+                Iterable<Event> iterator = reader.parse(br);
+                // Creating a simple stream
+                events = StreamSupport.stream(iterator.spliterator(), false).collect(Collectors.toList());
+            }
+            ;
+
+            return events;
+        }
+
+        /**
+         * This method decode object-only property
+         *
+         * @param property The property instance
+         * @param obj      The intermediate object
+         */
+        @Override
+        public void __decode_obj(Property property, Event obj) throws Exception {
+
+        }
+
+        /**
+         * This method decode array-only property
+         *
+         * @param property The property instance
+         * @param obj      The intermediate array
+         */
+        @Override
+        public void __decode_array(Property property, Event obj) throws Exception {
+
+        }
+
+        /**
+         * This method is specific YAML implementation
+         *
+         * @param graph The intermediate representation
+         * @see Handler.Internal#__decode_header(Configuration, String, String)
+         */
+        void __decode_header(List<Event> graph) {
+
+        }
+    }
 }

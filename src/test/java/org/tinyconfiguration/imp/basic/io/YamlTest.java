@@ -5,8 +5,9 @@ import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.ConfigurationIO;
 import org.tinyconfiguration.imp.basic.Property;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.concurrent.Future;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.tinyconfiguration.abc.utils.ExportType.YAML;
 
 class YamlTest {
@@ -79,8 +80,90 @@ class YamlTest {
     }
 
     @Test
+    void readYAML() {
+
+        // Does it exists?
+        if (!ConfigurationIO.as(YAML).exist(instance)) {
+
+            // If so, let's executing the writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(instance));
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.as(YAML).exist(instance));
+
+        }
+
+        // Now, reading the configuration instance
+        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).read(this.instance));
+
+    }
+
+    @Test
     void writeYAML() {
         assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(this.instance));
         assertTrue(ConfigurationIO.as(YAML).exist(instance));
     }
+
+    @Test
+    void writeAsyncYAML() {
+
+        assertDoesNotThrow(() -> {
+
+            int x = 0;
+
+            Future<Void> task = ConfigurationIO.as(YAML).writeAsync(this.instance);
+
+            while (!task.isDone()) {
+                ++x;
+            }
+
+            assertTrue(x != 0);
+
+        });
+
+        assertTrue(ConfigurationIO.as(YAML).exist(instance));
+
+    }
+
+    @Test
+    void deleteYAML() {
+
+        // Does it exists?
+        if (!ConfigurationIO.as(YAML).exist(instance)) {
+
+            // If so, let's executing the writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(instance));
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.as(YAML).exist(instance));
+
+        }
+
+        // Executing deleting task, then execute it
+        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).delete(instance));
+        // Asserting does not exists any more
+        assertFalse(ConfigurationIO.as(YAML).exist(instance));
+
+    }
+
+    @Test
+    void deleteAsyncYAML() {
+
+        // Does it exists?
+        if (!ConfigurationIO.as(YAML).exist(instance)) {
+
+            // If so, let's obtain an a-sync writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.as(YAML).writeAsync(instance).get());
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.as(YAML).exist(instance));
+
+        }
+        // Obtaining deleting task, then execute it
+        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).deleteAsync(instance).get());
+        // Asserting does not exists any more
+        assertFalse(ConfigurationIO.as(YAML).exist(instance));
+
+    }
+
 }
