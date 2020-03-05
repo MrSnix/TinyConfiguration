@@ -32,6 +32,9 @@ public final class ConfigurationIO {
             case JSON:
                 e = Handler.get(ExportType.JSON);
                 break;
+            case YAML:
+                e = Handler.get(ExportType.YAML);
+                break;
             default:
                 throw new IllegalArgumentException("The following format is not supported");
         }

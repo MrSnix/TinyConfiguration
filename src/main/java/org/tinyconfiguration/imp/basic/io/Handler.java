@@ -15,6 +15,8 @@ public final class Handler {
 
     private static final HandlerJSON handlerJSON = new HandlerJSON();
     private static final HandlerXML handlerXML = new HandlerXML();
+    private static final HandlerYAML handlerYAML = new HandlerYAML();
+
 
     private Handler() {
     }
@@ -29,6 +31,9 @@ public final class Handler {
                 break;
             case JSON:
                 e = handlerJSON;
+                break;
+            case YAML:
+                e = handlerYAML;
                 break;
             default:
                 throw new IllegalArgumentException("The following format is not supported");
