@@ -115,6 +115,27 @@ class XmlTest {
     }
 
     @Test
+    void readAsyncXML() {
+
+        assertDoesNotThrow(() -> {
+
+            int x = 0;
+
+            Future<Void> task = ConfigurationIO.as(XML).readAsync(this.instance);
+
+            while (!task.isDone()) {
+                // Do something
+                ++x;
+            }
+
+            assertTrue(x >= 0);
+        });
+
+        assertTrue(ConfigurationIO.as(XML).exist(this.instance));
+
+    }
+
+    @Test
     void writeXML() {
 
         assertDoesNotThrow(() -> ConfigurationIO.as(XML).write(this.instance));

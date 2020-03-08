@@ -11,7 +11,7 @@ import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
 import org.yaml.snakeyaml.events.Event;
 import org.yaml.snakeyaml.events.ScalarEvent;
 
-import java.util.ArrayDeque;
+import java.util.*;
 
 /**
  * This class is the handler manager
@@ -192,6 +192,169 @@ public final class Handler {
                 }
 
             }
+
+            /**
+             * This method is specific YAML implementation to simplify properties handling process
+             *
+             * @param instance The configuration instance
+             * @param graph    The intermediate representation
+             * @return The simplified intermediate representation
+             */
+            public static Map<String, Map<String, Object>> __decode_properties(Configuration instance, ArrayDeque<Event> graph) throws ParsingProcessException {
+
+                Map<String, Map<String, Object>> properties = new LinkedHashMap<>();
+
+                List<String> array = new ArrayList<>();
+                boolean isArray = false;
+
+                String current_property = null;
+
+                while (graph.peek() != null) {
+
+                    Event e = graph.poll();
+
+                    switch (e.getEventId()) {
+                        // Open and close properties tag
+                        case MappingStart:
+                        case MappingEnd:
+                            break;
+                        // Open and close array values
+                        case SequenceStart:
+                            // Setting flag on
+                            isArray = true;
+                            // Creating container
+                            properties.put(current_property, new HashMap<>());
+                            // Stop there
+                            break;
+                        case SequenceEnd:
+                            // Saving
+                            properties.get(current_property).put("values", new ArrayList<>(array));
+                            // Deleting
+                            array.clear();
+                            // Setting flag off
+                            isArray = false;
+                            // Getting description
+                            String desc = __decode_description(current_property, graph);
+                            // Inserting
+                            properties.get(current_property).put("description", desc);
+                            // Stop there
+                            break;
+                        // Generic value
+                        case Scalar:
+                            // Casting
+                            ScalarEvent o = (ScalarEvent) e;
+
+                            if (isArray) {
+                                // Inserting
+                                array.add(o.getValue());
+                            } else {
+                                current_property = __decode_property(instance, graph, properties, current_property, o);
+                            }
+
+                            break;
+                        default:
+                            throw new ParsingProcessException("Unexpected encoding type: " + e.getEventId().name());
+                    }
+
+                }
+
+                return properties;
+
+            }
+
+            private static String __decode_property(Configuration instance, ArrayDeque<Event> graph, Map<String, Map<String, Object>> properties, String current_property, ScalarEvent o) throws ParsingProcessException {
+                // Checking if this value is a property name
+                Optional<Property> p = instance.getProperties().stream().
+                        filter(property -> o.getValue().equals(property.getKey())).
+                        findFirst();
+
+                // It's a property value
+                if (p.isPresent()) {
+
+                    // We store the key
+                    current_property = p.get().getKey();
+
+                    // If the next value is another scalar, we have found out the value
+                    if (graph.peek() != null && graph.peek().getEventId() == Event.ID.Scalar) {
+
+                        ScalarEvent s1 = (ScalarEvent) graph.poll();
+
+                        if (s1 != null) {
+                            // Creating container values
+                            Map<String, Object> values = new HashMap<>();
+                            // Inserting value
+                            values.put("value", s1.getValue());
+                            // Decoding description
+                            String desc = __decode_description(current_property, graph);
+                            // Inserting description
+                            values.put("description", desc);
+                            // Inserting container
+                            properties.put(current_property, values);
+                        } else {
+                            throw new ParsingProcessException("While parsing 'value' could not be decoded properly: " + current_property);
+                        }
+
+                    }
+
+                }
+
+                return current_property;
+            }
+
+            private static String __decode_description(String current_property, ArrayDeque<Event> graph) throws ParsingProcessException {
+
+                String description = null;
+
+                // Acquiring description
+                if (graph.peek() != null && graph.peek().getEventId() == Event.ID.Scalar) {
+
+                    ScalarEvent s2 = (ScalarEvent) graph.poll();
+
+                    if (s2 != null &&
+                            s2.getValue() != null &&
+                            s2.getValue().equals("description") &&
+                            graph.peek() != null &&
+                            graph.peek().getEventId() == Event.ID.Scalar) {
+
+                        ScalarEvent s3 = (ScalarEvent) graph.poll();
+
+                        if (s3 != null) {
+                            // Inserting value
+                            description = s3.getValue();
+                        } else {
+                            throw new ParsingProcessException("While parsing 'description' value could not be retrieved: " + current_property);
+                        }
+
+                    } else {
+                        throw new ParsingProcessException("While parsing 'description' tag could not be decoded: " + current_property);
+                    }
+
+                }
+
+                return description;
+            }
+
+            /**
+             * This method is specific YAML implementation to retrieve the numbers of properties read
+             *
+             * @param graph The intermediate representation
+             */
+            public static int __evaluate_properties(ArrayDeque<Event> graph) throws ParsingProcessException {
+                // Evaluating properties number
+                long read = graph.stream().filter(event -> (
+                        event.getEventId() == Event.ID.MappingStart) ||
+                        (event.getEventId() == Event.ID.MappingEnd)).
+                        count();
+
+                // If some tags are missed from the yaml parsed
+                if (read % 2 != 0) {
+                    throw new ParsingProcessException("Invalid properties encoding");
+                }
+
+                return (int) (read / 2);
+
+            }
+
         }
 
     }
