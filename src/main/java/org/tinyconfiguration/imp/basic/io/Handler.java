@@ -8,6 +8,8 @@ import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationName
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
 import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
 import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
+import org.tinyconfiguration.imp.basic.ex.property.DuplicatedConfigurationPropertyException;
+import org.tinyconfiguration.imp.basic.ex.property.MalformedConfigurationPropertyException;
 import org.yaml.snakeyaml.events.Event;
 import org.yaml.snakeyaml.events.ScalarEvent;
 
@@ -21,7 +23,7 @@ public final class Handler {
     private static final HandlerJSON handlerJSON = new HandlerJSON();
     private static final HandlerXML handlerXML = new HandlerXML();
     private static final HandlerYAML handlerYAML = new HandlerYAML();
-
+    private static final HandlerCSV handlerCSV = new HandlerCSV();
 
     private Handler() {
     }
@@ -36,6 +38,9 @@ public final class Handler {
                 break;
             case JSON:
                 e = handlerJSON;
+                break;
+            case CSV:
+                e = handlerCSV;
                 break;
             case YAML:
                 e = handlerYAML;
@@ -100,6 +105,73 @@ public final class Handler {
 
             if (!version.equals(instance.getVersion()))
                 throw new InvalidConfigurationVersionException(instance.getVersion(), version);
+        }
+
+        static void __decode_value(Property property, String obj) throws MalformedConfigurationPropertyException {
+
+            switch (property.getValue().getDatatype()) {
+                case BOOLEAN:
+                    if (obj.equalsIgnoreCase("true"))
+                        property.setValue(true);
+                    else if (obj.equalsIgnoreCase("false"))
+                        property.setValue(false);
+                    else
+                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as boolean", property);
+                    break;
+                case BYTE:
+                    try {
+                        property.setValue(Byte.parseByte(obj));
+                    } catch (NumberFormatException e) {
+                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
+                    }
+                    break;
+                case SHORT:
+                    try {
+                        property.setValue(Short.parseShort(obj));
+                    } catch (NumberFormatException e) {
+                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
+                    }
+                    break;
+                case INT:
+                    try {
+                        property.setValue(Integer.parseInt(obj));
+                    } catch (NumberFormatException e) {
+                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
+                    }
+                    break;
+                case LONG:
+                    try {
+                        property.setValue(Long.parseLong(obj));
+                    } catch (NumberFormatException e) {
+                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
+                    }
+                    break;
+                case FLOAT:
+                    try {
+                        property.setValue(Float.parseFloat(obj));
+                    } catch (NumberFormatException e) {
+                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
+                    }
+                    break;
+                case DOUBLE:
+                    try {
+                        property.setValue(Double.parseDouble(obj));
+                    } catch (NumberFormatException e) {
+                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
+                    }
+                    break;
+                case STRING:
+                    property.setValue(obj);
+                    break;
+                case CHAR:
+                    if (obj.length() > 1) {
+                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as char", property);
+                    }
+                    property.setValue(obj.charAt(0));
+                    break;
+                default:
+                    throw new MalformedConfigurationPropertyException("Unexpected value: " + obj, property);
+            }
         }
 
         static final class YAML {
@@ -200,14 +272,14 @@ public final class Handler {
              * @param graph    The intermediate representation
              * @return The simplified intermediate representation
              */
-            public static Map<String, Map<String, Object>> __decode_properties(Configuration instance, ArrayDeque<Event> graph) throws ParsingProcessException {
+            public static Map<String, Map<String, Object>> __decode_properties(Configuration instance, ArrayDeque<Event> graph) throws ParsingProcessException, DuplicatedConfigurationPropertyException {
 
                 Map<String, Map<String, Object>> properties = new LinkedHashMap<>();
 
                 List<String> array = new ArrayList<>();
                 boolean isArray = false;
 
-                String current_property = null;
+                Property current = null;
 
                 while (graph.peek() != null) {
 
@@ -222,33 +294,44 @@ public final class Handler {
                         case SequenceStart:
                             // Setting flag on
                             isArray = true;
+                            // Verifying correct parsing
+                            if (current == null) {
+                                throw new ParsingProcessException("It was not possible to decode property");
+                            }
+                            // Verifying if duplicated
+                            if (properties.containsKey(current.getKey())) {
+                                throw new DuplicatedConfigurationPropertyException(current);
+                            }
                             // Creating container
-                            properties.put(current_property, new HashMap<>());
+                            properties.put(current.getKey(), new HashMap<>());
                             // Stop there
                             break;
                         case SequenceEnd:
+                            // Verifying correct parsing
+                            if (current == null) {
+                                throw new ParsingProcessException("It was not possible to decode property");
+                            }
                             // Saving
-                            properties.get(current_property).put("values", new ArrayList<>(array));
+                            properties.get(current.getKey()).put("values", new ArrayList<>(array));
                             // Deleting
                             array.clear();
                             // Setting flag off
                             isArray = false;
                             // Getting description
-                            String desc = __decode_description(current_property, graph);
+                            String desc = __decode_description(current.getKey(), graph);
                             // Inserting
-                            properties.get(current_property).put("description", desc);
+                            properties.get(current.getKey()).put("description", desc);
                             // Stop there
                             break;
                         // Generic value
                         case Scalar:
                             // Casting
                             ScalarEvent o = (ScalarEvent) e;
-
                             if (isArray) {
                                 // Inserting
                                 array.add(o.getValue());
                             } else {
-                                current_property = __decode_property(instance, graph, properties, current_property, o);
+                                current = __decode_property(instance, graph, properties, current, o);
                             }
 
                             break;
@@ -262,17 +345,17 @@ public final class Handler {
 
             }
 
-            private static String __decode_property(Configuration instance, ArrayDeque<Event> graph, Map<String, Map<String, Object>> properties, String current_property, ScalarEvent o) throws ParsingProcessException {
+            private static Property __decode_property(Configuration instance, ArrayDeque<Event> graph, Map<String, Map<String, Object>> properties, Property property, ScalarEvent o) throws ParsingProcessException, DuplicatedConfigurationPropertyException {
                 // Checking if this value is a property name
                 Optional<Property> p = instance.getProperties().stream().
-                        filter(property -> o.getValue().equals(property.getKey())).
+                        filter(pr -> o.getValue().equals(pr.getKey())).
                         findFirst();
 
                 // It's a property value
                 if (p.isPresent()) {
 
                     // We store the key
-                    current_property = p.get().getKey();
+                    property = p.get();
 
                     // If the next value is another scalar, we have found out the value
                     if (graph.peek() != null && graph.peek().getEventId() == Event.ID.Scalar) {
@@ -285,20 +368,24 @@ public final class Handler {
                             // Inserting value
                             values.put("value", s1.getValue());
                             // Decoding description
-                            String desc = __decode_description(current_property, graph);
+                            String desc = __decode_description(property.getKey(), graph);
                             // Inserting description
                             values.put("description", desc);
+                            // Verifying if duplicated
+                            if (properties.containsKey(property.getKey())) {
+                                throw new DuplicatedConfigurationPropertyException(property);
+                            }
                             // Inserting container
-                            properties.put(current_property, values);
+                            properties.put(property.getKey(), values);
                         } else {
-                            throw new ParsingProcessException("While parsing 'value' could not be decoded properly: " + current_property);
+                            throw new ParsingProcessException("While parsing 'value' could not be decoded properly: " + property.getKey());
                         }
 
                     }
 
                 }
 
-                return current_property;
+                return property;
             }
 
             private static String __decode_description(String current_property, ArrayDeque<Event> graph) throws ParsingProcessException {

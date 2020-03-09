@@ -19,7 +19,6 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -113,35 +112,6 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 write(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Delete the configuration file
-     *
-     * @param instance The configuration instance to delete
-     * @throws IOException If an I/O exception of some sort has occurred.
-     */
-    @Override
-    public synchronized void delete(Configuration instance) throws IOException {
-        Files.delete(instance.getFile().toPath());
-    }
-
-    /**
-     * Delete the configuration file asynchronously
-     *
-     * @param instance The configuration instance to delete
-     * @return Future object representing the deleting task
-     */
-    @Override
-    public Future<Void> deleteAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                delete(instance);
             } catch (IOException e) {
                 throw new CompletionException(e);
             }

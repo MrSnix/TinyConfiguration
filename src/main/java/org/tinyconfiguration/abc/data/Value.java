@@ -468,6 +468,16 @@ public final class Value extends AbstractValue {
         else if (type == Float[].class) s = Arrays.toString(asFloatArray());
         else if (type == Double[].class) s = Arrays.toString(asDoubleArray());
 
+        else if (type == char[].class) s = Arrays.toString(asCharacterArray());
+        else if (type == boolean[].class) s = Arrays.toString(asBooleanArray());
+        else if (type == byte[].class) s = Arrays.toString(asByteArray());
+        else if (type == short[].class) s = Arrays.toString(asShortArray());
+        else if (type == int[].class) s = Arrays.toString(asIntArray());
+        else if (type == long[].class) s = Arrays.toString(asLongArray());
+        else if (type == float[].class) s = Arrays.toString(asFloatArray());
+        else if (type == double[].class) s = Arrays.toString(asDoubleArray());
+
+
         return s;
     }
 

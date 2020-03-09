@@ -20,7 +20,7 @@ public enum SpecialCharacters {
     public static String substitute(Type type, String value) {
 
         switch (type) {
-            case DECODE:
+            case STR_DECODE:
                 value = value.
                         replace("\\n", "\n").
                         replace("\\r", "\r").
@@ -34,16 +34,19 @@ public enum SpecialCharacters {
                         replaceAll("\\\\\b", "\\\\b").
                         replaceAll("\\\\\t", "\\\\t");
 
-                value = value.replace("\\\\", "\\");
+                value = value.
+                        replace("\\\\", "\\").
+                        replace("\\\"", "\"");
                 break;
 
-            case ENCODE:
+            case STR_ENCODE:
                 value = value.
                         replace("\\", "\\\\").
                         replace("\n", "\\n").
                         replace("\r", "\\r").
                         replace("\t", "\\t").
-                        replace("\b", "\\b");
+                        replace("\b", "\\b").
+                        replace("\"", "\\\"");
                 break;
         }
 
@@ -54,7 +57,7 @@ public enum SpecialCharacters {
      * All the processing operations available
      */
     public enum Type {
-        ENCODE, DECODE
+        STR_ENCODE, STR_DECODE
     }
 
 }

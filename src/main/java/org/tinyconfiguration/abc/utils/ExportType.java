@@ -7,5 +7,5 @@ package org.tinyconfiguration.abc.utils;
  * @version 0.1
  */
 public enum ExportType {
-    JSON, XML, YAML
+    JSON, XML, CSV, YAML
 }

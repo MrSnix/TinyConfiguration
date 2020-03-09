@@ -16,7 +16,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.events.Event;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -36,42 +35,12 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
     private static final ImplReaderYAML IMPL_READER_YAML = new ImplReaderYAML();
 
     /**
-     * Delete the configuration file
-     *
-     * @param instance The configuration instance to delete
-     * @throws IOException If the configuration file cannot be deleted
-     */
-    @Override
-    public void delete(Configuration instance) throws IOException {
-        Files.delete(instance.getFile().toPath());
-    }
-
-    /**
-     * Delete the configuration file asynchronously
-     *
-     * @param instance The configuration instance to delete
-     * @return Future object representing the deleting task
-     */
-    @Override
-    public Future<Void> deleteAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                delete(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
-
-    /**
      * Reads the configuration file
      *
      * @param instance The configuration instance to read and update
-     * @throws Exception If anything goes wrong while processing the file
      */
     @Override
-    public void read(Configuration instance) throws Exception {
+    public void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MissingConfigurationIdentifiersException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, MalformedConfigurationPropertyException, DuplicatedConfigurationPropertyException {
         IMPL_READER_YAML.toObject(instance);
     }
 
@@ -87,7 +56,7 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
             try {
                 read(instance);
             } catch (
-                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
+                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException e) {
                 throw new CompletionException(e);
             } catch (Exception ignored) {
             }
@@ -379,7 +348,7 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
          * @throws IOException If something goes wrong during the process
          */
         @Override
-        public void toObject(Configuration instance) throws IOException, MissingConfigurationIdentifiersException, InvalidConfigurationNameException, InvalidConfigurationVersionException, ParsingProcessException, UnknownConfigurationPropertyException, MissingConfigurationPropertyException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
+        public void toObject(Configuration instance) throws IOException, MissingConfigurationIdentifiersException, InvalidConfigurationNameException, InvalidConfigurationVersionException, ParsingProcessException, UnknownConfigurationPropertyException, MissingConfigurationPropertyException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException, DuplicatedConfigurationPropertyException {
 
             // Acquiring intermediate representation
             ArrayDeque<Event> graph = fromFile(instance);
@@ -435,7 +404,7 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
         @Override
         public void __decode_obj(Property property, Map<String, Object> obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException, ParsingProcessException {
 
-            String content = null;
+            String content;
 
             try {
                 content = (String) obj.get("value");
@@ -447,69 +416,7 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
                 throw new MalformedConfigurationPropertyException("The 'value' node is missing", property);
             }
 
-            switch (property.getValue().getDatatype()) {
-                case BOOLEAN:
-                    if (content.equalsIgnoreCase("true"))
-                        property.setValue(true);
-                    else if (content.equalsIgnoreCase("false"))
-                        property.setValue(false);
-                    else
-                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as boolean", property);
-                    break;
-                case BYTE:
-                    try {
-                        property.setValue(Byte.parseByte(content));
-                    } catch (NumberFormatException e) {
-                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
-                    }
-                    break;
-                case SHORT:
-                    try {
-                        property.setValue(Short.parseShort(content));
-                    } catch (NumberFormatException e) {
-                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
-                    }
-                    break;
-                case INT:
-                    try {
-                        property.setValue(Integer.parseInt(content));
-                    } catch (NumberFormatException e) {
-                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
-                    }
-                    break;
-                case LONG:
-                    try {
-                        property.setValue(Long.parseLong(content));
-                    } catch (NumberFormatException e) {
-                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
-                    }
-                    break;
-                case FLOAT:
-                    try {
-                        property.setValue(Float.parseFloat(content));
-                    } catch (NumberFormatException e) {
-                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
-                    }
-                    break;
-                case DOUBLE:
-                    try {
-                        property.setValue(Double.parseDouble(content));
-                    } catch (NumberFormatException e) {
-                        throw new MalformedConfigurationPropertyException(e.getMessage(), property);
-                    }
-                    break;
-                case STRING:
-                    property.setValue(content);
-                    break;
-                case CHAR:
-                    if (content.length() > 1) {
-                        throw new MalformedConfigurationPropertyException("The value cannot be decoded as char", property);
-                    }
-                    property.setValue(content.charAt(0));
-                    break;
-                default:
-                    throw new MalformedConfigurationPropertyException("Unexpected value: " + content, property);
-            }
+            Handler.Internal.__decode_value(property, content);
 
             // Final check
             if (!property.isValid()) {
@@ -524,6 +431,7 @@ final class HandlerYAML extends AbstractHandlerIO<Configuration> {
          * @param property The property instance
          * @param obj      The intermediate array
          */
+        @SuppressWarnings("unchecked")
         @Override
         public void __decode_array(Property property, Map<String, Object> obj) throws InvalidConfigurationPropertyException, MalformedConfigurationPropertyException, ParsingProcessException {
 

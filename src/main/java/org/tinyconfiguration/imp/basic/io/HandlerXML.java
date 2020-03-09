@@ -25,7 +25,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -42,36 +41,6 @@ final class HandlerXML extends AbstractHandlerIO<Configuration> {
 
     private static final ImplWriterXML IMPL_WRITER_XML = new ImplWriterXML();
     private static final ImplReaderXML IMPL_READER_XML = new ImplReaderXML();
-
-
-    /**
-     * Delete the configuration file
-     *
-     * @param instance The configuration instance to delete
-     * @throws IOException If the configuration file cannot be deleted
-     */
-    @Override
-    public synchronized void delete(Configuration instance) throws IOException {
-        Files.delete(instance.getFile().toPath());
-    }
-
-    /**
-     * Delete the configuration file asynchronously
-     *
-     * @param instance The configuration instance to delete
-     * @return Future object representing the deleting task
-     */
-    @Override
-    public Future<Void> deleteAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                delete(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
 
     /**
      * Reads the configuration file

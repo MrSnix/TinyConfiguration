@@ -35,6 +35,9 @@ public final class ConfigurationIO {
             case YAML:
                 e = Handler.get(ExportType.YAML);
                 break;
+            case CSV:
+                e = Handler.get(ExportType.CSV);
+                break;
             default:
                 throw new IllegalArgumentException("The following format is not supported");
         }
