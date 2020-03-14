@@ -21,15 +21,22 @@ ___
 
 ## 0.0.2
 
-**Release date:** [ *05 / 03 / 2020* ]
+**Release date:** [ *?? / 03 / 2020* ]
 
 **New**
 
 - Insert and retrieve **arrays**
 - Import and export as **JSON**
 - Import and export as **XML**
+- Import and export as **YAML**
+- Import and export as **CSV**
+- Execute **validation** on properties values with lambda functions
+- Flag property as **optional**
+- The abstract package "abc" is now available  
+  ( You can implement your own custom configuration classes )
 
 **Changed**
+
 - Overhauled the entire class and package hierarchy
 - Rewritten configuration class
 - Rewritten property class
