@@ -7,6 +7,7 @@ import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
+import org.tinyconfiguration.imp.basic.ex.configuration.MissingConfigurationIdentifiersException;
 import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
 import org.tinyconfiguration.imp.basic.ex.property.*;
 
@@ -14,6 +15,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -33,7 +36,7 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
      * @throws IOException If anything goes wrong while processing the file
      */
     @Override
-    public void read(Configuration instance) throws Exception {
+    public void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MalformedConfigurationPropertyException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationIdentifiersException {
         IMPL_READER_CSV.toObject(instance);
     }
 
@@ -45,7 +48,15 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public Future<Void> readAsync(Configuration instance) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                read(instance);
+            } catch (
+                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | DuplicatedConfigurationPropertyException | MissingConfigurationIdentifiersException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
     }
 
     /**
@@ -67,7 +78,14 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
      */
     @Override
     public Future<Void> writeAsync(Configuration instance) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                write(instance);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
     }
 
     final static class ImplWriterCSV implements AbstractWriter<Configuration, Property, StringBuilder> {
@@ -210,7 +228,7 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
          * @param property The property instance
          */
         @Override
-        public void decode(Property property) throws ParsingProcessException, InvalidConfigurationNameException, InvalidConfigurationVersionException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationPropertyException {
+        public void decode(Property property) throws ParsingProcessException, InvalidConfigurationNameException, InvalidConfigurationVersionException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationPropertyException, MissingConfigurationIdentifiersException {
 
             String property0 = null;
             // This flag stop the iteration
@@ -228,11 +246,21 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
                 for (int i = 0; i < field.length; i++) {
                     field[i] = REMOVE_QUOTES.matcher(field[i]).replaceAll("");
                 }
+
                 // Verifying instance name
+                if (field[IDX_CFG_NAME].trim().isEmpty()) {
+                    throw new MissingConfigurationIdentifiersException(instance.getName());
+                }
+
                 if (!field[IDX_CFG_NAME].equals(instance.getName())) {
                     throw new InvalidConfigurationNameException(instance.getName(), field[IDX_CFG_NAME]);
                 }
+
                 // Verifying instance version
+                if (field[IDX_CFG_VERSION].trim().isEmpty()) {
+                    throw new MissingConfigurationIdentifiersException(instance.getVersion());
+                }
+
                 if (!field[IDX_CFG_VERSION].equals(instance.getVersion())) {
                     throw new InvalidConfigurationVersionException(instance.getVersion(), field[IDX_CFG_VERSION]);
                 }
@@ -281,10 +309,9 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
          * This method generate the final representation of the configuration
          *
          * @param instance The configuration instance
-         * @throws Exception If something goes wrong during the process
          */
         @Override
-        public void toObject(Configuration instance) throws Exception {
+        public void toObject(Configuration instance) throws UnknownConfigurationPropertyException, IOException, ParsingProcessException, DuplicatedConfigurationPropertyException, MalformedConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationVersionException, InvalidConfigurationPropertyException, MissingConfigurationPropertyException, MissingConfigurationIdentifiersException {
 
             this.instance = instance;
             this.properties = fromFile(instance);
