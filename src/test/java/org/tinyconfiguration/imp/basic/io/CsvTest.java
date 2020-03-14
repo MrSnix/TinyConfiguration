@@ -5,8 +5,7 @@ import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.ConfigurationIO;
 import org.tinyconfiguration.imp.basic.Property;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.tinyconfiguration.abc.utils.ExportType.CSV;
 
 public class CsvTest {
@@ -76,6 +75,41 @@ public class CsvTest {
                 build());
 
         this.instance = b.build();
+    }
+
+    @Test
+    void readCSV() {
+
+        // Does it exists?
+        if (!ConfigurationIO.as(CSV).exist(instance)) {
+
+            // If so, let's executing the writing task, then execute it with get()
+            assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(instance));
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.as(CSV).exist(instance));
+
+        }
+
+        // Modifying the instance
+        instance.get("user").setValue("ruut");
+        instance.get("password").setValue("toor007");
+        instance.get("sex").setValue('F');
+        instance.get("special-digits").setValue(new int[]{10, 15});
+
+        assertEquals("ruut", instance.get("user").getValue().asString());
+        assertEquals("toor007", instance.get("password").getValue().asString());
+        assertEquals('F', instance.get("sex").getValue().asCharacter());
+        assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
+
+        // Now, reading the configuration instance
+        assertDoesNotThrow(() -> ConfigurationIO.as(CSV).read(this.instance));
+
+        assertEquals("root", instance.get("user").getValue().asString());
+        assertEquals("toor", instance.get("password").getValue().asString());
+        assertEquals('M', instance.get("sex").getValue().asCharacter());
+        assertArrayEquals(new int[0], instance.get("special-digits").getValue().asIntArray());
+
     }
 
     @Test

@@ -8,18 +8,17 @@ import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationVersionException;
 import org.tinyconfiguration.imp.basic.ex.io.ParsingProcessException;
-import org.tinyconfiguration.imp.basic.ex.property.InvalidConfigurationPropertyException;
-import org.tinyconfiguration.imp.basic.ex.property.MalformedConfigurationPropertyException;
-import org.tinyconfiguration.imp.basic.ex.property.UnknownConfigurationPropertyException;
+import org.tinyconfiguration.imp.basic.ex.property.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.STR_ENCODE;
+import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.*;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.substitute;
 
 public class HandlerCSV extends AbstractHandlerIO<Configuration> {
@@ -174,7 +173,7 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
             List<String> values = new ArrayList<>();
 
             for (String tmp : property.getValue().asStringArray()) {
-                values.add("\"" + substitute(STR_ENCODE, tmp) + "\"");
+                values.add(substitute(ARR_ENCODE, tmp));
             }
 
             root.append("\"").append(substitute(STR_ENCODE, instance.getName())).append("\"").append(",").
@@ -189,13 +188,21 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
     final static class ImplReaderCSV implements AbstractReader<Configuration, Property, String> {
 
         private static final int FIELDS = 5;
+
         private static final int IDX_CFG_NAME = 0;
         private static final int IDX_CFG_VERSION = 1;
         private static final int IDX_KEY = 2;
         private static final int IDX_VALUE = 3;
         private static final int IDX_DESCRIPTION = 4;
-        private Configuration instance;
+
+        private static final Pattern MATCH_FIELD = Pattern.compile("((?:\"(?:\"{2}|,|\\n|[^\"]*)+\")|(?:[^,\"\\n]+))");
+        private static final Pattern MATCH_COMMA = Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        private static final Pattern MATCH_COMMA_ARRAY = Pattern.compile("(?<!\\\\),");
+        private static final Pattern REMOVE_QUOTES = Pattern.compile("^\"|\"$");
+        private static final Pattern REMOVE_PARENTHESIS = Pattern.compile("^\\[|]$");
+
         private List<String> properties;
+        private Configuration instance;
 
         /**
          * This method allow to translate a property object inside an intermediate representation
@@ -203,9 +210,8 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
          * @param property The property instance
          */
         @Override
-        public void decode(Property property) throws ParsingProcessException, InvalidConfigurationNameException, InvalidConfigurationVersionException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
+        public void decode(Property property) throws ParsingProcessException, InvalidConfigurationNameException, InvalidConfigurationVersionException, MalformedConfigurationPropertyException, InvalidConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationPropertyException {
 
-            // This is the intermediate property representation
             String property0 = null;
             // This flag stop the iteration
             boolean stop = false;
@@ -213,15 +219,15 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
             // Now, we look inside "properties" on each node if the current "Property" object exists
             for (String s : properties) {
                 // Reading field value
-                String[] field = s.split(",");
-
-                // Reading field number
-                int length = field.length;
+                String[] field = MATCH_COMMA.split(s);
                 // Verifying field number
-                if (length != FIELDS) {
-                    throw new ParsingProcessException("The fields are supposed to be " + FIELDS + " instead they are " + length);
+                if (field.length != FIELDS) {
+                    throw new ParsingProcessException("The fields are required to be " + FIELDS + " instead they are " + field.length);
                 }
-
+                // Decode
+                for (int i = 0; i < field.length; i++) {
+                    field[i] = REMOVE_QUOTES.matcher(field[i]).replaceAll("");
+                }
                 // Verifying instance name
                 if (!field[IDX_CFG_NAME].equals(instance.getName())) {
                     throw new InvalidConfigurationNameException(instance.getName(), field[IDX_CFG_NAME]);
@@ -231,20 +237,42 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
                     throw new InvalidConfigurationVersionException(instance.getVersion(), field[IDX_CFG_VERSION]);
                 }
 
-                Optional<Property> p0 = instance.getProperties().stream().filter(p -> p.getKey().equals(field[IDX_KEY])).findFirst();
+                if (field[IDX_KEY].equals(property.getKey())) {
 
-                if (p0.isPresent()) {
+                    // This means there is another property with the same key definition
+                    if (stop)
+                        throw new DuplicatedConfigurationPropertyException(property);
+                    // Flag to stop
+                    stop = true;
+                    // Assign value
+                    property0 = s;
 
-                    if (p0.get().getValue().isArray()) {
-                        __decode_array(p0.get(), field[IDX_KEY]);
-                    } else {
-                        __decode_obj(p0.get(), field[IDX_KEY]);
-                    }
-
-                } else {
-                    throw new ParsingProcessException("No properties with the following name exists => " + field[IDX_KEY]);
                 }
 
+            }
+
+            // If the property was found, we proceed
+            if (property0 != null) {
+
+                // Reading field value
+                String[] field = MATCH_COMMA.split(property0);
+
+                // Removing field comma
+                for (int i = 0; i < field.length; i++) {
+                    field[i] = REMOVE_QUOTES.matcher(field[i]).replaceAll("");
+                }
+
+                if (property.getValue().isArray()) {
+                    __decode_array(property, field[IDX_VALUE]);
+                } else {
+                    __decode_obj(property, field[IDX_VALUE]);
+                }
+
+            }
+
+            // In the end, if it is still null, no property with the given key was found inside the file
+            if (property0 == null && !property.isOptional()) {
+                throw new MissingConfigurationPropertyException(property);
             }
 
         }
@@ -305,9 +333,10 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
          */
         @Override
         public void __decode_obj(Property property, String obj) throws MalformedConfigurationPropertyException, InvalidConfigurationPropertyException {
-
-            Handler.Internal.__decode_value(property, obj);
-
+            // Decoding
+            String obj_decode = substitute(STR_DECODE, obj);
+            // Setting value
+            Handler.Internal.__decode_value(property, obj_decode);
             // Final check
             if (!property.isValid()) {
                 throw new InvalidConfigurationPropertyException("The validation test failed", property);
@@ -318,10 +347,136 @@ public class HandlerCSV extends AbstractHandlerIO<Configuration> {
          * This method decode array-only property
          *
          * @param property The property instance
-         * @param obj      The intermediate array
+         * @param array    The intermediate array
          */
         @Override
-        public void __decode_array(Property property, String obj) {
+        public void __decode_array(Property property, String array) throws InvalidConfigurationPropertyException, MalformedConfigurationPropertyException {
+
+            if (array.equals("[]")) {
+                // Just assigning empty arrays
+                Handler.Internal.__empty_array(property);
+
+            } else {
+
+                // Removing parenthesis
+                array = REMOVE_PARENTHESIS.matcher(array).replaceAll("");
+                // Splitting array values
+                String[] arr0 = MATCH_COMMA_ARRAY.split(array);
+
+                for (int i = 0; i < arr0.length; i++) {
+                    // Decoding special chars
+                    arr0[i] = substitute(ARR_DECODE, arr0[i]);
+                }
+
+                switch (property.getValue().getDatatype()) {
+                    case ARR_BOOLEAN:
+                        try {
+                            boolean[] booleans = new boolean[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                booleans[i] = Boolean.parseBoolean(arr0[i]);
+                            }
+                            property.setValue(booleans);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as boolean array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_BYTE:
+                        try {
+                            byte[] bytes = new byte[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                bytes[i] = Byte.parseByte(arr0[i]);
+                            }
+                            property.setValue(bytes);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as byte array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_SHORT:
+                        try {
+                            short[] shorts = new short[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                shorts[i] = Short.parseShort(arr0[i]);
+                            }
+                            property.setValue(shorts);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as short array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_INT:
+                        try {
+                            int[] integers = new int[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                integers[i] = Integer.parseInt(arr0[i]);
+                            }
+                            property.setValue(integers);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as int array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_LONG:
+                        try {
+                            long[] longs = new long[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                longs[i] = Long.parseLong(arr0[i]);
+                            }
+                            property.setValue(longs);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as long array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_FLOAT:
+                        try {
+                            float[] floats = new float[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                floats[i] = Float.parseFloat(arr0[i]);
+                            }
+                            property.setValue(floats);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as float array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_DOUBLE:
+                        try {
+                            double[] doubles = new double[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+                                doubles[i] = Double.parseDouble(arr0[i]);
+                            }
+                            property.setValue(doubles);
+                        } catch (NumberFormatException e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as double array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_STRING:
+                        try {
+                            String[] strings = Arrays.copyOf(arr0, arr0.length);
+                            property.setValue(strings);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as string array: " + e.getMessage(), property);
+                        }
+                        break;
+                    case ARR_CHAR:
+                        try {
+                            char[] characters = new char[arr0.length];
+                            for (int i = 0; i < arr0.length; ++i) {
+
+                                if (arr0[i].length() > 1) {
+                                    throw new IllegalArgumentException("One of the values cannot be decoded as char");
+                                }
+
+                                characters[i] = arr0[i].charAt(0);
+                            }
+                            property.setValue(characters);
+                        } catch (Exception e) {
+                            throw new MalformedConfigurationPropertyException("The value cannot be decoded as chars array: " + e.getMessage(), property);
+                        }
+                        break;
+                }
+            }
+
+            // Final check
+            if (!property.isValid()) {
+                throw new InvalidConfigurationPropertyException("The validation test failed", property);
+            }
 
         }
     }

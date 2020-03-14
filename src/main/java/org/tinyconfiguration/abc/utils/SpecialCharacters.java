@@ -1,5 +1,8 @@
 package org.tinyconfiguration.abc.utils;
 
+import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.STR_DECODE;
+import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.STR_ENCODE;
+
 /**
  * This enum defines a common gateway to encode or decode all the special characters inside the properties
  *
@@ -48,6 +51,12 @@ public enum SpecialCharacters {
                         replace("\b", "\\b").
                         replace("\"", "\\\"");
                 break;
+            case ARR_ENCODE:
+                value = substitute(STR_ENCODE, value).replace(",", "\\,");
+                break;
+            case ARR_DECODE:
+                value = substitute(STR_DECODE, value).replace("\\,", ",");
+                break;
         }
 
         return value;
@@ -57,7 +66,7 @@ public enum SpecialCharacters {
      * All the processing operations available
      */
     public enum Type {
-        STR_ENCODE, STR_DECODE
+        STR_ENCODE, STR_DECODE, ARR_ENCODE, ARR_DECODE
     }
 
 }
