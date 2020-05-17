@@ -67,7 +67,6 @@ public final class Property extends AbstractProperty {
 
     /**
      * Gets the validity performing the specified {@link Predicate} test
-     * <p></p>
      * It returns <u>always</u> <b>true</b>, if no validation function was defined
      *
      * @return The boolean value representing the validity state
