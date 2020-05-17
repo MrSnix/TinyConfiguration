@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.*;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.substitute;
 
-public class HandlerCSV extends AbstractHandlerIO<Configuration> {
+class HandlerCSV extends AbstractHandlerIO<Configuration> {
 
     private static final ImplWriterCSV IMPL_WRITER_CSV = new ImplWriterCSV();
     private static final ImplReaderCSV IMPL_READER_CSV = new ImplReaderCSV();
