@@ -1,8 +1,10 @@
-package org.tinyconfiguration.utils;
+package org.tinyconfiguration.abc.utils;
 
+import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.STR_DECODE;
+import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.STR_ENCODE;
 
 /**
- * This enum defines a common gateway to escape or unescape all the special characters inside the properties
+ * This enum defines a common gateway to encode or decode all the special characters inside the properties
  *
  * @author G. Baittiner
  * @version 0.1
@@ -10,7 +12,6 @@ package org.tinyconfiguration.utils;
 public enum SpecialCharacters {
 
     ;
-
 
     /**
      * Replace all the special characters inside a given string
@@ -22,15 +23,12 @@ public enum SpecialCharacters {
     public static String substitute(Type type, String value) {
 
         switch (type) {
-            case UNESCAPED:
+            case STR_DECODE:
                 value = value.
                         replace("\\n", "\n").
                         replace("\\r", "\r").
                         replace("\\t", "\t").
                         replace("\\b", "\b").
-                        replace("\\;", ";").
-                        replace("\\=", "=").
-                        replace("\\#", "#").
                         replace("\\\\\\", "\\\\");
 
                 value = value.
@@ -39,19 +37,25 @@ public enum SpecialCharacters {
                         replaceAll("\\\\\b", "\\\\b").
                         replaceAll("\\\\\t", "\\\\t");
 
-                value = value.replace("\\\\", "\\");
+                value = value.
+                        replace("\\\\", "\\").
+                        replace("\\\"", "\"");
                 break;
 
-            case ESCAPED:
+            case STR_ENCODE:
                 value = value.
                         replace("\\", "\\\\").
                         replace("\n", "\\n").
                         replace("\r", "\\r").
                         replace("\t", "\\t").
                         replace("\b", "\\b").
-                        replace(";", "\\;").
-                        replace("=", "\\=").
-                        replace("#", "\\#");
+                        replace("\"", "\\\"");
+                break;
+            case ARR_ENCODE:
+                value = substitute(STR_ENCODE, value).replace(",", "\\,");
+                break;
+            case ARR_DECODE:
+                value = substitute(STR_DECODE, value).replace("\\,", ",");
                 break;
         }
 
@@ -62,7 +66,7 @@ public enum SpecialCharacters {
      * All the processing operations available
      */
     public enum Type {
-        UNESCAPED, ESCAPED
+        STR_ENCODE, STR_DECODE, ARR_ENCODE, ARR_DECODE
     }
 
 }

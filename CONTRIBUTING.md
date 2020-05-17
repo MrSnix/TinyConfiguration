@@ -19,7 +19,7 @@ Changes that are cosmetic in nature and do not add anything substantial to the s
 #### **Do you intend to add a new feature or change an existing one?**
 
 * Open a new [Feature Request](https://github.com/MrSnix/TinyConfiguration/issues/new/choose) and tell us you are going to develop it
-* Wait for approval, then go to the next step.
+* Wait for an approval, then go to the next step.
 * Start writing code, documentation and tests
 * Then make a pull request, it'll be approved or denied (mostly approved :D)
 
