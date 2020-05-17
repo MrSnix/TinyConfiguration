@@ -15,6 +15,7 @@ public interface AbstractReader<C extends AbstractConfiguration<?>, P extends Ab
      * This method allow to translate a property object inside an intermediate representation
      *
      * @param property The property instance
+     * @throws Exception If the decode process fails
      */
     void decode(P property) throws Exception;
 
@@ -30,6 +31,7 @@ public interface AbstractReader<C extends AbstractConfiguration<?>, P extends Ab
      * This method generate an intermediate object representation of the configuration from the file
      *
      * @param instance The configuration instance
+     * @return The new object representation
      * @throws Exception If something goes wrong during the process
      */
     Object fromFile(C instance) throws Exception;
@@ -39,6 +41,7 @@ public interface AbstractReader<C extends AbstractConfiguration<?>, P extends Ab
      *
      * @param property The property instance
      * @param obj      The intermediate object
+     * @throws Exception If the decode process fails
      */
     void __decode_obj(P property, I obj) throws Exception;
 
@@ -47,6 +50,7 @@ public interface AbstractReader<C extends AbstractConfiguration<?>, P extends Ab
      *
      * @param property The property instance
      * @param obj      The intermediate array
+     * @throws Exception If the decode process fails
      */
     void __decode_array(P property, I obj) throws Exception;
 }

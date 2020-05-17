@@ -26,6 +26,10 @@ public abstract class AbstractProperty implements Modifiable {
 
     /**
      * Protected constructor with parameters
+     *
+     * @param key         The property identifier
+     * @param value       The property default value
+     * @param description The property description
      */
     protected AbstractProperty(String key, Value value, String description) {
         this.key = key;

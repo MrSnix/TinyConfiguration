@@ -33,6 +33,11 @@ public abstract class AbstractConfiguration<T extends AbstractProperty> implemen
 
     /**
      * Protected container constructor with parameters
+     *
+     * @param name     The configuration name
+     * @param version  The configuration version
+     * @param filename The configuration filename
+     * @param pathname The configuration pathname
      */
     protected AbstractConfiguration(String name, String version, String filename, String pathname) {
         this.name = name;

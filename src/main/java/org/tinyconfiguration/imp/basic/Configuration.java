@@ -191,7 +191,6 @@ public final class Configuration extends AbstractConfiguration<Property> {
         /**
          * Sets the configuration filename.
          *
-         * <p></p>
          * <p>This method is expecting a {@link String} value formatted as follow:</p>
          *
          * <ul>
@@ -222,7 +221,6 @@ public final class Configuration extends AbstractConfiguration<Property> {
         /**
          * Sets the configuration pathname.
          *
-         * <p></p>
          * <p>This method is expecting a {@link String} value formatted as follow:</p>
          *
          * <ul>

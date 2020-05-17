@@ -55,7 +55,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a byte datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code byte}</li>
@@ -71,7 +71,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a byte array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code byte[]}</li>
@@ -89,7 +89,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a short datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code short}</li>
@@ -107,7 +107,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a short array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code short[]}</li>
@@ -124,7 +124,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is an integer datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code int}</li>
@@ -140,7 +140,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a int array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code int[]}</li>
@@ -157,7 +157,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a long datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code long}</li>
@@ -173,7 +173,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a long array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code long[]}</li>
@@ -190,7 +190,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a float datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code float}</li>
@@ -206,7 +206,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a float array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code float[]}</li>
@@ -223,7 +223,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a double datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code double}</li>
@@ -239,7 +239,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a double array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code double[]}</li>
@@ -256,7 +256,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a boolean datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code boolean}</li>
@@ -272,7 +272,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a boolean array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code boolean[]}</li>
@@ -289,7 +289,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a character datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code character}</li>
@@ -305,7 +305,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a character array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code char[]}</li>
@@ -322,7 +322,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a string datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *    <li>{@code String}</li>
@@ -338,7 +338,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a String array datatype
-     * <p></p>
+     *
      * <p>More specifically it looks on the following types:
      * <ul>
      *     <li>{@code String[]}</li>
@@ -355,7 +355,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a numeric datatype
-     * <p></p>
+     *
      * More it performs the following tests:
      * <ul>
      *    <li>{@link Value#isByte()} </li>
@@ -375,7 +375,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a numeric array datatype
-     * <p></p>
+     *
      * More specifically, it performs the following tests:
      *
      * <ul>
@@ -398,7 +398,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a textual datatype
-     * <p></p>
+     *
      * More it performs the following tests:
      * <ul>
      *    <li>{@link Value#isCharacter()} </li>
@@ -414,7 +414,7 @@ public final class Value extends AbstractValue {
 
     /**
      * Check if the datatype object is a textual array datatype
-     * <p></p>
+     *
      * More it performs the following tests:
      * <ul>
      *     <li>{@link Value#isArray()} </li>
