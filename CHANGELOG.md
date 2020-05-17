@@ -8,6 +8,8 @@ depending on the time I have available to work on this library_
 
 ___
 
+## 0.0.3
+
 **Release date:** [ *???* ]
 
 **New**
@@ -21,7 +23,7 @@ ___
 
 ## 0.0.2
 
-**Release date:** [ *?? / 03 / 2020* ]
+**Release date:** [ *?? / 05 / 2020* ]
 
 **New**
 

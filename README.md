@@ -7,27 +7,14 @@
 - [Features](#features)
 - [Tutorials](#tutorials)
 - [Build, download & changelog](#build-download--changelog)
-- [What's next?](#whats-next)
 - [Feedback](#feedback)
 - [License](#license)
 
 ## Introduction
 Easily create and manage configuration files for your programs, 
-check that all properties are present and formally valid. 
+check all properties are present and formally valid. 
 TinyConfiguration is a software library that takes charge of this work 
 and tries to be simple and effective at the same time.
-
-<br>
-
-<p align="center">
-    <b>Screenshot</b>
-</p>
-
-<br>
-
-<p align="center">
-    <img src="./img/TinyConfiguration%20-%20Sample.png" alt="TinyConfiguration sample">
-</p>
 
 ## Features
 A few of the things you can do with TinyConfiguration:
@@ -35,7 +22,8 @@ A few of the things you can do with TinyConfiguration:
 * **Read**, **write** and **delete** custom configuration file (even async)
 * Easily **search and retrieve** values
 * Set **listeners** on configuration reading, saving and deleting
-* Export configuration as **JSON** and **XML**
+* Execute **validation** on properties values with lambda functions
+* Export configuration as **JSON**, **XML**, **YAML** & **CSV**
 
 ## Tutorials
 
@@ -82,7 +70,7 @@ from [this page](https://github.com/MrSnix/TinyConfiguration/releases).
 
 #### Tracking changes
 
-The full changelog is available at [CHANGELOG.md](CHANGELOG.md),
+The full changelog and planned features are available at [CHANGELOG.md](CHANGELOG.md),  
 meanwhile the following table is a really short feature-list for each
 release.
 
@@ -94,20 +82,6 @@ release.
 |   0.2   |         New arrays methods and export format             |
 |         |    Overhauled the entire class and package hierarchy     |
 |         |                Rewritten documentation                   |
-
-## What's next?
-
-**Version:** 0.3
-
-**Release date:** [ *???* ]
-
-**Features:**
-
-- ?
-- ?
-- ?
-
-The full changelog is available at [CHANGELOG.md](CHANGELOG.md)
 
 ## Feedback
 If there's anything you'd like to chat about or 
