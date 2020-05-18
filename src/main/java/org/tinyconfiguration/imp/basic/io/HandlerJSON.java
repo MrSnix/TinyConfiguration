@@ -33,10 +33,14 @@ import static javax.json.JsonValue.ValueType.ARRAY;
  * @author G. Baittiner
  * @version 0.1
  */
-final class HandlerJSON extends AbstractHandlerIO<Configuration> {
+public final class HandlerJSON extends AbstractHandlerIO<Configuration> {
 
+    public static final HandlerJSON INSTANCE = new HandlerJSON();
     private static final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
     private static final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
+
+    private HandlerJSON() {
+    }
 
     /**
      * Reads the configuration file

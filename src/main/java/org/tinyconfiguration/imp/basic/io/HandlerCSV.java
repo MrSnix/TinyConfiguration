@@ -24,10 +24,20 @@ import java.util.stream.Collectors;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.*;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.substitute;
 
-class HandlerCSV extends AbstractHandlerIO<Configuration> {
+/**
+ * The {@link HandlerCSV} class contains the implementations of I/O operations as CSV format which can be executed on any {@link Configuration} instance
+ *
+ * @author G. Baittiner
+ * @version 0.1
+ */
+public final class HandlerCSV extends AbstractHandlerIO<Configuration> {
 
+    public static final HandlerCSV INSTANCE = new HandlerCSV();
     private static final ImplWriterCSV IMPL_WRITER_CSV = new ImplWriterCSV();
     private static final ImplReaderCSV IMPL_READER_CSV = new ImplReaderCSV();
+
+    private HandlerCSV() {
+    }
 
     /**
      * Reads the configuration file

@@ -29,10 +29,14 @@ import java.util.stream.StreamSupport;
  * @author G. Baittiner
  * @version 0.1
  */
-final class HandlerYAML extends AbstractHandlerIO<Configuration> {
+public final class HandlerYAML extends AbstractHandlerIO<Configuration> {
 
+    public static final HandlerYAML INSTANCE = new HandlerYAML();
     private static final ImplWriterYAML IMPL_WRITER_YAML = new ImplWriterYAML();
     private static final ImplReaderYAML IMPL_READER_YAML = new ImplReaderYAML();
+
+    private HandlerYAML() {
+    }
 
     /**
      * Reads the configuration file

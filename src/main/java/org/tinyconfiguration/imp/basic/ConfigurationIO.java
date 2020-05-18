@@ -2,7 +2,10 @@ package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.utils.ExportType;
-import org.tinyconfiguration.imp.basic.io.Handler;
+import org.tinyconfiguration.imp.basic.io.HandlerCSV;
+import org.tinyconfiguration.imp.basic.io.HandlerJSON;
+import org.tinyconfiguration.imp.basic.io.HandlerXML;
+import org.tinyconfiguration.imp.basic.io.HandlerYAML;
 
 /**
  * The {@link ConfigurationIO} class contains {@link AbstractHandlerIO} references which can be used on any {@link Configuration} instance
@@ -27,16 +30,16 @@ public final class ConfigurationIO {
 
         switch (format) {
             case XML:
-                e = Handler.get(ExportType.XML);
+                e = HandlerXML.INSTANCE;
                 break;
             case JSON:
-                e = Handler.get(ExportType.JSON);
+                e = HandlerJSON.INSTANCE;
                 break;
             case YAML:
-                e = Handler.get(ExportType.YAML);
+                e = HandlerYAML.INSTANCE;
                 break;
             case CSV:
-                e = Handler.get(ExportType.CSV);
+                e = HandlerCSV.INSTANCE;
                 break;
             default:
                 throw new IllegalArgumentException("The following format is not supported");

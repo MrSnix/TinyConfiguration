@@ -37,10 +37,14 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-final class HandlerXML extends AbstractHandlerIO<Configuration> {
+public final class HandlerXML extends AbstractHandlerIO<Configuration> {
 
+    public static final HandlerXML INSTANCE = new HandlerXML();
     private static final ImplWriterXML IMPL_WRITER_XML = new ImplWriterXML();
     private static final ImplReaderXML IMPL_READER_XML = new ImplReaderXML();
+
+    private HandlerXML() {
+    }
 
     /**
      * Reads the configuration file

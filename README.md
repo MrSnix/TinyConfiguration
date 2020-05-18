@@ -32,7 +32,7 @@ A few of the things you can do with TinyConfiguration:
 ```java
 import org.tinyconfiguration.imp.basic.Configuration;
 
-public class Quickstart {
+public class QuickStart {
 
     public static void main(String[] args){
 
@@ -65,9 +65,11 @@ public class Quickstart {
 ### I/O
 
 ```java
-import org.tinyconfiguration.abc.utils.ExportType;import org.tinyconfiguration.imp.basic.Configuration;import org.tinyconfiguration.imp.basic.ConfigurationIO;
+import org.tinyconfiguration.abc.utils.ExportType;
+import org.tinyconfiguration.imp.basic.Configuration;
+import org.tinyconfiguration.imp.basic.ConfigurationIO;
 
-public class Quickstart {
+public class QuickStart {
 
     public static void main(String[] args){
         
@@ -75,13 +77,13 @@ public class Quickstart {
         Configuration instance = FooBar.getConfiguration();
 
         // Does it exists on disk?
-        if (!ConfigurationIO.as(JSON).exist(instance)) {
+        if (!instance.exist()) {
 
             // If not, let's save it
             ConfigurationIO.as(JSON).write(instance);
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(JSON).exist(instance));
+            assertTrue(instance.exist());
         }else{
             // Seems like there is already a cfg file, let's read it
             ConfigurationIO.as(JSON).read(instance);
@@ -91,7 +93,7 @@ public class Quickstart {
         }
         
         // Do you want to delete it?
-        ConfigurationIO.delete(instance);
+        instance.delete();
 
     }
 }
