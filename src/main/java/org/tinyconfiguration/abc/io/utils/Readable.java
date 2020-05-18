@@ -1,6 +1,6 @@
-package org.tinyconfiguration.abc.io.handlers.utils;
+package org.tinyconfiguration.abc.io.utils;
 
-import org.tinyconfiguration.abc.AbstractConfiguration;
+import org.tinyconfiguration.abc.utils.ExportType;
 
 import java.util.concurrent.Future;
 
@@ -10,21 +10,21 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface Readable<C extends AbstractConfiguration<?>> {
+public interface Readable {
 
     /**
      * Reads the configuration file
      *
-     * @param instance The configuration instance to read and update
+     * @param type The configuration instance export type
      * @throws Exception If anything goes wrong while processing the file
      */
-    void read(C instance) throws Exception;
+    void read(ExportType type) throws Exception;
 
     /**
      * Reads the configuration file asynchronously
      *
-     * @param instance The configuration instance to read
+     * @param type The configuration instance export type
      * @return Future object representing the reading task
      */
-    Future<Void> readAsync(C instance);
+    Future<Void> readAsync(ExportType type);
 }

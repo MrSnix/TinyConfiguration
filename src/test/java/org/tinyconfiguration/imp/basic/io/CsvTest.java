@@ -2,7 +2,6 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.junit.jupiter.api.Test;
 import org.tinyconfiguration.imp.basic.Configuration;
-import org.tinyconfiguration.imp.basic.ConfigurationIO;
 import org.tinyconfiguration.imp.basic.Property;
 
 import java.util.concurrent.Future;
@@ -86,7 +85,7 @@ public class CsvTest {
         if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(instance));
+            assertDoesNotThrow(() -> instance.write(CSV));
 
             // Now, it should exists
             assertTrue(instance.exist());
@@ -105,7 +104,7 @@ public class CsvTest {
         assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
 
         // Now, reading the configuration instance
-        assertDoesNotThrow(() -> ConfigurationIO.as(CSV).read(this.instance));
+        assertDoesNotThrow(() -> instance.read(CSV));
 
         assertEquals("root", instance.get("user").getValue().asString());
         assertEquals("toor", instance.get("password").getValue().asString());
@@ -121,7 +120,7 @@ public class CsvTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.as(CSV).readAsync(this.instance);
+            Future<Void> task = instance.readAsync(CSV);
 
             while (!task.isDone()) {
                 // Do something
@@ -142,7 +141,7 @@ public class CsvTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.as(CSV).writeAsync(this.instance);
+            Future<Void> task = instance.writeAsync(CSV);
 
             while (!task.isDone()) {
                 ++x;
@@ -158,7 +157,7 @@ public class CsvTest {
 
     @Test
     void writeCSV() {
-        assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(this.instance));
+        assertDoesNotThrow(() -> instance.write(CSV));
         assertTrue(instance.exist());
     }
 
@@ -168,8 +167,8 @@ public class CsvTest {
         // Does it exists?
         if (!instance.exist()) {
 
-            // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(instance));
+            // If so, let's executing the writing task
+            assertDoesNotThrow(() -> instance.write(CSV));
 
             // Now, it should exists
             assertTrue(instance.exist());
@@ -190,7 +189,7 @@ public class CsvTest {
         if (!instance.exist()) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(CSV).writeAsync(instance).get());
+            assertDoesNotThrow(() -> instance.writeAsync(CSV));
 
             // Now, it should exists
             assertTrue(instance.exist());

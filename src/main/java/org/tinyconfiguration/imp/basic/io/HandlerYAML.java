@@ -1,7 +1,6 @@
 package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.Value;
-import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.handlers.AbstractReader;
 import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
@@ -29,72 +28,12 @@ import java.util.stream.StreamSupport;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class HandlerYAML extends AbstractHandlerIO<Configuration> {
+public final class HandlerYAML {
 
-    public static final HandlerYAML INSTANCE = new HandlerYAML();
-    private static final ImplWriterYAML IMPL_WRITER_YAML = new ImplWriterYAML();
-    private static final ImplReaderYAML IMPL_READER_YAML = new ImplReaderYAML();
+    public static final ImplWriterYAML WRITER = new ImplWriterYAML();
+    public static final ImplReaderYAML READER = new ImplReaderYAML();
 
     private HandlerYAML() {
-    }
-
-    /**
-     * Reads the configuration file
-     *
-     * @param instance The configuration instance to read and update
-     */
-    @Override
-    public void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MissingConfigurationIdentifiersException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, MalformedConfigurationPropertyException, DuplicatedConfigurationPropertyException {
-        IMPL_READER_YAML.toObject(instance);
-    }
-
-    /**
-     * Reads the configuration file asynchronously
-     *
-     * @param instance The configuration instance to read
-     * @return Future object representing the reading task
-     */
-    @Override
-    public Future<Void> readAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                read(instance);
-            } catch (
-                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException e) {
-                throw new CompletionException(e);
-            } catch (Exception ignored) {
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Write the configuration file
-     *
-     * @param instance The configuration instance to write
-     * @throws IOException If anything goes wrong while processing the file
-     */
-    @Override
-    public void write(Configuration instance) throws IOException {
-        IMPL_WRITER_YAML.toFile(instance);
-    }
-
-    /**
-     * Write the configuration file asynchronously
-     *
-     * @param instance The configuration instance to write
-     * @return Future object representing the writing task
-     */
-    @Override
-    public Future<Void> writeAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                write(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
     }
 
     /**
@@ -103,7 +42,36 @@ public final class HandlerYAML extends AbstractHandlerIO<Configuration> {
      * @author G. Baittiner
      * @version 0.1
      */
-    static final class ImplWriterYAML implements AbstractWriter<Configuration, Property, Map<String, Object>> {
+    public static final class ImplWriterYAML implements AbstractWriter<Configuration, Property, Map<String, Object>> {
+
+        /**
+         * Write the configuration file
+         *
+         * @param instance The configuration instance to write
+         * @throws IOException If anything goes wrong while processing the file
+         */
+        @Override
+        public void write(Configuration instance) throws IOException {
+            WRITER.toFile(instance);
+        }
+
+        /**
+         * Write the configuration file asynchronously
+         *
+         * @param instance The configuration instance to write
+         * @return Future object representing the writing task
+         */
+        @Override
+        public Future<Void> writeAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    write(instance);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
+        }
 
         /**
          * This method allow to insert a property object inside an intermediate representation
@@ -314,9 +282,40 @@ public final class HandlerYAML extends AbstractHandlerIO<Configuration> {
      * @author G. Baittiner
      * @version 0.1
      */
-    static final class ImplReaderYAML implements AbstractReader<Configuration, Property, Map<String, Object>> {
+    public static final class ImplReaderYAML implements AbstractReader<Configuration, Property, Map<String, Object>> {
 
         private Map<String, Map<String, Object>> properties;
+
+
+        /**
+         * Reads the configuration file
+         *
+         * @param instance The configuration instance to read and update
+         */
+        @Override
+        public void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MissingConfigurationIdentifiersException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, MalformedConfigurationPropertyException, DuplicatedConfigurationPropertyException {
+            READER.toObject(instance);
+        }
+
+        /**
+         * Reads the configuration file asynchronously
+         *
+         * @param instance The configuration instance to read
+         * @return Future object representing the reading task
+         */
+        @Override
+        public Future<Void> readAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    read(instance);
+                } catch (
+                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException e) {
+                    throw new CompletionException(e);
+                } catch (Exception ignored) {
+                }
+                return null;
+            });
+        }
 
         /**
          * This method allow to translate a property object inside an intermediate representation

@@ -3,6 +3,8 @@ package org.tinyconfiguration.abc.io.handlers;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;
 
+import java.util.concurrent.Future;
+
 /**
  * The {@link AbstractReader} interface provides methods to convert the underlying data representation as common formats
  *
@@ -10,6 +12,22 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @version 0.1
  */
 public interface AbstractReader<C extends AbstractConfiguration<?>, P extends AbstractProperty, I> {
+
+    /**
+     * Reads the configuration file
+     *
+     * @param instance The configuration instance to read and update
+     * @throws Exception If anything goes wrong while processing the file
+     */
+    void read(C instance) throws Exception;
+
+    /**
+     * Reads the configuration file asynchronously
+     *
+     * @param instance The configuration instance to read
+     * @return Future object representing the reading task
+     */
+    Future<Void> readAsync(C instance);
 
     /**
      * This method allow to translate a property object inside an intermediate representation

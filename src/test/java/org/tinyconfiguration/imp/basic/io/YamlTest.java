@@ -2,7 +2,6 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.junit.jupiter.api.Test;
 import org.tinyconfiguration.imp.basic.Configuration;
-import org.tinyconfiguration.imp.basic.ConfigurationIO;
 import org.tinyconfiguration.imp.basic.Property;
 
 import java.util.concurrent.Future;
@@ -86,7 +85,7 @@ class YamlTest {
         if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(instance));
+            assertDoesNotThrow(() -> instance.write(YAML));
 
             // Now, it should exists
             assertTrue(instance.exist());
@@ -105,7 +104,7 @@ class YamlTest {
         assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
 
         // Now, reading the configuration instance
-        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).read(this.instance));
+        assertDoesNotThrow(() -> instance.read(YAML));
 
         assertEquals("root", instance.get("user").getValue().asString());
         assertEquals("toor", instance.get("password").getValue().asString());
@@ -121,7 +120,7 @@ class YamlTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.as(YAML).readAsync(this.instance);
+            Future<Void> task = instance.readAsync(YAML);
 
             while (!task.isDone()) {
                 // Do something
@@ -137,7 +136,7 @@ class YamlTest {
 
     @Test
     void writeYAML() {
-        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(this.instance));
+        assertDoesNotThrow(() -> instance.write(YAML));
         assertTrue(instance.exist());
     }
 
@@ -148,7 +147,7 @@ class YamlTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.as(YAML).writeAsync(this.instance);
+            Future<Void> task = instance.writeAsync(YAML);
 
             while (!task.isDone()) {
                 ++x;
@@ -169,7 +168,7 @@ class YamlTest {
         if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(instance));
+            assertDoesNotThrow(() -> instance.write(YAML));
 
             // Now, it should exists
             assertTrue(instance.exist());
@@ -190,7 +189,7 @@ class YamlTest {
         if (!instance.exist()) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(YAML).writeAsync(instance).get());
+            assertDoesNotThrow(() -> instance.writeAsync(YAML));
 
             // Now, it should exists
             assertTrue(instance.exist());

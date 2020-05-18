@@ -65,9 +65,8 @@ public class QuickStart {
 ### I/O
 
 ```java
-import org.tinyconfiguration.abc.utils.ExportType;
+
 import org.tinyconfiguration.imp.basic.Configuration;
-import org.tinyconfiguration.imp.basic.ConfigurationIO;
 
 public class QuickStart {
 

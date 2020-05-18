@@ -1,6 +1,5 @@
 package org.tinyconfiguration.imp.basic.io;
 
-import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
@@ -20,7 +19,7 @@ import java.util.*;
 final class Handler {
 
     /**
-     * This class contains common code shared between {@link AbstractHandlerIO} implementations
+     * This class contains common code shared between handlers implementations
      */
     static final class Internal {
 

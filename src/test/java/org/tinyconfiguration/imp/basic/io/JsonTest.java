@@ -2,7 +2,6 @@ package org.tinyconfiguration.imp.basic.io;
 
 import org.junit.jupiter.api.Test;
 import org.tinyconfiguration.imp.basic.Configuration;
-import org.tinyconfiguration.imp.basic.ConfigurationIO;
 import org.tinyconfiguration.imp.basic.Property;
 
 import java.util.concurrent.Future;
@@ -83,7 +82,7 @@ class JsonTest {
     @Test
     void writeJSON() {
 
-        assertDoesNotThrow(() -> ConfigurationIO.as(JSON).write(this.instance));
+        assertDoesNotThrow(() -> instance.write(JSON));
 
         assertTrue(instance.exist());
 
@@ -96,7 +95,7 @@ class JsonTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.as(JSON).writeAsync(this.instance);
+            Future<Void> task = instance.writeAsync(JSON);
 
             while (!task.isDone()) {
                 ++x;
@@ -117,7 +116,7 @@ class JsonTest {
         if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(JSON).write(instance));
+            assertDoesNotThrow(() -> instance.write(JSON));
 
             // Now, it should exists
             assertTrue(instance.exist());
@@ -136,7 +135,7 @@ class JsonTest {
         assertArrayEquals(new int[]{10, 15}, instance.get("special-digits").getValue().asIntArray());
 
         // Now, reading the configuration instance
-        assertDoesNotThrow(() -> ConfigurationIO.as(JSON).read(this.instance));
+        assertDoesNotThrow(() -> instance.read(JSON));
 
         assertEquals("root", instance.get("user").getValue().asString());
         assertEquals("toor", instance.get("password").getValue().asString());
@@ -152,7 +151,7 @@ class JsonTest {
 
             int x = 0;
 
-            Future<Void> task = ConfigurationIO.as(JSON).readAsync(this.instance);
+            Future<Void> task = instance.readAsync(JSON);
 
             while (!task.isDone()) {
                 // Do something
@@ -173,7 +172,7 @@ class JsonTest {
         if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(JSON).write(instance));
+            assertDoesNotThrow(() -> instance.write(JSON));
 
             // Now, it should exists
             assertTrue(instance.exist());
@@ -194,7 +193,7 @@ class JsonTest {
         if (!instance.exist()) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
-            assertDoesNotThrow(() -> ConfigurationIO.as(JSON).writeAsync(instance).get());
+            assertDoesNotThrow(() -> instance.writeAsync(JSON).get());
 
             // Now, it should exists
             assertTrue(instance.exist());

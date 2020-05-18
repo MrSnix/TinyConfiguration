@@ -3,6 +3,8 @@ package org.tinyconfiguration.abc.io.handlers;
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.AbstractProperty;
 
+import java.util.concurrent.Future;
+
 /**
  * The {@link AbstractWriter} interface provides methods to convert the underlying data representation as common formats
  *
@@ -10,6 +12,23 @@ import org.tinyconfiguration.abc.AbstractProperty;
  * @version 0.1
  */
 public interface AbstractWriter<C extends AbstractConfiguration<?>, P extends AbstractProperty, I> {
+
+
+    /**
+     * Write the configuration file
+     *
+     * @param instance The configuration instance to write
+     * @throws Exception If anything goes wrong while processing the file
+     */
+    void write(C instance) throws Exception;
+
+    /**
+     * Write the configuration file asynchronously
+     *
+     * @param instance The configuration instance to write
+     * @return Future object representing the writing task
+     */
+    Future<Void> writeAsync(C instance);
 
     /**
      * This method allow to insert a property object inside an intermediate representation

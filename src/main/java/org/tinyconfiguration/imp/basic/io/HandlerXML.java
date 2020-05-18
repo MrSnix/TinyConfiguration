@@ -2,7 +2,6 @@ package org.tinyconfiguration.imp.basic.io;
 
 
 import org.tinyconfiguration.abc.data.Value;
-import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.handlers.AbstractReader;
 import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
@@ -37,90 +36,48 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class HandlerXML extends AbstractHandlerIO<Configuration> {
+public final class HandlerXML {
 
-    public static final HandlerXML INSTANCE = new HandlerXML();
-    private static final ImplWriterXML IMPL_WRITER_XML = new ImplWriterXML();
-    private static final ImplReaderXML IMPL_READER_XML = new ImplReaderXML();
+    public static final ImplWriterXML WRITER = new ImplWriterXML();
+    public static final ImplReaderXML READER = new ImplReaderXML();
 
     private HandlerXML() {
     }
 
-    /**
-     * Reads the configuration file
-     *
-     * @param instance The configuration instance to read and update
-     * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
-     * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
-     * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
-     * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
-     * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
-     * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
-     * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
-     * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
-     * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
-     * @throws IOException                              If an I/O exception of some sort has occurred.
-     */
-    @Override
-    public synchronized void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MissingConfigurationIdentifiersException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MalformedConfigurationPropertyException {
-        IMPL_READER_XML.toObject(instance);
-    }
-
-    /**
-     * Reads the configuration file asynchronously
-     *
-     * @param instance The configuration instance to read
-     * @return Future object representing the reading task
-     * @throws CompletionException If any exceptions occurs at runtime
-     * @see HandlerXML#read(Configuration)
-     */
-    @Override
-    public Future<Void> readAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                read(instance);
-            } catch (
-                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
-                throw new CompletionException(e);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Write the configuration file
-     *
-     * @param instance The configuration instance to write
-     * @throws IOException If anything goes wrong while processing the file
-     */
-    @Override
-    public synchronized void write(Configuration instance) throws IOException {
-        IMPL_WRITER_XML.toFile(instance);
-    }
-
-    /**
-     * Write the configuration file asynchronously
-     *
-     * @param instance The configuration instance to write
-     * @return Future object representing the writing task
-     */
-    @Override
-    public Future<Void> writeAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                write(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
-
-    private static final class ImplWriterXML implements AbstractWriter<Configuration, Property, Element> {
+    public static final class ImplWriterXML implements AbstractWriter<Configuration, Property, Element> {
 
         private Document xml;
+
+
+        /**
+         * Write the configuration file
+         *
+         * @param instance The configuration instance to write
+         * @throws IOException If anything goes wrong while processing the file
+         */
+        @Override
+        public synchronized void write(Configuration instance) throws IOException {
+            WRITER.toFile(instance);
+        }
+
+        /**
+         * Write the configuration file asynchronously
+         *
+         * @param instance The configuration instance to write
+         * @return Future object representing the writing task
+         */
+        @Override
+        public Future<Void> writeAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    write(instance);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
+        }
+
 
         /**
          * This method allow to generate an object representation from the configuration instance
@@ -268,9 +225,52 @@ public final class HandlerXML extends AbstractHandlerIO<Configuration> {
         }
     }
 
-    private static final class ImplReaderXML implements AbstractReader<Configuration, Property, Element> {
+    public static final class ImplReaderXML implements AbstractReader<Configuration, Property, Element> {
 
         private List<Element> properties;
+
+        /**
+         * Reads the configuration file
+         *
+         * @param instance The configuration instance to read and update
+         * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
+         * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
+         * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
+         * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
+         * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
+         * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
+         * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
+         * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
+         * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
+         * @throws IOException                              If an I/O exception of some sort has occurred.
+         */
+        @Override
+        public synchronized void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MissingConfigurationIdentifiersException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MalformedConfigurationPropertyException {
+            READER.toObject(instance);
+        }
+
+        /**
+         * Reads the configuration file asynchronously
+         *
+         * @param instance The configuration instance to read
+         * @return Future object representing the reading task
+         * @throws CompletionException If any exceptions occurs at runtime
+         * @see HandlerXML#READER#read(Configuration)
+         */
+        @Override
+        public Future<Void> readAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    read(instance);
+                } catch (
+                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
+                    throw new CompletionException(e);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            });
+        }
 
         /**
          * This method generate the final representation of the configuration
