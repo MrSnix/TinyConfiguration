@@ -2,8 +2,13 @@ package org.tinyconfiguration.abc;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Future;
 
 /**
  * The {@link AbstractConfiguration} is the base class used to define any configuration data structure
@@ -98,5 +103,39 @@ public abstract class AbstractConfiguration<T extends AbstractProperty> implemen
      * @return The properties associated to the container object as {@link List}
      */
     public abstract List<T> getProperties();
+
+    /**
+     * Delete the configuration file
+     *
+     * @throws IOException If the configuration file cannot be deleted
+     */
+    public void delete() throws IOException {
+        Files.delete(this.getFile().toPath());
+    }
+
+    /**
+     * Delete the configuration file asynchronously
+     *
+     * @return Future object representing the deleting task
+     */
+    public Future<Void> deleteAsync() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                delete();
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Check if the configuration file exists
+     *
+     * @return True or false
+     */
+    public boolean exist() {
+        return this.getFile().exists();
+    }
 
 }

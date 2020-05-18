@@ -43,6 +43,6 @@ public final class ConfigurationIO {
         }
 
         return e;
-
     }
+
 }

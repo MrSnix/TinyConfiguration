@@ -83,13 +83,13 @@ public class CsvTest {
     void readCSV() {
 
         // Does it exists?
-        if (!ConfigurationIO.as(CSV).exist(instance)) {
+        if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
             assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(CSV).exist(instance));
+            assertTrue(instance.exist());
 
         }
 
@@ -131,7 +131,7 @@ public class CsvTest {
             assertTrue(x >= 0);
         });
 
-        assertTrue(ConfigurationIO.as(CSV).exist(this.instance));
+        assertTrue(instance.exist());
 
     }
 
@@ -152,34 +152,34 @@ public class CsvTest {
 
         });
 
-        assertTrue(ConfigurationIO.as(CSV).exist(instance));
+        assertTrue(instance.exist());
 
     }
 
     @Test
     void writeCSV() {
         assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(this.instance));
-        assertTrue(ConfigurationIO.as(CSV).exist(instance));
+        assertTrue(instance.exist());
     }
 
     @Test
     void deleteCSV() {
 
         // Does it exists?
-        if (!ConfigurationIO.as(CSV).exist(instance)) {
+        if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
             assertDoesNotThrow(() -> ConfigurationIO.as(CSV).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(CSV).exist(instance));
+            assertTrue(instance.exist());
 
         }
 
         // Executing deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.as(CSV).delete(instance));
+        assertDoesNotThrow(instance::delete);
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.as(CSV).exist(instance));
+        assertFalse(instance.exist());
 
     }
 
@@ -187,19 +187,19 @@ public class CsvTest {
     void deleteAsyncCSV() {
 
         // Does it exists?
-        if (!ConfigurationIO.as(CSV).exist(instance)) {
+        if (!instance.exist()) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
             assertDoesNotThrow(() -> ConfigurationIO.as(CSV).writeAsync(instance).get());
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(CSV).exist(instance));
+            assertTrue(instance.exist());
 
         }
         // Obtaining deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.as(CSV).deleteAsync(instance).get());
+        assertDoesNotThrow(() -> instance.deleteAsync().get());
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.as(CSV).exist(instance));
+        assertFalse(instance.exist());
 
     }
 

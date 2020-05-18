@@ -28,13 +28,4 @@ public interface Writable<C extends AbstractConfiguration<?>> {
      */
     Future<Void> writeAsync(C instance);
 
-    /**
-     * Check if the configuration file exists
-     *
-     * @param instance The configuration instance to check
-     * @return True or false
-     */
-    default boolean exist(C instance) {
-        return instance.getFile().exists();
-    }
 }

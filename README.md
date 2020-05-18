@@ -5,7 +5,7 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
-- [Tutorials](#tutorials)
+- [Quickstart](#quick-start)
 - [Build, download & changelog](#build-download--changelog)
 - [Feedback](#feedback)
 - [License](#license)
@@ -25,7 +25,77 @@ A few of the things you can do with TinyConfiguration:
 * Execute **validation** on properties values with lambda functions
 * Export configuration as **JSON**, **XML**, **YAML** & **CSV**
 
-## Tutorials
+## Quick-start
+
+### The basics
+
+```java
+import org.tinyconfiguration.imp.basic.Configuration;
+
+public class Quickstart {
+
+    public static void main(String[] args){
+
+          // Define your configuration 
+          Configuration.Builder b = new Configuration.Builder().
+                  setName("ConfigurationTest").
+                  setVersion("1.0.0").
+                  setPathname("./").
+                  setFilename("tiny-configuration.json");
+
+          // Add some properties for your application (as many as you want)
+          b.put(new Property.Builder().
+                  setKey("language").
+                  setValue("EN").
+                  setDescription("Specifies the language environment for the session").
+                  build());
+          b.put(new Property.Builder().
+                  setKey("auto-update").
+                  setValue(true).
+                  setDescription("Specifies if the application should regularly check for new software releases").
+                  build());
+
+          // Build your configuration instance
+          Configuration cfg = b.build();
+
+    }
+}
+```
+
+### I/O
+
+```java
+import org.tinyconfiguration.abc.utils.ExportType;import org.tinyconfiguration.imp.basic.Configuration;import org.tinyconfiguration.imp.basic.ConfigurationIO;
+
+public class Quickstart {
+
+    public static void main(String[] args){
+        
+        // Assume you have a class which returns a Configuration object
+        Configuration instance = FooBar.getConfiguration();
+
+        // Does it exists on disk?
+        if (!ConfigurationIO.as(JSON).exist(instance)) {
+
+            // If not, let's save it
+            ConfigurationIO.as(JSON).write(instance);
+
+            // Now, it should exists
+            assertTrue(ConfigurationIO.as(JSON).exist(instance));
+        }else{
+            // Seems like there is already a cfg file, let's read it
+            ConfigurationIO.as(JSON).read(instance);
+
+            // If everything is gone well, 
+            // the configuration instance now hold the read values
+        }
+        
+        // Do you want to delete it?
+        ConfigurationIO.delete(instance);
+
+    }
+}
+```
 
 You can check on the [wiki](https://github.com/MrSnix/TinyConfiguration/wiki) everything related to this library.
 
@@ -84,7 +154,7 @@ release.
 |         |                Rewritten documentation                   |
 
 ## Feedback
-If there's anything you'd like to chat about or 
+If there's anything you'd like to chat about, or 
 you want to send me feedback about this project,  
 you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com), 
 ***feature requests are always welcome***.

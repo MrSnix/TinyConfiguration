@@ -83,13 +83,13 @@ class YamlTest {
     void readYAML() {
 
         // Does it exists?
-        if (!ConfigurationIO.as(YAML).exist(instance)) {
+        if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
             assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(YAML).exist(instance));
+            assertTrue(instance.exist());
 
         }
 
@@ -131,14 +131,14 @@ class YamlTest {
             assertTrue(x >= 0);
         });
 
-        assertTrue(ConfigurationIO.as(YAML).exist(this.instance));
+        assertTrue(instance.exist());
 
     }
 
     @Test
     void writeYAML() {
         assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(this.instance));
-        assertTrue(ConfigurationIO.as(YAML).exist(instance));
+        assertTrue(instance.exist());
     }
 
     @Test
@@ -158,7 +158,7 @@ class YamlTest {
 
         });
 
-        assertTrue(ConfigurationIO.as(YAML).exist(instance));
+        assertTrue(instance.exist());
 
     }
 
@@ -166,20 +166,20 @@ class YamlTest {
     void deleteYAML() {
 
         // Does it exists?
-        if (!ConfigurationIO.as(YAML).exist(instance)) {
+        if (!instance.exist()) {
 
             // If so, let's executing the writing task, then execute it with get()
             assertDoesNotThrow(() -> ConfigurationIO.as(YAML).write(instance));
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(YAML).exist(instance));
+            assertTrue(instance.exist());
 
         }
 
         // Executing deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).delete(instance));
+        assertDoesNotThrow(instance::delete);
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.as(YAML).exist(instance));
+        assertFalse(instance.exist());
 
     }
 
@@ -187,19 +187,19 @@ class YamlTest {
     void deleteAsyncYAML() {
 
         // Does it exists?
-        if (!ConfigurationIO.as(YAML).exist(instance)) {
+        if (!instance.exist()) {
 
             // If so, let's obtain an a-sync writing task, then execute it with get()
             assertDoesNotThrow(() -> ConfigurationIO.as(YAML).writeAsync(instance).get());
 
             // Now, it should exists
-            assertTrue(ConfigurationIO.as(YAML).exist(instance));
+            assertTrue(instance.exist());
 
         }
         // Obtaining deleting task, then execute it
-        assertDoesNotThrow(() -> ConfigurationIO.as(YAML).deleteAsync(instance).get());
+        assertDoesNotThrow(() -> instance.deleteAsync().get());
         // Asserting does not exists any more
-        assertFalse(ConfigurationIO.as(YAML).exist(instance));
+        assertFalse(instance.exist());
 
     }
 

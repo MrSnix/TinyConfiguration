@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
  * @author G. Baittiner
  * @version 0.1
  */
-public interface Deletable<C extends AbstractConfiguration<?>> {
+public interface Deletable {
 
     /**
      * Delete the configuration file
@@ -22,7 +22,7 @@ public interface Deletable<C extends AbstractConfiguration<?>> {
      * @param instance The configuration instance to delete
      * @throws IOException If the configuration file cannot be deleted
      */
-    default void delete(C instance) throws IOException {
+    static void delete(AbstractConfiguration<?> instance) throws IOException {
         Files.delete(instance.getFile().toPath());
     }
 
@@ -32,7 +32,7 @@ public interface Deletable<C extends AbstractConfiguration<?>> {
      * @param instance The configuration instance to delete
      * @return Future object representing the deleting task
      */
-    default Future<Void> deleteAsync(C instance) {
+    static Future<Void> deleteAsync(AbstractConfiguration<?> instance) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 delete(instance);
@@ -49,7 +49,7 @@ public interface Deletable<C extends AbstractConfiguration<?>> {
      * @param instance The configuration instance to check
      * @return True or false
      */
-    default boolean exist(C instance) {
+    static boolean exist(AbstractConfiguration<?> instance) {
         return instance.getFile().exists();
     }
 }
