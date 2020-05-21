@@ -284,8 +284,6 @@ public abstract class AbstractProperty implements Modifiable {
      * Sets any generic value on this property
      *
      * @param value The new value
-     * @throws NullPointerException     If the value is null
-     * @throws IllegalArgumentException If the class type is different from the one declared
      */
     abstract protected void set(Object value);
 

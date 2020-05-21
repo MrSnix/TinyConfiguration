@@ -30,9 +30,11 @@ ___
 - Nothing changed
 
 **Changed**
+- Update README.md
 - Simplified I/O methods
 - ExportType renamed FormatType
 - Fixed wrong exceptions type on read() and write() methods
+- Fixed wrong documentation
 
 **Removed**
 - ConfigurationIO class
@@ -43,7 +45,7 @@ ___
 
 ## 0.0.2
 
-**Release date:** [ *?? / 05 / 2020* ]
+**Release date:** [ *18 / 05 / 2020* ]
 
 **New**
 

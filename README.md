@@ -31,6 +31,7 @@ A few of the things you can do with TinyConfiguration:
 
 ```java
 import org.tinyconfiguration.imp.basic.Configuration;
+import org.tinyconfiguration.abc.data.Value;
 
 public class QuickStart {
 
@@ -44,11 +45,20 @@ public class QuickStart {
                   setFilename("tiny-configuration.json");
 
           // Add some properties for your application (as many as you want)
-          b.put(new Property.Builder().
-                  setKey("language").
-                  setValue("EN").
-                  setDescription("Specifies the language environment for the session").
-                  build());
+        b.put(new Property.Builder().
+                setKey("language").
+                setValue("EN").
+                setValidator(property -> {
+                    // Extract value
+                    Value e = property.getValue();
+                    // Return as String
+                    String data = e.asString();
+                    // Test
+                    return data.equalsIgnoreCase("EN") || data.equalsIgnoreCase("IT");
+                }).
+                setDescription("Specifies the language environment for the session").
+                build());
+
           b.put(new Property.Builder().
                   setKey("auto-update").
                   setValue(true).
@@ -66,12 +76,16 @@ public class QuickStart {
 
 ```java
 
+import org.tinyconfiguration.abc.ex.*;
+import org.tinyconfiguration.abc.utils.FormatType;
 import org.tinyconfiguration.imp.basic.Configuration;
+
+import java.io.IOException;
 
 public class QuickStart {
 
     public static void main(String[] args){
-        
+
         // Assume you have a class which returns a Configuration object
         Configuration instance = FooBar.getConfiguration();
 
@@ -79,26 +93,42 @@ public class QuickStart {
         if (!instance.exist()) {
 
             // If not, let's save it
-            ConfigurationIO.as(JSON).write(instance);
+            try {
+                instance.write(FormatType.JSON);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             // Now, it should exists
-            assertTrue(instance.exist());
+            assert(instance.exist());
         }else{
             // Seems like there is already a cfg file, let's read it
-            ConfigurationIO.as(JSON).read(instance);
+            try {
+                instance.read(FormatType.JSON);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ConfigurationException e) {
+                e.printStackTrace();
+            } catch (PropertyException e) {
+                e.printStackTrace();
+            }
 
             // If everything is gone well, 
             // the configuration instance now hold the read values
         }
-        
+
         // Do you want to delete it?
-        instance.delete();
+        try {
+            instance.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }
 ```
 
-You can check on the [wiki](https://github.com/MrSnix/TinyConfiguration/wiki) everything related to this library.
+You can find out more on the [wiki](https://github.com/MrSnix/TinyConfiguration/wiki).
 
 ## Build, download & changelog
 
