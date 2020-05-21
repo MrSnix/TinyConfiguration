@@ -1,7 +1,6 @@
 package org.tinyconfiguration.imp.basic.io;
 
 import org.tinyconfiguration.abc.data.Value;
-import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.handlers.AbstractReader;
 import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
@@ -33,90 +32,12 @@ import static javax.json.JsonValue.ValueType.ARRAY;
  * @author G. Baittiner
  * @version 0.1
  */
-final class HandlerJSON extends AbstractHandlerIO<Configuration> {
+public final class HandlerJSON {
 
-    private static final ImplWriterJSON IMPL_WRITER_JSON = new ImplWriterJSON();
-    private static final ImplReaderJSON IMPL_READER_JSON = new ImplReaderJSON();
+    public static final ImplWriterJSON WRITER = new ImplWriterJSON();
+    public static final ImplReaderJSON READER = new ImplReaderJSON();
 
-    /**
-     * Reads the configuration file
-     *
-     * @param instance The configuration instance to read and update
-     * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
-     * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
-     * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
-     * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
-     * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
-     * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
-     * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
-     * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
-     * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
-     * @throws IOException                              If an I/O exception of some sort has occurred.
-     */
-    @Override
-    public synchronized void read(Configuration instance) throws
-            IOException,
-            InvalidConfigurationNameException,
-            InvalidConfigurationVersionException,
-            MalformedConfigurationPropertyException,
-            MissingConfigurationPropertyException,
-            MissingConfigurationIdentifiersException,
-            InvalidConfigurationPropertyException,
-            UnknownConfigurationPropertyException,
-            ParsingProcessException,
-            DuplicatedConfigurationPropertyException {
-
-        IMPL_READER_JSON.toObject(instance);
-    }
-
-    /**
-     * Reads the configuration file asynchronously
-     *
-     * @param instance The configuration instance to read
-     * @return Future object representing the reading task
-     * @throws CompletionException If any exceptions occurs at runtime
-     * @see HandlerJSON#read(Configuration)
-     */
-    @Override
-    public Future<Void> readAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                read(instance);
-            } catch (
-                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Write the configuration file
-     *
-     * @param instance The configuration instance to write
-     * @throws IOException If an I/O exception of some sort has occurred.
-     */
-    @Override
-    public synchronized void write(Configuration instance) throws IOException {
-        IMPL_WRITER_JSON.toFile(instance);
-    }
-
-    /**
-     * Write the configuration file asynchronously
-     *
-     * @param instance The configuration instance to write
-     * @return Future object representing the writing task
-     */
-    @Override
-    public Future<Void> writeAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                write(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
+    private HandlerJSON() {
     }
 
     /**
@@ -125,7 +46,36 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      * @author G. Baittiner
      * @version 0.1
      */
-    private static final class ImplWriterJSON implements AbstractWriter<Configuration, Property, JsonObjectBuilder> {
+    public static final class ImplWriterJSON implements AbstractWriter<Configuration, Property, JsonObjectBuilder> {
+
+        /**
+         * Write the configuration file
+         *
+         * @param instance The configuration instance to write
+         * @throws IOException If an I/O exception of some sort has occurred.
+         */
+        @Override
+        public synchronized void write(Configuration instance) throws IOException {
+            WRITER.toFile(instance);
+        }
+
+        /**
+         * Write the configuration file asynchronously
+         *
+         * @param instance The configuration instance to write
+         * @return Future object representing the writing task
+         */
+        @Override
+        public Future<Void> writeAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    write(instance);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
+        }
 
         /**
          * This method allow to generate an object representation from the configuration instance
@@ -375,9 +325,60 @@ final class HandlerJSON extends AbstractHandlerIO<Configuration> {
      * @author G. Baittiner
      * @version 0.1
      */
-    private static final class ImplReaderJSON implements AbstractReader<Configuration, Property, JsonObject> {
+    public static final class ImplReaderJSON implements AbstractReader<Configuration, Property, JsonObject> {
 
         private JsonArray properties;
+
+        /**
+         * Reads the configuration file
+         *
+         * @param instance The configuration instance to read and update
+         * @throws MissingConfigurationIdentifiersException If any configuration identifier (name, version) is missed
+         * @throws InvalidConfigurationNameException        If the configuration name does not match the one inside the file
+         * @throws InvalidConfigurationVersionException     If the configuration version does not match the one inside the file
+         * @throws MissingConfigurationPropertyException    If any configuration property is missing from the file
+         * @throws MalformedConfigurationPropertyException  If any configuration property is not well-formed
+         * @throws DuplicatedConfigurationPropertyException If any configuration property is declared multiple times
+         * @throws InvalidConfigurationPropertyException    If any configuration property fails its own validation test
+         * @throws UnknownConfigurationPropertyException    If there are more properties inside the file than the one declared
+         * @throws ParsingProcessException                  If a parsing exception of some sort has occurred.
+         * @throws IOException                              If an I/O exception of some sort has occurred.
+         */
+        @Override
+        public synchronized void read(Configuration instance) throws
+                IOException,
+                InvalidConfigurationNameException,
+                InvalidConfigurationVersionException,
+                MalformedConfigurationPropertyException,
+                MissingConfigurationPropertyException,
+                MissingConfigurationIdentifiersException,
+                InvalidConfigurationPropertyException,
+                UnknownConfigurationPropertyException,
+                ParsingProcessException,
+                DuplicatedConfigurationPropertyException {
+
+            READER.toObject(instance);
+        }
+
+        /**
+         * Reads the configuration file asynchronously
+         *
+         * @param instance The configuration instance to read
+         * @return Future object representing the reading task
+         * @throws CompletionException If any exceptions occurs at runtime
+         */
+        @Override
+        public Future<Void> readAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    read(instance);
+                } catch (
+                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | MissingConfigurationIdentifiersException | DuplicatedConfigurationPropertyException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
+        }
 
         /**
          * This method allow to translate a property object inside an intermediate representation

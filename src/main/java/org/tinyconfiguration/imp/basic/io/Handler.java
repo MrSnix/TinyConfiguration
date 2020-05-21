@@ -1,7 +1,5 @@
 package org.tinyconfiguration.imp.basic.io;
 
-import org.tinyconfiguration.abc.io.AbstractHandlerIO;
-import org.tinyconfiguration.abc.utils.ExportType;
 import org.tinyconfiguration.imp.basic.Configuration;
 import org.tinyconfiguration.imp.basic.Property;
 import org.tinyconfiguration.imp.basic.ex.configuration.InvalidConfigurationNameException;
@@ -16,45 +14,12 @@ import org.yaml.snakeyaml.events.ScalarEvent;
 import java.util.*;
 
 /**
- * This class is the handler manager
+ * This is an utility class for the handlers implementations
  */
-public final class Handler {
-
-    private static final HandlerJSON handlerJSON = new HandlerJSON();
-    private static final HandlerXML handlerXML = new HandlerXML();
-    private static final HandlerYAML handlerYAML = new HandlerYAML();
-    private static final HandlerCSV handlerCSV = new HandlerCSV();
-
-    private Handler() {
-    }
-
-    public static AbstractHandlerIO<Configuration> get(ExportType format) {
-
-        AbstractHandlerIO<Configuration> e;
-
-        switch (format) {
-            case XML:
-                e = handlerXML;
-                break;
-            case JSON:
-                e = handlerJSON;
-                break;
-            case CSV:
-                e = handlerCSV;
-                break;
-            case YAML:
-                e = handlerYAML;
-                break;
-            default:
-                throw new IllegalArgumentException("The following format is not supported");
-        }
-
-        return e;
-
-    }
+final class Handler {
 
     /**
-     * This class contains common code shared between {@link AbstractHandlerIO} implementations
+     * This class contains common code shared between handlers implementations
      */
     static final class Internal {
 

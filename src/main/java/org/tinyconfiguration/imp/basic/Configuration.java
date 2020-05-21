@@ -2,11 +2,22 @@ package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
+import org.tinyconfiguration.abc.ex.ConfigurationException;
+import org.tinyconfiguration.abc.ex.PropertyException;
+import org.tinyconfiguration.abc.io.utils.Readable;
+import org.tinyconfiguration.abc.io.utils.Writable;
+import org.tinyconfiguration.abc.utils.FormatType;
+import org.tinyconfiguration.imp.basic.io.HandlerCSV;
+import org.tinyconfiguration.imp.basic.io.HandlerJSON;
+import org.tinyconfiguration.imp.basic.io.HandlerXML;
+import org.tinyconfiguration.imp.basic.io.HandlerYAML;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Future;
 
 /**
  * The {@link Configuration} class defines all properties included inside the configuration file
@@ -14,7 +25,7 @@ import java.util.NoSuchElementException;
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Configuration extends AbstractConfiguration<Property> {
+public final class Configuration extends AbstractConfiguration<Property> implements Readable, Writable {
 
     private final LinkedHashMap<String, Property> properties;
 
@@ -104,6 +115,135 @@ public final class Configuration extends AbstractConfiguration<Property> {
 
         return this.properties.containsKey(key);
     }
+
+    /**
+     * Reads the configuration file
+     *
+     * @param type The configuration instance export type
+     * @throws IOException            If anything goes wrong while processing the file
+     * @throws ConfigurationException If configuration parsing fails
+     * @throws PropertyException      If property parsing fails
+     */
+    @Override
+    public void read(FormatType type) throws IOException, ConfigurationException, PropertyException {
+        if (type == null)
+            throw new NullPointerException("The export format cannot be null");
+
+        switch (type) {
+            case XML:
+                HandlerXML.READER.read(this);
+                break;
+            case JSON:
+                HandlerJSON.READER.read(this);
+                break;
+            case YAML:
+                HandlerYAML.READER.read(this);
+                break;
+            case CSV:
+                HandlerCSV.READER.read(this);
+                break;
+            default:
+                throw new IllegalArgumentException("The following format is not supported");
+        }
+    }
+
+    /**
+     * Reads the configuration file asynchronously
+     *
+     * @param type The configuration instance export type
+     * @return Future object representing the reading task
+     */
+    @Override
+    public Future<Void> readAsync(FormatType type) {
+
+        if (type == null)
+            throw new NullPointerException("The export format cannot be null");
+
+        Future<Void> e;
+
+        switch (type) {
+            case XML:
+                e = HandlerXML.READER.readAsync(this);
+                break;
+            case JSON:
+                e = HandlerJSON.READER.readAsync(this);
+                break;
+            case YAML:
+                e = HandlerYAML.READER.readAsync(this);
+                break;
+            case CSV:
+                e = HandlerCSV.READER.readAsync(this);
+                break;
+            default:
+                throw new IllegalArgumentException("The following format is not supported");
+        }
+
+        return e;
+    }
+
+    /**
+     * Write the configuration file
+     *
+     * @param type The configuration instance export type
+     * @throws IOException If anything goes wrong while processing the file
+     */
+    @Override
+    public void write(FormatType type) throws IOException {
+        if (type == null)
+            throw new NullPointerException("The export format cannot be null");
+
+        switch (type) {
+            case XML:
+                HandlerXML.WRITER.write(this);
+                break;
+            case JSON:
+                HandlerJSON.WRITER.write(this);
+                break;
+            case YAML:
+                HandlerYAML.WRITER.write(this);
+                break;
+            case CSV:
+                HandlerCSV.WRITER.write(this);
+                break;
+            default:
+                throw new IllegalArgumentException("The following format is not supported");
+        }
+    }
+
+    /**
+     * Write the configuration file asynchronously
+     *
+     * @param type The configuration instance export type
+     * @return Future object representing the writing task
+     */
+    @Override
+    public Future<Void> writeAsync(FormatType type) {
+
+        if (type == null)
+            throw new NullPointerException("The format type cannot be null");
+
+        Future<Void> e;
+
+        switch (type) {
+            case XML:
+                e = HandlerXML.WRITER.writeAsync(this);
+                break;
+            case JSON:
+                e = HandlerJSON.WRITER.writeAsync(this);
+                break;
+            case YAML:
+                e = HandlerYAML.WRITER.writeAsync(this);
+                break;
+            case CSV:
+                e = HandlerCSV.WRITER.writeAsync(this);
+                break;
+            default:
+                throw new IllegalArgumentException("The following format is not supported");
+        }
+
+        return e;
+    }
+
 
     /**
      * The {@link Builder} class allows to generate {@link Configuration} instances

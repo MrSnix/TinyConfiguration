@@ -9,12 +9,11 @@ import static org.tinyconfiguration.abc.data.Datatype.*;
 
 /**
  * The {@link Value} is the container class which resolve any {@link AbstractValue} cast.<br>
- * The {@link Value} class should be the foundation class to implement custom datatype.
  *
  * @author G. Baittiner
  * @version 0.1
  */
-public final class Value extends AbstractValue {
+public class Value extends AbstractValue {
 
     private Datatype datatype;
 
@@ -26,7 +25,7 @@ public final class Value extends AbstractValue {
     }
 
     /**
-     * Protected constructor with parameters
+     * Constructor with parameters
      *
      * @param value The data to store as object instance
      */
@@ -40,7 +39,7 @@ public final class Value extends AbstractValue {
      *
      * @return The object class
      */
-    public final Class<?> getType() {
+    public Class<?> getType() {
         return super.type;
     }
 
@@ -49,7 +48,7 @@ public final class Value extends AbstractValue {
      *
      * @return true if it's an array otherwise false
      */
-    public final boolean isArray() {
+    public boolean isArray() {
         return this.type.isArray();
     }
 
@@ -65,7 +64,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isByte() {
+    public boolean isByte() {
         return byte.class.isAssignableFrom(this.type) || Byte.class.isAssignableFrom(this.type);
     }
 
@@ -82,7 +81,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isByte()
      */
-    public final boolean isByteArray() {
+    public boolean isByteArray() {
         return byte[].class.isAssignableFrom(this.type) ||
                 Byte[].class.isAssignableFrom(this.type);
     }
@@ -99,7 +98,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isShort() {
+    public boolean isShort() {
         return
                 short.class.isAssignableFrom(this.type) ||
                         Short.class.isAssignableFrom(this.type);
@@ -118,7 +117,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isShort()
      */
-    public final boolean isShortArray() {
+    public boolean isShortArray() {
         return short[].class.isAssignableFrom(this.type) || Short[].class.isAssignableFrom(this.type);
     }
 
@@ -134,7 +133,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isInteger() {
+    public boolean isInteger() {
         return int.class.isAssignableFrom(this.type) || Integer.class.isAssignableFrom(this.type);
     }
 
@@ -151,7 +150,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isInteger()
      */
-    public final boolean isIntegerArray() {
+    public boolean isIntegerArray() {
         return int[].class.isAssignableFrom(this.type) || Integer[].class.isAssignableFrom(this.type);
     }
 
@@ -167,7 +166,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isLong() {
+    public boolean isLong() {
         return long.class.isAssignableFrom(this.type) || Long.class.isAssignableFrom(this.type);
     }
 
@@ -184,7 +183,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isLong()
      */
-    public final boolean isLongArray() {
+    public boolean isLongArray() {
         return long[].class.isAssignableFrom(this.type) || Long[].class.isAssignableFrom(this.type);
     }
 
@@ -200,7 +199,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isFloat() {
+    public boolean isFloat() {
         return float.class.isAssignableFrom(this.type) || Float.class.isAssignableFrom(this.type);
     }
 
@@ -217,7 +216,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isFloat()
      */
-    public final boolean isFloatArray() {
+    public boolean isFloatArray() {
         return float[].class.isAssignableFrom(this.type) || Float[].class.isAssignableFrom(this.type);
     }
 
@@ -233,7 +232,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isDouble() {
+    public boolean isDouble() {
         return double.class.isAssignableFrom(this.type) || Double.class.isAssignableFrom(this.type);
     }
 
@@ -250,7 +249,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isDouble()
      */
-    public final boolean isDoubleArray() {
+    public boolean isDoubleArray() {
         return double[].class.isAssignableFrom(this.type) || Double[].class.isAssignableFrom(this.type);
     }
 
@@ -266,7 +265,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isBoolean() {
+    public boolean isBoolean() {
         return boolean.class.isAssignableFrom(this.type) || Boolean.class.isAssignableFrom(this.type);
     }
 
@@ -283,7 +282,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isBoolean()
      */
-    public final boolean isBooleanArray() {
+    public boolean isBooleanArray() {
         return boolean[].class.isAssignableFrom(this.type) || Boolean[].class.isAssignableFrom(this.type);
     }
 
@@ -299,7 +298,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isCharacter() {
+    public boolean isCharacter() {
         return char.class.isAssignableFrom(this.type) || Character.class.isAssignableFrom(this.type);
     }
 
@@ -316,7 +315,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isCharacter()
      */
-    public final boolean isCharacterArray() {
+    public boolean isCharacterArray() {
         return char[].class.isAssignableFrom(this.type) || Character[].class.isAssignableFrom(this.type);
     }
 
@@ -332,7 +331,7 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isString() {
+    public boolean isString() {
         return String.class.isAssignableFrom(this.type) || this.object instanceof CharSequence;
     }
 
@@ -349,13 +348,13 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isString()
      */
-    public final boolean isStringArray() {
+    public boolean isStringArray() {
         return String[].class.isAssignableFrom(this.type) || this.object instanceof CharSequence[];
     }
 
     /**
      * Check if the datatype object is a numeric datatype
-     *
+     * <p>
      * More it performs the following tests:
      * <ul>
      *    <li>{@link Value#isByte()} </li>
@@ -369,13 +368,13 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isNumeric() {
+    public boolean isNumeric() {
         return isByte() || isShort() || isInteger() || isLong() || isFloat() || isDouble();
     }
 
     /**
      * Check if the datatype object is a numeric array datatype
-     *
+     * <p>
      * More specifically, it performs the following tests:
      *
      * <ul>
@@ -392,13 +391,13 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isNumeric()
      */
-    public final boolean isNumericArray() {
+    public boolean isNumericArray() {
         return isByteArray() || isShortArray() || isIntegerArray() || isLongArray() || isFloatArray() || isDoubleArray();
     }
 
     /**
      * Check if the datatype object is a textual datatype
-     *
+     * <p>
      * More it performs the following tests:
      * <ul>
      *    <li>{@link Value#isCharacter()} </li>
@@ -408,13 +407,13 @@ public final class Value extends AbstractValue {
      * @return true if any condition is matched otherwise false
      * @see Value#isArray()
      */
-    public final boolean isText() {
+    public boolean isText() {
         return isCharacter() || isString();
     }
 
     /**
      * Check if the datatype object is a textual array datatype
-     *
+     * <p>
      * More it performs the following tests:
      * <ul>
      *     <li>{@link Value#isArray()} </li>
@@ -426,7 +425,7 @@ public final class Value extends AbstractValue {
      * @see Value#isArray()
      * @see Value#isText()
      */
-    public final boolean isTextArray() {
+    public boolean isTextArray() {
         return isCharacterArray() || isStringArray();
     }
 

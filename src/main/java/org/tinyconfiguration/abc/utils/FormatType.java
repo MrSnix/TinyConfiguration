@@ -6,6 +6,6 @@ package org.tinyconfiguration.abc.utils;
  * @author G. Baittiner
  * @version 0.1
  */
-public enum ExportType {
+public enum FormatType {
     JSON, XML, CSV, YAML
 }

@@ -1,6 +1,5 @@
 package org.tinyconfiguration.imp.basic.io;
 
-import org.tinyconfiguration.abc.io.AbstractHandlerIO;
 import org.tinyconfiguration.abc.io.handlers.AbstractReader;
 import org.tinyconfiguration.abc.io.handlers.AbstractWriter;
 import org.tinyconfiguration.imp.basic.Configuration;
@@ -24,73 +23,53 @@ import java.util.stream.Collectors;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.Type.*;
 import static org.tinyconfiguration.abc.utils.SpecialCharacters.substitute;
 
-class HandlerCSV extends AbstractHandlerIO<Configuration> {
+/**
+ * The {@link HandlerCSV} class contains the implementations of I/O operations as CSV format which can be executed on any {@link Configuration} instance
+ *
+ * @author G. Baittiner
+ * @version 0.1
+ */
+public final class HandlerCSV {
 
-    private static final ImplWriterCSV IMPL_WRITER_CSV = new ImplWriterCSV();
-    private static final ImplReaderCSV IMPL_READER_CSV = new ImplReaderCSV();
+    public static final ImplWriterCSV WRITER = new ImplWriterCSV();
+    public static final ImplReaderCSV READER = new ImplReaderCSV();
 
-    /**
-     * Reads the configuration file
-     *
-     * @param instance The configuration instance to read and update
-     * @throws IOException If anything goes wrong while processing the file
-     */
-    @Override
-    public void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MalformedConfigurationPropertyException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationIdentifiersException {
-        IMPL_READER_CSV.toObject(instance);
+    private HandlerCSV() {
     }
 
-    /**
-     * Reads the configuration file asynchronously
-     *
-     * @param instance The configuration instance to read
-     * @return Future object representing the reading task
-     */
-    @Override
-    public Future<Void> readAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                read(instance);
-            } catch (
-                    IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | DuplicatedConfigurationPropertyException | MissingConfigurationIdentifiersException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Write the configuration file
-     *
-     * @param instance The configuration instance to write
-     * @throws IOException If anything goes wrong while processing the file
-     */
-    @Override
-    public void write(Configuration instance) throws IOException {
-        IMPL_WRITER_CSV.toFile(instance);
-    }
-
-    /**
-     * Write the configuration file asynchronously
-     *
-     * @param instance The configuration instance to write
-     * @return Future object representing the writing task
-     */
-    @Override
-    public Future<Void> writeAsync(Configuration instance) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                write(instance);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-            return null;
-        });
-    }
-
-    final static class ImplWriterCSV implements AbstractWriter<Configuration, Property, StringBuilder> {
+    public final static class ImplWriterCSV implements AbstractWriter<Configuration, Property, StringBuilder> {
 
         private Configuration instance;
+
+
+        /**
+         * Write the configuration file
+         *
+         * @param instance The configuration instance to write
+         * @throws IOException If anything goes wrong while processing the file
+         */
+        @Override
+        public void write(Configuration instance) throws IOException {
+            WRITER.toFile(instance);
+        }
+
+        /**
+         * Write the configuration file asynchronously
+         *
+         * @param instance The configuration instance to write
+         * @return Future object representing the writing task
+         */
+        @Override
+        public Future<Void> writeAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    write(instance);
+                } catch (IOException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
+        }
 
         /**
          * This method allow to insert a property object inside an intermediate representation
@@ -146,7 +125,7 @@ class HandlerCSV extends AbstractHandlerIO<Configuration> {
         @Override
         public void toFile(Configuration instance) throws IOException {
 
-            List<String> lines = IMPL_WRITER_CSV.toObject(instance);
+            List<String> lines = WRITER.toObject(instance);
 
 
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(instance.getFile()))) {
@@ -203,7 +182,7 @@ class HandlerCSV extends AbstractHandlerIO<Configuration> {
         }
     }
 
-    final static class ImplReaderCSV implements AbstractReader<Configuration, Property, String> {
+    public final static class ImplReaderCSV implements AbstractReader<Configuration, Property, String> {
 
         private static final int FIELDS = 5;
 
@@ -221,6 +200,37 @@ class HandlerCSV extends AbstractHandlerIO<Configuration> {
 
         private List<String> properties;
         private Configuration instance;
+
+
+        /**
+         * Reads the configuration file
+         *
+         * @param instance The configuration instance to read and update
+         * @throws IOException If anything goes wrong while processing the file
+         */
+        @Override
+        public void read(Configuration instance) throws IOException, MissingConfigurationPropertyException, InvalidConfigurationNameException, InvalidConfigurationPropertyException, ParsingProcessException, MalformedConfigurationPropertyException, InvalidConfigurationVersionException, UnknownConfigurationPropertyException, DuplicatedConfigurationPropertyException, MissingConfigurationIdentifiersException {
+            READER.toObject(instance);
+        }
+
+        /**
+         * Reads the configuration file asynchronously
+         *
+         * @param instance The configuration instance to read
+         * @return Future object representing the reading task
+         */
+        @Override
+        public Future<Void> readAsync(Configuration instance) {
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    read(instance);
+                } catch (
+                        IOException | InvalidConfigurationNameException | InvalidConfigurationVersionException | MalformedConfigurationPropertyException | MissingConfigurationPropertyException | InvalidConfigurationPropertyException | UnknownConfigurationPropertyException | ParsingProcessException | DuplicatedConfigurationPropertyException | MissingConfigurationIdentifiersException e) {
+                    throw new CompletionException(e);
+                }
+                return null;
+            });
+        }
 
         /**
          * This method allow to translate a property object inside an intermediate representation

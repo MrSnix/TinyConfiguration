@@ -5,7 +5,7 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
-- [Tutorials](#tutorials)
+- [Quickstart](#quick-start)
 - [Build, download & changelog](#build-download--changelog)
 - [Feedback](#feedback)
 - [License](#license)
@@ -25,9 +25,110 @@ A few of the things you can do with TinyConfiguration:
 * Execute **validation** on properties values with lambda functions
 * Export configuration as **JSON**, **XML**, **YAML** & **CSV**
 
-## Tutorials
+## Quick-start
 
-You can check on the [wiki](https://github.com/MrSnix/TinyConfiguration/wiki) everything related to this library.
+### The basics
+
+```java
+import org.tinyconfiguration.imp.basic.Configuration;
+import org.tinyconfiguration.abc.data.Value;
+
+public class QuickStart {
+
+    public static void main(String[] args){
+
+          // Define your configuration 
+          Configuration.Builder b = new Configuration.Builder().
+                  setName("ConfigurationTest").
+                  setVersion("1.0.0").
+                  setPathname("./").
+                  setFilename("tiny-configuration.json");
+
+          // Add some properties for your application (as many as you want)
+        b.put(new Property.Builder().
+                setKey("language").
+                setValue("EN").
+                setValidator(property -> {
+                    // Extract value
+                    Value e = property.getValue();
+                    // Return as String
+                    String data = e.asString();
+                    // Test
+                    return data.equalsIgnoreCase("EN") || data.equalsIgnoreCase("IT");
+                }).
+                setDescription("Specifies the language environment for the session").
+                build());
+
+          b.put(new Property.Builder().
+                  setKey("auto-update").
+                  setValue(true).
+                  setDescription("Specifies if the application should regularly check for new software releases").
+                  build());
+
+          // Build your configuration instance
+          Configuration cfg = b.build();
+
+    }
+}
+```
+
+### I/O
+
+```java
+
+import org.tinyconfiguration.abc.ex.*;
+import org.tinyconfiguration.abc.utils.FormatType;
+import org.tinyconfiguration.imp.basic.Configuration;
+
+import java.io.IOException;
+
+public class QuickStart {
+
+    public static void main(String[] args){
+
+        // Assume you have a class which returns a Configuration object
+        Configuration instance = FooBar.getConfiguration();
+
+        // Does it exists on disk?
+        if (!instance.exist()) {
+
+            // If not, let's save it
+            try {
+                instance.write(FormatType.JSON);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Now, it should exists
+            assert(instance.exist());
+        }else{
+            // Seems like there is already a cfg file, let's read it
+            try {
+                instance.read(FormatType.JSON);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ConfigurationException e) {
+                e.printStackTrace();
+            } catch (PropertyException e) {
+                e.printStackTrace();
+            }
+
+            // If everything is gone well, 
+            // the configuration instance now hold the read values
+        }
+
+        // Do you want to delete it?
+        try {
+            instance.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+```
+
+You can find out more on the [wiki](https://github.com/MrSnix/TinyConfiguration/wiki).
 
 ## Build, download & changelog
 
@@ -84,7 +185,7 @@ release.
 |         |                Rewritten documentation                   |
 
 ## Feedback
-If there's anything you'd like to chat about or 
+If there's anything you'd like to chat about, or 
 you want to send me feedback about this project,  
 you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com), 
 ***feature requests are always welcome***.
