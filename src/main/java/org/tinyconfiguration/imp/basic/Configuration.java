@@ -4,7 +4,7 @@ import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
 import org.tinyconfiguration.abc.io.utils.Readable;
 import org.tinyconfiguration.abc.io.utils.Writable;
-import org.tinyconfiguration.abc.utils.ExportType;
+import org.tinyconfiguration.abc.utils.FormatType;
 import org.tinyconfiguration.imp.basic.io.HandlerCSV;
 import org.tinyconfiguration.imp.basic.io.HandlerJSON;
 import org.tinyconfiguration.imp.basic.io.HandlerXML;
@@ -120,7 +120,7 @@ public final class Configuration extends AbstractConfiguration<Property> impleme
      * @throws Exception If anything goes wrong while processing the file
      */
     @Override
-    public void read(ExportType type) throws Exception {
+    public void read(FormatType type) throws Exception {
         if (type == null)
             throw new NullPointerException("The export format cannot be null");
 
@@ -149,7 +149,7 @@ public final class Configuration extends AbstractConfiguration<Property> impleme
      * @return Future object representing the reading task
      */
     @Override
-    public Future<Void> readAsync(ExportType type) {
+    public Future<Void> readAsync(FormatType type) {
 
         if (type == null)
             throw new NullPointerException("The export format cannot be null");
@@ -183,7 +183,7 @@ public final class Configuration extends AbstractConfiguration<Property> impleme
      * @throws Exception If anything goes wrong while processing the file
      */
     @Override
-    public void write(ExportType type) throws Exception {
+    public void write(FormatType type) throws Exception {
         if (type == null)
             throw new NullPointerException("The export format cannot be null");
 
@@ -212,10 +212,10 @@ public final class Configuration extends AbstractConfiguration<Property> impleme
      * @return Future object representing the writing task
      */
     @Override
-    public Future<Void> writeAsync(ExportType type) {
+    public Future<Void> writeAsync(FormatType type) {
 
         if (type == null)
-            throw new NullPointerException("The export format cannot be null");
+            throw new NullPointerException("The format type cannot be null");
 
         Future<Void> e;
 

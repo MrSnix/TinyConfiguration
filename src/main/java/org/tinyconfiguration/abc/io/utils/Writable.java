@@ -1,6 +1,6 @@
 package org.tinyconfiguration.abc.io.utils;
 
-import org.tinyconfiguration.abc.utils.ExportType;
+import org.tinyconfiguration.abc.utils.FormatType;
 
 import java.util.concurrent.Future;
 
@@ -18,7 +18,7 @@ public interface Writable {
      * @param type The configuration instance export type
      * @throws Exception If anything goes wrong while processing the file
      */
-    void write(ExportType type) throws Exception;
+    void write(FormatType type) throws Exception;
 
     /**
      * Write the configuration file asynchronously
@@ -26,5 +26,5 @@ public interface Writable {
      * @param type The configuration instance export type
      * @return Future object representing the writing task
      */
-    Future<Void> writeAsync(ExportType type);
+    Future<Void> writeAsync(FormatType type);
 }

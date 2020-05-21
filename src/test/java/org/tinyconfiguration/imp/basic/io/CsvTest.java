@@ -7,7 +7,7 @@ import org.tinyconfiguration.imp.basic.Property;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.tinyconfiguration.abc.utils.ExportType.CSV;
+import static org.tinyconfiguration.abc.utils.FormatType.CSV;
 
 public class CsvTest {
 

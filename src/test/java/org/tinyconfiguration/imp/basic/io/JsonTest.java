@@ -7,7 +7,7 @@ import org.tinyconfiguration.imp.basic.Property;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.tinyconfiguration.abc.utils.ExportType.JSON;
+import static org.tinyconfiguration.abc.utils.FormatType.JSON;
 
 class JsonTest {
 

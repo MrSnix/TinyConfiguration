@@ -8,7 +8,7 @@ depending on the time I have available to work on this library_
 
 ___
 
-## 0.0.3
+## 0.0.4
 
 **Release date:** [ *???* ]
 
@@ -19,7 +19,25 @@ ___
 - Nothing changed
 
 **Removed**
-- Nothing removed
+- Nothing changed
+___
+
+## 0.0.3
+
+**Release date:** [ *21 / 05 / 2020* ]
+
+**New**
+- Nothing changed
+
+**Changed**
+- Simplified I/O methods
+
+**Removed**
+- Old ConfigurationIO class
+
+___
+**Important** - This update break backward compatibility
+___
 
 ## 0.0.2
 
