@@ -183,6 +183,8 @@ release.
 |   0.2   |         New arrays methods and export format             |
 |         |    Overhauled the entire class and package hierarchy     |
 |         |                Rewritten documentation                   |
+|   0.3   |                  Simplified I/O methods                  |
+|         |                       Bug fixes                          |
 
 ## Feedback
 If there's anything you'd like to chat about, or 
