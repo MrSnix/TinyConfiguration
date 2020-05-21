@@ -31,9 +31,10 @@ ___
 
 **Changed**
 - Simplified I/O methods
+- ExportType renamed FormatType
 
 **Removed**
-- Old ConfigurationIO class
+- ConfigurationIO class
 
 ___
 **Important** - This update break backward compatibility
