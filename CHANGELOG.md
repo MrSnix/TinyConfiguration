@@ -32,6 +32,7 @@ ___
 **Changed**
 - Simplified I/O methods
 - ExportType renamed FormatType
+- Fixed wrong exceptions type on read() and write() methods
 
 **Removed**
 - ConfigurationIO class

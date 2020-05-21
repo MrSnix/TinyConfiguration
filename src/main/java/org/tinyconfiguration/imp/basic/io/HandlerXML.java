@@ -255,7 +255,6 @@ public final class HandlerXML {
          * @param instance The configuration instance to read
          * @return Future object representing the reading task
          * @throws CompletionException If any exceptions occurs at runtime
-         * @see HandlerXML#READER#read(Configuration)
          */
         @Override
         public Future<Void> readAsync(Configuration instance) {

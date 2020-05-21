@@ -2,6 +2,8 @@ package org.tinyconfiguration.imp.basic;
 
 import org.tinyconfiguration.abc.AbstractConfiguration;
 import org.tinyconfiguration.abc.builders.AbstractBuilder;
+import org.tinyconfiguration.abc.ex.ConfigurationException;
+import org.tinyconfiguration.abc.ex.PropertyException;
 import org.tinyconfiguration.abc.io.utils.Readable;
 import org.tinyconfiguration.abc.io.utils.Writable;
 import org.tinyconfiguration.abc.utils.FormatType;
@@ -10,6 +12,7 @@ import org.tinyconfiguration.imp.basic.io.HandlerJSON;
 import org.tinyconfiguration.imp.basic.io.HandlerXML;
 import org.tinyconfiguration.imp.basic.io.HandlerYAML;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -117,10 +120,12 @@ public final class Configuration extends AbstractConfiguration<Property> impleme
      * Reads the configuration file
      *
      * @param type The configuration instance export type
-     * @throws Exception If anything goes wrong while processing the file
+     * @throws IOException            If anything goes wrong while processing the file
+     * @throws ConfigurationException If configuration parsing fails
+     * @throws PropertyException      If property parsing fails
      */
     @Override
-    public void read(FormatType type) throws Exception {
+    public void read(FormatType type) throws IOException, ConfigurationException, PropertyException {
         if (type == null)
             throw new NullPointerException("The export format cannot be null");
 
@@ -180,10 +185,10 @@ public final class Configuration extends AbstractConfiguration<Property> impleme
      * Write the configuration file
      *
      * @param type The configuration instance export type
-     * @throws Exception If anything goes wrong while processing the file
+     * @throws IOException If anything goes wrong while processing the file
      */
     @Override
-    public void write(FormatType type) throws Exception {
+    public void write(FormatType type) throws IOException {
         if (type == null)
             throw new NullPointerException("The export format cannot be null");
 
