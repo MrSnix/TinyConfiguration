@@ -159,7 +159,7 @@ To use the package, you need to use following Maven dependency:
 <dependency>
   <groupId>io.github.mrsnix</groupId>
   <artifactId>tiny-configuration</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ````
 
