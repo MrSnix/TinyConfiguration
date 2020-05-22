@@ -21,7 +21,6 @@ A few of the things you can do with TinyConfiguration:
 
 * **Read**, **write** and **delete** custom configuration file (even async)
 * Easily **search and retrieve** values
-* Set **listeners** on configuration reading, saving and deleting
 * Execute **validation** on properties values with lambda functions
 * Export configuration as **JSON**, **XML**, **YAML** & **CSV**
 
