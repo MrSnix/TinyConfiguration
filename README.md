@@ -186,8 +186,7 @@ release.
 
 ## Feedback
 If there's anything you'd like to chat about, or 
-you want to send me feedback about this project,  
-you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com), 
+you want to send me feedback about this project, you can reach me on my [e-mail](mailto:baittiner.giuseppe.dev@gmail.com),
 ***feature requests are always welcome***.
 
 ## License
