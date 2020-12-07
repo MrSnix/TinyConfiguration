@@ -131,9 +131,8 @@ You can find out more on the [wiki](https://github.com/MrSnix/TinyConfiguration/
 
 ## Build, download & changelog
 
->This library **should not** be used in a production environment.  
->TinyConfiguration is currently in an ++***alpha state***++,  
->it's unstable and any new update may break backward compatibility
+This library **should not** be used in a production environment.  
+TinyConfiguration is currently in an ++***alpha state***++, it's unstable and any new update may break backward compatibility
 
 #### Building the library
 TinyConfiguration requires Maven 3 and JDK 8.<br>
